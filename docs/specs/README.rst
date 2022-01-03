@@ -2,6 +2,11 @@
  Specs from original app
 *************************
 
+Official Repo
+=============
+
+`PnVanoise/cables <https://github.com/PnVanoise/cables>`_
+
 Database MCD
 ============
 
