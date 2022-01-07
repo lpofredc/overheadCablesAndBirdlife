@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
-# from decouple import config
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,10 +79,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": config("DBNAME", default="dbchiroweb"),
+        "USER": config("DBUSER"),
+        "PASSWORD": config("DBPASSWORD"),
+        "HOST": config("DBHOST", default="localhost"),
+        "PORT": config("DBPORT", default="5432", cast=int),
     }
 }
 
@@ -111,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Paris"
 
 USE_I18N = True
 
