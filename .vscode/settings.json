@@ -1,4 +1,5 @@
 {
   "restructuredtext.confPath": "",
-  "python.pythonPath": "backend/.venv/bin/python"
+  "python.pythonPath": "backend/.venv/bin/python",
+  "editor.minimap.maxColumn": 99
 }
