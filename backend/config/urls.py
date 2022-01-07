@@ -1,4 +1,4 @@
-"""ocabl_backend URL Configuration
+"""Overhead Cables And Birdlife backend URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/

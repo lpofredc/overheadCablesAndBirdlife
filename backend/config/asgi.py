@@ -1,5 +1,5 @@
 """
-ASGI config for ocabl_backend project.
+ASGI config for Overhead Cables And Birdlife backend project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

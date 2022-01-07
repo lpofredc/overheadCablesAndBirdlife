@@ -1,5 +1,5 @@
 """
-WSGI config for ocabl_backend project.
+WSGI config for Overhead Cables And Birdlife backend project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
