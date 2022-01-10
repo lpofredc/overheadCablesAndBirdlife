@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import PoleModel
+from .models import Pole
 
-admin.site.register(PoleModel)
+admin.site.register(Pole)
