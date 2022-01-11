@@ -35,7 +35,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "cables.apps.CablesConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,6 +42,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
+    "trackable_basemodel.apps.BaseModelConfig",
+    "cables.apps.CablesConfig",
+    "mortality.apps.CaseConfig",
+    "sensitive_area.apps.SensitiveAreaConfig",
     "rest_framework",
     "sinp_nomenclatures",
 ]

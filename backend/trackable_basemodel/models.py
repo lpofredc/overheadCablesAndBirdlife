@@ -32,5 +32,5 @@ class BaseModel(
     )
 
     class Meta:
-        app_label = "cables"
+        app_label = "trackable_basemodel"
         abstract = True

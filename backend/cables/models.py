@@ -5,7 +5,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
-from .basemodel import BaseModel
+from sensitive_area.models import SensitiveArea
+from trackable_basemodel.models import BaseModel
 
 
 class Infrastructure(BaseModel):
@@ -32,7 +33,7 @@ class Infrastructure(BaseModel):
         on_delete=models.DO_NOTHING,
     )
     sensitivity_areas = models.ForeignKey(
-        "SensitiveArea",
+        SensitiveArea,
         verbose_name=_("Related sensitive area"),
         on_delete=models.SET_NULL,
         null=True,

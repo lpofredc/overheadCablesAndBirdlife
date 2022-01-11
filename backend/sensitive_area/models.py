@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
-from .basemodel import BaseModel
+from trackable_basemodel.models import BaseModel
 
 
 class SensitiveArea(BaseModel):
@@ -35,4 +35,4 @@ class SensitiveArea(BaseModel):
     )
 
     class Meta:
-        app_label = "cables"
+        app_label = "sensitive_area"

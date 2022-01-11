@@ -2,17 +2,30 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
-from .basemodel import BaseModel
+from trackable_basemodel.models import BaseModel
 
 
-class MortalityCase(BaseModel):
-    """MortalityCase model extending BaseModel model with metadata fields
+# TODO temporary species allowing creation of MortalityCase Model, awaiting this be defined
+class Species(models.Model):
+    name = models.CharField(_("Species Name"), max_length=50)
+
+
+class Meta:
+    app_label = "mortality"
+
+
+class Case(BaseModel):
+    """Case model extending BaseModel model with metadata fields
 
     Describe a mortality case.
     """
 
     species = models.ForeignKey(
-        "Species", verbose_name=_("+"), on_delete=models.DO_NOTHING
+        "Species",
+        verbose_name=_("+"),
+        null=True,
+        blank=True,
+        on_delete=models.DO_NOTHING,
     )
     death_cause = models.ForeignKey(
         Nomenclature,
@@ -26,4 +39,4 @@ class MortalityCase(BaseModel):
     )
 
     class Meta:
-        app_label = "cables"
+        app_label = "mortality"
