@@ -42,10 +42,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
-    "trackable_basemodel.apps.BaseModelConfig",
+    "commons.apps.BaseModelConfig",
     "cables.apps.CablesConfig",
     "mortality.apps.CaseConfig",
     "sensitive_area.apps.SensitiveAreaConfig",
+    "geo_area.apps.GeoAreaConfig",
+    "media.apps.PictureConfig",
     "rest_framework",
     "sinp_nomenclatures",
 ]

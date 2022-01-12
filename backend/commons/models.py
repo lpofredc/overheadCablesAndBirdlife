@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.db import models
 
@@ -32,5 +35,4 @@ class BaseModel(
     )
 
     class Meta:
-        app_label = "trackable_basemodel"
         abstract = True

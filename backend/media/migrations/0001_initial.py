@@ -10,13 +10,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("sinp_nomenclatures", "0002_alter_source_unique_together"),
+        ("cables", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="Case",
+            name="SegmentPicture",
             fields=[
                 (
                     "id",
@@ -29,12 +29,7 @@ class Migration(migrations.Migration):
                 ),
                 ("timestamp_create", models.DateTimeField(auto_now_add=True)),
                 ("timestamp_update", models.DateTimeField(auto_now=True)),
-                (
-                    "nb_death",
-                    models.IntegerField(
-                        default=1, verbose_name="Number found dead"
-                    ),
-                ),
+                ("picture", models.ImageField(upload_to="")),
                 (
                     "created_by",
                     models.ForeignKey(
@@ -47,44 +42,65 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "data_source",
+                    "polesegment",
                     models.ForeignKey(
-                        blank=True,
-                        help_text="Mortality data source",
-                        limit_choices_to={
-                            "type__mnemonic": "death_data_source"
-                        },
-                        null=True,
-                        on_delete=django.db.models.deletion.PROTECT,
-                        related_name="death_data_source",
-                        to="sinp_nomenclatures.item",
-                        verbose_name="Mortality data source",
+                        help_text="Related pole segment",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="polepicture_polesegment",
+                        to="cables.segmentvisit",
+                        verbose_name="Related pole segment",
                     ),
                 ),
                 (
-                    "death_cause",
+                    "updated_by",
                     models.ForeignKey(
                         blank=True,
-                        help_text="Cause of death",
-                        limit_choices_to={"type__mnemonic": "death_cause"},
+                        editable=False,
                         null=True,
-                        on_delete=django.db.models.deletion.PROTECT,
+                        on_delete=django.db.models.deletion.SET_NULL,
                         related_name="+",
-                        to="sinp_nomenclatures.item",
-                        verbose_name="Cause of death",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "abstract": False,
+            },
+        ),
+        migrations.CreateModel(
+            name="PolePicture",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp_create", models.DateTimeField(auto_now_add=True)),
+                ("timestamp_update", models.DateTimeField(auto_now=True)),
+                ("picture", models.ImageField(upload_to="")),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        blank=True,
+                        editable=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
                     ),
                 ),
                 (
-                    "species",
+                    "polevisit",
                     models.ForeignKey(
-                        blank=True,
-                        help_text="Species",
-                        limit_choices_to={"type__mnemonic": "species"},
-                        null=True,
-                        on_delete=django.db.models.deletion.PROTECT,
-                        related_name="species_name",
-                        to="sinp_nomenclatures.item",
-                        verbose_name="Species",
+                        help_text="Related pole visit",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="polepicture_polevisit",
+                        to="cables.polevisit",
+                        verbose_name="Related pole visit",
                     ),
                 ),
                 (
