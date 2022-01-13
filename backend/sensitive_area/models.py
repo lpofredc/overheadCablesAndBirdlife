@@ -41,5 +41,8 @@ class SensitiveArea(BaseModel):
         },
     )
 
+    def __str__(self):
+        return f"Sensitive Area :{self.name}"
+
     class Meta:
         db_table = "sensitive_area"

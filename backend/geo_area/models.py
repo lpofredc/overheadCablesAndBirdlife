@@ -17,7 +17,7 @@ class GeoArea(models.Model):
 
     name = models.ForeignKey(
         Nomenclature,
-        on_delete=models.PROTECT,
+        on_delete=models.DO_NOTHING,
         limit_choices_to={"type__mnemonic": "geoarea_name"},
         null=True,
         related_name="geoarea_name",

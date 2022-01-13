@@ -6,10 +6,11 @@ from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
 from commons.models import BaseModel
+from media.models import Picture
 
 
-class Case(BaseModel):
-    """Case model extending BaseModel model with metadata fields
+class Mortality(BaseModel):
+    """Mortality model extending BaseModel model with metadata fields
 
     Describe a mortality case.
     """
@@ -28,7 +29,7 @@ class Case(BaseModel):
     death_cause = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "death_cause"},
+        limit_choices_to={"type__mnemonic": "cause_of_death"},
         null=True,
         blank=True,
         related_name="+",
@@ -41,7 +42,17 @@ class Case(BaseModel):
         limit_choices_to={"type__mnemonic": "death_data_source"},
         null=True,
         blank=True,
-        related_name="death_data_source",
+        related_name="mortality_data_source",
         verbose_name=_("Mortality data source"),
         help_text=_("Mortality data source"),
     )
+    pictures = models.ManyToManyField(
+        Picture,
+        blank=True,
+        related_name="mortality_pictures",
+        verbose_name=_("Picture related to the mortality case"),
+        help_text=_("Picture related to the mortality case"),
+    )
+
+    def __str__(self):
+        return f"Moratlity Case :{self.species} - {self.created_by} - {self.timestamp_create:%d-%m-%Y %H:%M}"
