@@ -103,7 +103,7 @@ class Observation(BaseModel):
     )
     pole = models.ForeignKey(
         Pole,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         editable=False,
@@ -113,7 +113,7 @@ class Observation(BaseModel):
     )
     segment = models.ForeignKey(
         Segment,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         editable=False,
