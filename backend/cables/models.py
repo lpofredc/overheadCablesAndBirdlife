@@ -315,7 +315,7 @@ class Equipment(BaseModel):
         help_text=_("Type of equipment for segment"),
     )
     pole_nb_equipments = models.IntegerField(
-        _("Number of eqipments"), null=True, blank=True
+        _("Number of equipments"), null=True, blank=True
     )
 
     class Meta:
