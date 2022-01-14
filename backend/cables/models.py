@@ -103,7 +103,7 @@ class Observation(BaseModel):
     )
     pole = models.ForeignKey(
         Pole,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         editable=False,
@@ -113,7 +113,7 @@ class Observation(BaseModel):
     )
     segment = models.ForeignKey(
         Segment,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         editable=False,
@@ -315,7 +315,7 @@ class Equipment(BaseModel):
         help_text=_("Type of equipment for segment"),
     )
     pole_nb_equipments = models.IntegerField(
-        _("Number of eqipments"), null=True, blank=True
+        _("Number of equipments"), null=True, blank=True
     )
 
     class Meta:
