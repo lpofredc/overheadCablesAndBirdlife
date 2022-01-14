@@ -75,7 +75,7 @@ class Segment(Infrastructure):
         verbose_name=_("Associated Administrative and Natural Areas"),
         help_text=_("Associated Administrative and Natural Areas"),
     )
-    sensitivity_areas = models.ManyToManyField(
+    sensitive_areas = models.ManyToManyField(
         SensitiveArea,
         blank=True,
         db_table="sgmt_sensitive_areas",

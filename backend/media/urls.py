@@ -1,5 +1,14 @@
-# from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
 
-# app_name = "new_module"
+from .views import PictureViewSet
 
-# urlpatterns = []
+app_name = "media"
+
+router = routers.SimpleRouter()
+router.register(r"pictures", PictureViewSet)
+urlpatterns = router.urls
+
+urlpatterns = [
+    path("", include(router.urls)),
+]

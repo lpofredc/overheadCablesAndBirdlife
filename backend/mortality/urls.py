@@ -1,5 +1,14 @@
-# from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
 
-# app_name = "mortality_case"
+from .views import MortalityViewSet
 
-# urlpatterns = []
+app_name = "mortality"
+
+router = routers.SimpleRouter()
+router.register(r"entries", MortalityViewSet)
+urlpatterns = router.urls
+
+urlpatterns = [
+    path("", include(router.urls)),
+]
