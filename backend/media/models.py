@@ -2,51 +2,93 @@
 # -*- coding: utf-8 -*-
 
 
+from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
+from cables.models import Equipment, Visit
 from commons.models import BaseModel
+from mortality.models import Mortality
 
 
-class Picture(BaseModel):
-    """Common shared Picture model with metadata fields
+class Media(BaseModel):
+    """Common shared Media model with metadata fields
 
-    Abstract class: all specific Picture classes will inherit from this class.
-    This class describes pictures with related informations.
+    Abstract class: all specific Media classes will inherit from this class.
+    This class describes media with related informations.
     """
 
-    # TODO to be completed with author at least
-    picture = models.ImageField()
+    media = models.ImageField()
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        related_name="media_author",
+        verbose_name=_("Author of the media condition"),
+        help_text=_("Author of the media condition"),
+        on_delete=models.SET_NULL,
+    )
+    visit = models.ForeignKey(
+        Visit,
+        null=True,
+        blank=True,
+        related_name="media_visit",
+        verbose_name=_("Visit the media is related to"),
+        help_text=_("Visit the media is related to"),
+        on_delete=models.SET_NULL,
+    )
+    equipment = models.ForeignKey(
+        Equipment,
+        null=True,
+        blank=True,
+        related_name="media_equipment",
+        verbose_name=_("Equipment the media is related to"),
+        help_text=_("Equipment the media is related to"),
+        on_delete=models.SET_NULL,
+    )
+    mortality = models.ForeignKey(
+        Mortality,
+        null=True,
+        blank=True,
+        related_name="media_mortality",
+        verbose_name=_("Mortality observation the media is related to"),
+        help_text=_("Mortality observation the media is related to"),
+        on_delete=models.SET_NULL,
+    )
+
+    class Meta:
+        """Media_only_one_field_not_null_constraint
+
+        Only one of three field is true:
+        A media is associated with one Visit, or one Equipment or one Mortality observation
+        """
+
+        constraints = [
+            models.CheckConstraint(
+                name="Media_only_one_field_not_null_constraint",
+                check=(
+                    models.Q(visit=True, mortality=False)
+                    | models.Q(visit=False, equipment=True, mortality=False)
+                    | models.Q(visit=False, mortality=True)
+                ),
+            )
+        ]
 
 
-# class PolePicture(BaseModel):
-#     """Common shared PolePicture model with metadata fields
+# class Media(BaseModel):
+#     """Common shared Media model with metadata fields
 
-#     This class describes pole pictures with related informations.
+#     Abstract class: all specific Media classes will inherit from this class.
+#     This class describes media with related informations.
 #     """
 
-#     # TODO to be completed with author at least
-#     picture = models.ImageField()
-#     polevisit = models.ForeignKey(
-#         PoleVisit,
-#         on_delete=models.CASCADE,
-#         related_name="polepicture_polevisit",
-#         verbose_name=_("Related pole visit"),
-#         help_text=_("Related pole visit"),
-#     )
-
-
-# class SegmentPicture(BaseModel):
-#     """Common shared SegmentPicture model with metadata fields
-
-#     This class describes segment pictures with related informations.
-#     """
-
-#     # TODO to be completed with author at least
-#     picture = models.ImageField()
-#     polesegment = models.ForeignKey(
-#         SegmentVisit,
-#         on_delete=models.CASCADE,
-#         related_name="polepicture_polesegment",
-#         verbose_name=_("Related pole segment"),
-#         help_text=_("Related pole segment"),
+#     media = models.ImageField()
+#     author = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         null=True,
+#         blank=True,
+#         related_name="media_author",
+#         verbose_name=_("Author of the media condition"),
+#         help_text=_("Author of the media condition"),
+#         on_delete=models.SET_NULL,
 #     )

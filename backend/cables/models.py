@@ -6,12 +6,14 @@ from uuid import uuid4
 
 from django.contrib.gis.db import models as gis_models
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
 from commons.models import BaseModel
 from geo_area.models import GeoArea
-from media.models import Picture
+
+# from media.models import Media
 from sensitive_area.models import SensitiveArea
 
 
@@ -30,6 +32,20 @@ class Infrastructure(BaseModel):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
+    geo_area = models.ManyToManyField(
+        GeoArea,
+        blank=True,
+        related_name="%(app_label)s_%(class)s_geo_area",
+        verbose_name=_("Associated Administrative and Natural Areas"),
+        help_text=_("Associated Administrative and Natural Areas"),
+    )
+    sensitivity_areas = models.ManyToManyField(
+        SensitiveArea,
+        blank=True,
+        related_name="%(app_label)s_%(class)s_sensitive_area",
+        verbose_name=_("Associated Sensitivity Areas"),
+        help_text=_("Associated Sensitivity Areas"),
+    )
 
     class Meta:
         abstract = True
@@ -42,22 +58,6 @@ class Pole(Infrastructure):
     """
 
     geom = gis_models.PointField(null=True, blank=True, srid=4326)
-    geo_area = models.ManyToManyField(
-        GeoArea,
-        blank=True,
-        db_table="pole_geo_areas",
-        related_name="pole_geo_area",
-        verbose_name=_("Associated Administrative and Natural Areas"),
-        help_text=_("Associated Administrative and Natural Areas"),
-    )
-    sensitivity_areas = models.ManyToManyField(
-        SensitiveArea,
-        blank=True,
-        db_table="pole_sensitive_areas",
-        related_name="pole_sensitive_area",
-        verbose_name=_("Associated Sensitivity Areas"),
-        help_text=_("Associated Sensitivity Areas"),
-    )
 
 
 class Segment(Infrastructure):
@@ -67,29 +67,13 @@ class Segment(Infrastructure):
     """
 
     geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
-    geo_area = models.ManyToManyField(
-        GeoArea,
-        blank=True,
-        db_table="sgmt_geo_areas",
-        related_name="sgmt_geo_area",
-        verbose_name=_("Associated Administrative and Natural Areas"),
-        help_text=_("Associated Administrative and Natural Areas"),
-    )
-    sensitivity_areas = models.ManyToManyField(
-        SensitiveArea,
-        blank=True,
-        db_table="sgmt_sensitive_areas",
-        related_name="sgmt_sensitive_area",
-        verbose_name=_("Associated Sensitivity Areas"),
-        help_text=_("Associated Sensitivity Areas"),
-    )
 
 
-class Observation(BaseModel):
-    """Observation model with metadata fields
+class Visit(BaseModel):
+    """Visit model with metadata fields
 
-    Observation instance contains information related to an infrastructure (pole or segment).
-    Planned use: one instance of Observation is created to record initial infrastructure information. Then, new instances may be created for information update. Previous existing intances assure trailing of infrastructure related data.
+    Visit instance contains information related to an infrastructure (pole or segment).
+    Planned use: one instance of Visit is created to record initial infrastructure information. Then, new instances may be created for information update. Previous existing intances assure trailing of infrastructure related data.
 
     uuid is a unique identifier (not primary key). It can be used as data identifier in case of
     data gathered from various origin (e.g. populating data from various DB)
@@ -106,35 +90,36 @@ class Observation(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        editable=False,
-        related_name="observation_pole",
-        verbose_name=_("Pole attached with this observation"),
-        help_text=_("Pole attached with this observation"),
+        # editable=False,
+        related_name="visit_pole",
+        verbose_name=_("Pole attached with this visit"),
+        help_text=_("Pole attached with this visit"),
     )
     segment = models.ForeignKey(
         Segment,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        editable=False,
-        related_name="observation_segment",
-        verbose_name=_("Segment attached with this observation"),
-        help_text=_("Segment attached with this observation"),
+        # editable=False,
+        related_name="visit",
+        verbose_name=_("Segment attached with this visit"),
+        help_text=_("Segment attached with this visit"),
     )
-    inventory_date = models.DateTimeField(
-        _("Inventory date"), editable=False, default=datetime.now()
+    inventory_date = models.DateField(
+        _("Inventory date"), default=timezone.now
     )
-    observation_date = models.DateTimeField(
-        _("Observation date"), default=datetime.now()
-    )
-    observation = models.TextField(_("Observation"), blank=True, null=True)
+    visit_date = models.DateField(_("Visit date"), default=timezone.now)
+    visit = models.TextField(_("Visit"), blank=True, null=True)
     neutralized = models.BooleanField(_("Neutralized"), default=False)
-    pictures = models.ManyToManyField(
-        Picture,
-        related_name="observation_pictures",
-        verbose_name=_("Segment attached with this observation"),
-        help_text=_("Segment attached with this observation"),
-    )
+    # PREV Fred relational suggestion with Media
+    # media = models.ManyToManyField(
+    #     Media,
+    #     blank=True,
+    #     editable=False,
+    #     related_name="visit_media",
+    #     verbose_name=_("Media attached with this visit"),
+    #     help_text=_("Media attached with this visit"),
+    # )
     condition = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
@@ -269,7 +254,7 @@ class Equipment(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        editable=False,
+        # editable=False,
         related_name="equipment_pole",
         verbose_name=_("Pole the equipment is installed on"),
         help_text=_("Pole the equipment is installed on"),
@@ -279,7 +264,7 @@ class Equipment(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        editable=False,
+        # editable=False,
         related_name="equipment_segment",
         verbose_name=_("Segment the equipment is installed on"),
         help_text=_("Segment the equipment is installed on"),
@@ -287,12 +272,15 @@ class Equipment(BaseModel):
     equipment_date = models.DateTimeField(
         editable=False, default=datetime.now()
     )
-    pictures = models.ManyToManyField(
-        Picture,
-        related_name="equipment_pictures",
-        verbose_name=_("Segment attached with this observation"),
-        help_text=_("Segment attached with this observation"),
-    )
+    # PREV Fred relational suggestion with Media
+    # media = models.ManyToManyField(
+    #     Media,
+    #     blank=True,
+    #     editable=False,
+    #     related_name="equipment_media",
+    #     verbose_name=_("Media attached with this equipment"),
+    #     help_text=_("Media attached with this equipment"),
+    # )
     installed = models.BooleanField(
         _("Installed"),
         null=True,
