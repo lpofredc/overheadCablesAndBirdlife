@@ -12,8 +12,7 @@ from sinp_nomenclatures.models import Item as Nomenclature
 
 from commons.models import BaseModel
 from geo_area.models import GeoArea
-
-# from media.models import Media
+from media.models import Media
 from sensitive_area.models import SensitiveArea
 
 
@@ -59,6 +58,9 @@ class Pole(Infrastructure):
 
     geom = gis_models.PointField(null=True, blank=True, srid=4326)
 
+    def __str__(self):
+        return f"Pole-({self.id})"
+
 
 class Segment(Infrastructure):
     """Segment model extending infrastructure model with metadata fields
@@ -67,6 +69,9 @@ class Segment(Infrastructure):
     """
 
     geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
+
+    def __str__(self):
+        return f"Segment-({self.id})"
 
 
 class Visit(BaseModel):
@@ -90,7 +95,6 @@ class Visit(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        # editable=False,
         related_name="visit_pole",
         verbose_name=_("Pole attached with this visit"),
         help_text=_("Pole attached with this visit"),
@@ -100,25 +104,19 @@ class Visit(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        # editable=False,PictureViewSet
         verbose_name=_("Segment attached with this visit"),
         help_text=_("Segment attached with this visit"),
-    )
-    inventory_date = models.DateField(
-        _("Inventory date"), default=timezone.now
     )
     visit_date = models.DateField(_("Visit date"), default=timezone.now)
     visit = models.TextField(_("Visit"), blank=True, null=True)
     neutralized = models.BooleanField(_("Neutralized"), default=False)
-    # PREV Fred relational suggestion with Media
-    # media = models.ManyToManyField(
-    #     Media,
-    #     blank=True,
-    #     editable=False,
-    #     related_name="visit_media",
-    #     verbose_name=_("Media attached with this visit"),
-    #     help_text=_("Media attached with this visit"),
-    # )
+    media = models.ManyToManyField(
+        Media,
+        blank=True,
+        related_name="visit_media",
+        verbose_name=_("Media attached with this visit"),
+        help_text=_("Media attached with this visit"),
+    )
     condition = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
@@ -231,6 +229,13 @@ class Visit(BaseModel):
             )
         ]
 
+    def __str__(self):
+        return (
+            f"Visit for Pole {self.id}"
+            if (self.segment__isnull)
+            else f"Visit for Segment {self.id}"
+        )
+
 
 class Equipment(BaseModel):
     """Equipment model with metadata fields
@@ -253,7 +258,6 @@ class Equipment(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        # editable=False,
         related_name="equipment_pole",
         verbose_name=_("Pole the equipment is installed on"),
         help_text=_("Pole the equipment is installed on"),
@@ -263,7 +267,6 @@ class Equipment(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        # editable=False,
         related_name="equipment_segment",
         verbose_name=_("Segment the equipment is installed on"),
         help_text=_("Segment the equipment is installed on"),
@@ -271,44 +274,36 @@ class Equipment(BaseModel):
     equipment_date = models.DateTimeField(
         editable=False, default=datetime.now()
     )
-    # PREV Fred relational suggestion with Media
-    # media = models.ManyToManyField(
-    #     Media,
-    #     blank=True,
-    #     editable=False,
-    #     related_name="equipment_media",
-    #     verbose_name=_("Media attached with this equipment"),
-    #     help_text=_("Media attached with this equipment"),
-    # )
+    media = models.ManyToManyField(
+        Media,
+        blank=True,
+        related_name="equipment_media",
+        verbose_name=_("Media attached with this equipment"),
+        help_text=_("Media attached with this equipment"),
+    )
     installed = models.BooleanField(
         _("Installed"),
         null=True,
         blank=True,
     )
-    pole_eqmt_type = models.ForeignKey(
+    eqmt_type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "pole_equipment"},
+        null=True,
+        blank=True,
+        limit_choices_to={"type__mnemonic": "equipment_type"},
         related_name="equipment_pole_eqmt_type",
         verbose_name=_("Type of equipment for pole"),
         help_text=_("Type of equipment for pole"),
     )
-    sgmt_eqmt_type = models.ForeignKey(
-        Nomenclature,
-        on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "pole_equipment"},
-        related_name="equipment_sgmt_eqmt_type",
-        verbose_name=_("Type of equipment for segment"),
-        help_text=_("Type of equipment for segment"),
-    )
-    pole_nb_equipments = models.IntegerField(
-        _("Number of equipments"), null=True, blank=True
+    pole_nb_equipments = models.PositiveIntegerField(
+        _("Number of equipments"), default=1
     )
 
     class Meta:
         constraints = [
             models.CheckConstraint(
-                name="%(app_label)s_%(class)s_only_one_of_both_field_not_null_constraint",
+                name="%(app_label)s_%(class)s_only_one_infrastructure_constraint",
                 check=(
                     models.Q(
                         pole__isnull=False,
@@ -319,5 +314,12 @@ class Equipment(BaseModel):
                         segment__isnull=False,
                     )
                 ),
-            )
+            ),
         ]
+
+    def __str__(self):
+        return (
+            f"Equipment for Pole {self.id} (Type: {self.eqmt_type})"
+            if (self.segment)
+            else f"Equipment for Segment {self.id} (Type: {self.eqmt_type})"
+        )

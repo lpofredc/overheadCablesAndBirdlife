@@ -4,7 +4,6 @@ from rest_framework import routers
 from .views import EquipmentViewSet, PoleViewSet, SegmentViewSet, VisitViewSet
 
 router = routers.SimpleRouter()
-# router.register(r"poles", PoleViewSet)
 router.register(r"segments", SegmentViewSet)
 router.register(r"visits", VisitViewSet)
 router.register(r"equipments", EquipmentViewSet)

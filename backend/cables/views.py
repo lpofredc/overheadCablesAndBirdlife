@@ -14,9 +14,6 @@ from .serializers import (
 class PoleViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Pole items"""
 
-    def toto(self, request):
-        pass
-
     serializer_class = PoleSerializer
     # permission_classes = [IsAuthenticated]
     queryset = Pole.objects.all()
