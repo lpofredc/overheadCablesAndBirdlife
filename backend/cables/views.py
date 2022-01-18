@@ -1,20 +1,24 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 
-from .models import Equipment, Observation, Pole, Segment
+from .models import Equipment, Pole, Segment, Visit
 from .serializers import (
     EquipmentSerializer,
-    ObservationSerializer,
     PoleSerializer,
     SegmentSerializer,
+    VisitSerializer,
 )
+
+# from rest_framework.permissions import IsAuthenticated
 
 
 class PoleViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Pole items"""
 
+    def toto(self, request):
+        pass
+
     serializer_class = PoleSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Pole.objects.all()
 
 
@@ -26,16 +30,16 @@ class SegmentViewSet(viewsets.ModelViewSet):
     queryset = Segment.objects.all()
 
 
-class ObservationViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Observation items"""
+class VisitViewSet(viewsets.ModelViewSet):
+    """A simple viewset to retrieve all the Visit items"""
 
-    serializer_class = ObservationSerializer
+    serializer_class = VisitSerializer
     # permission_classes = [IsAuthenticated]
-    queryset = Observation.objects.all()
+    queryset = Visit.objects.all()
 
 
 class EquipmentViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Observation items"""
+    """A simple viewset to retrieve all the Visit items"""
 
     serializer_class = EquipmentSerializer
     # permission_classes = [IsAuthenticated]

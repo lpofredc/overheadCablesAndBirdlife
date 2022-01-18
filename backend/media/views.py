@@ -1,13 +1,13 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Picture
-from .serializers import PictureSerializer
+from .models import Media
+from .serializers import MediaSerializer
 
 
-class PictureViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Picture items"""
+class MediaViewSet(viewsets.ModelViewSet):
+    """A simple viewset to retrieve all the Media items"""
 
-    serializer_class = PictureSerializer
+    serializer_class = MediaSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Picture.objects.all()
+    queryset = Media.objects.all()

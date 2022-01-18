@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import Equipment, Observation, Pole, Segment
+from .models import Equipment, Pole, Segment, Visit
 
 
 class PoleSerializer(ModelSerializer):
@@ -9,6 +9,7 @@ class PoleSerializer(ModelSerializer):
     class Meta:
         model = Pole
         fields = "__all__"
+        depth = 1
 
 
 class SegmentSerializer(ModelSerializer):
@@ -19,11 +20,11 @@ class SegmentSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class ObservationSerializer(ModelSerializer):
-    """Serializer for Observation model"""
+class VisitSerializer(ModelSerializer):
+    """Serializer for Visit model"""
 
     class Meta:
-        model = Observation
+        model = Visit
         fields = "__all__"
 
 

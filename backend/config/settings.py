@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     "mortality.apps.CaseConfig",
     "sensitive_area.apps.SensitiveAreaConfig",
     "geo_area.apps.GeoAreaConfig",
-    "media.apps.PictureConfig",
+    "media.apps.MediaConfig",
     "rest_framework",
+    "rest_framework_gis",
     "sinp_nomenclatures",
 ]
 

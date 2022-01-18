@@ -1,11 +1,11 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import Picture
+from .models import Media
 
 
-class PictureSerializer(ModelSerializer):
-    """Serializer for Picture model"""
+class MediaSerializer(ModelSerializer):
+    """Serializer for Media model"""
 
     class Meta:
-        model = Picture
+        model = Media
         fields = "__all__"

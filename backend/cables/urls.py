@@ -1,19 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
 
-app_name = "cables"
-
-from .views import (
-    EquipmentViewSet,
-    ObservationViewSet,
-    PoleViewSet,
-    SegmentViewSet,
-)
+from .views import EquipmentViewSet, PoleViewSet, SegmentViewSet, VisitViewSet
 
 router = routers.SimpleRouter()
-router.register(r"poles", PoleViewSet)
+# router.register(r"poles", PoleViewSet)
 router.register(r"segments", SegmentViewSet)
-router.register(r"observations", ObservationViewSet)
+router.register(r"visits", VisitViewSet)
 router.register(r"equipments", EquipmentViewSet)
 urlpatterns = router.urls
 
@@ -21,4 +14,14 @@ urlpatterns = router.urls
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path("", include(router.urls)),
+    path(
+        "poles/",
+        PoleViewSet.as_view({"get": "list"}),
+        name="pole_list",
+    ),
+    path(
+        "poles/<int:pk>/",
+        PoleViewSet.as_view({"get": "retrieve"}),
+        name="pole",
+    ),
 ]

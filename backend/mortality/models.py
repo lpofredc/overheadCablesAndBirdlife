@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
+from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
 from commons.models import BaseModel
-from media.models import Picture
 
 
 class Mortality(BaseModel):
@@ -15,6 +17,18 @@ class Mortality(BaseModel):
     Describe a mortality case.
     """
 
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        related_name="mortality_author",
+        verbose_name=_("Author of the mortality observation"),
+        help_text=_("Author of the mortality observation"),
+        on_delete=models.SET_NULL,
+    )
+    date_mortality = models.DateField(
+        _("Mortality observation date"), default=timezone.now
+    )
     species = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
@@ -46,13 +60,14 @@ class Mortality(BaseModel):
         verbose_name=_("Mortality data source"),
         help_text=_("Mortality data source"),
     )
-    pictures = models.ManyToManyField(
-        Picture,
-        blank=True,
-        related_name="mortality_pictures",
-        verbose_name=_("Picture related to the mortality case"),
-        help_text=_("Picture related to the mortality case"),
-    )
+    # PREV Fred relational suggestion with Media
+    # media = models.ManyToManyField(
+    #     Media,
+    #     blank=True,
+    #     related_name="mortality_media",
+    #     verbose_name=_("Media related to the mortality case"),
+    #     help_text=_("Media related to the mortality case"),
+    # )
 
     def __str__(self):
         return f"Moratlity Case :{self.species} - {self.created_by} - {self.timestamp_create:%d-%m-%Y %H:%M}"
