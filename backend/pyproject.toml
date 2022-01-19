@@ -13,6 +13,7 @@ psycopg2-binary = "^2.9.3"
 dj-sinp-nomenclatures = {path = "../../DjangoSinpNomenclature"}
 Pillow = "^9.0.0"
 djangorestframework-gis = "^0.18"
+django-filter = "^21.1"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"

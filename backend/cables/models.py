@@ -320,6 +320,6 @@ class Equipment(BaseModel):
     def __str__(self):
         return (
             f"Equipment for Pole {self.id} (Type: {self.eqmt_type})"
-            if (self.segment)
+            if (self.pole)
             else f"Equipment for Segment {self.id} (Type: {self.eqmt_type})"
         )
