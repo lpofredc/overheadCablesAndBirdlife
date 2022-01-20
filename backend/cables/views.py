@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 
 from .filters import (
     EquipmentFilter,
@@ -13,14 +14,12 @@ from .serializers import (
     VisitSerializer,
 )
 
-# from rest_framework.permissions import IsAuthenticated
-
 
 class PoleViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Pole items"""
 
     serializer_class = PoleSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Pole.objects.all()
 
 
@@ -46,14 +45,13 @@ class EquipmentViewSet(viewsets.ModelViewSet):
     If no value given for "pole" (and/or "segment") parameter (get parameters), no filter will be applied to Poles (and/or Segment) all instances will be returned with result"""
 
     serializer_class = EquipmentSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Equipment.objects.all()
     filterset_class = EquipmentFilter
 
     def get_queryset(self):
         pole = self.request.query_params.get("pole")
         segment = self.request.query_params.get("segment")
-        # queryset = Equipment.objects.all()
         pole_qs = self.queryset
         sgmt_qs = self.queryset
         queryset = Equipment.objects.all()
@@ -68,7 +66,7 @@ class PoleEquipmentViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Visit items"""
 
     serializer_class = EquipmentSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Equipment.objects.all()
     filterset_class = PoleEquipmentFilter
 
@@ -80,7 +78,7 @@ class SegmentEquipmentViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Visit items"""
 
     serializer_class = EquipmentSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Equipment.objects.all()
     filterset_class = SegmentEquipmentFilter
 

@@ -4,6 +4,7 @@ from rest_framework import routers
 from .views import (
     EquipmentViewSet,
     PoleEquipmentViewSet,
+    PoleViewSet,
     SegmentEquipmentViewSet,
     SegmentViewSet,
     VisitViewSet,
@@ -24,12 +25,16 @@ urlpatterns = [
     #     PoleViewSet.as_view({"get": "list"}),
     #     name="pole_list",
     # ),
-    # path(
-    #     "poles/<int:pk>/",
-    #     PoleViewSet.as_view({"get": "retrieve"}),
-    #     name="pole",
-    # ),
+    path(
+        "poles/<int:pk>/",
+        PoleViewSet.as_view({"get": "retrieve"}),
+        name="pole",
+    ),
     path("equipments/", EquipmentViewSet.as_view({"get": "list"})),
+    path(
+        "equipments/<int:pk>",
+        EquipmentViewSet.as_view({"get": "retrieve", "put": "update"}),
+    ),
     path("pole-equipments/", PoleEquipmentViewSet.as_view({"get": "list"})),
     path(
         "segment-equipments/", SegmentEquipmentViewSet.as_view({"get": "list"})
