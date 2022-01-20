@@ -129,5 +129,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
+# Snyk?
+.dccache
+
 # image upload folder
 uploads
+
+# .rest files
+*.rest
