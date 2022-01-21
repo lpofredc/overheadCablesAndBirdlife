@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 from rest_framework import routers
 
 from .views import MediaViewSet
@@ -10,5 +10,9 @@ router.register(r"pictures", MediaViewSet)
 urlpatterns = router.urls
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "list/",
+        MediaViewSet.as_view({"get": "list", "post": "create"}),
+        name="media_list",
+    ),
 ]

@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 
@@ -13,6 +14,10 @@ from .serializers import (
     SegmentSerializer,
     VisitSerializer,
 )
+
+
+def index(request):
+    return HttpResponse("UNITTEST")
 
 
 class PoleViewSet(viewsets.ModelViewSet):

@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 from rest_framework import routers
 
 from .views import (
@@ -8,6 +8,7 @@ from .views import (
     SegmentEquipmentViewSet,
     SegmentViewSet,
     VisitViewSet,
+    index,
 )
 
 router = routers.SimpleRouter()
@@ -19,12 +20,13 @@ urlpatterns = router.urls
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path("", include(router.urls)),
-    # path(
-    #     "poles/",
-    #     PoleViewSet.as_view({"get": "list"}),
-    #     name="pole_list",
-    # ),
+    path("", index, name="index"),
+    # path("", include(router.urls)),
+    path(
+        "poles/",
+        PoleViewSet.as_view({"get": "list", "post": "create"}),
+        name="pole_list",
+    ),
     path(
         "poles/<int:pk>/",
         PoleViewSet.as_view({"get": "retrieve"}),

@@ -23,7 +23,7 @@ urlpatterns = [
     path("api/geo/", include("geo_area.urls")),
     path("api/sensitive/", include("sensitive_area.urls")),
     path("api/mortality/", include("mortality.urls")),
-    path("media/", include("media.urls")),
+    path("api/media/", include("media.urls")),
     path("api/v1/", include("sinp_nomenclatures.urls")),
     path("admin/", admin.site.urls),
 ]
