@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 from uuid import uuid4
 
 from django.contrib.gis.db import models as gis_models
@@ -31,6 +30,16 @@ class Infrastructure(BaseModel):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
+    owner = models.ForeignKey(
+        Nomenclature,
+        on_delete=models.PROTECT,
+        limit_choices_to={"type__mnemonic": "organism"},
+        null=True,
+        blank=True,
+        related_name="%(app_label)s_%(class)s_owner",
+        verbose_name=_("Infrastructure owner organism"),
+        help_text=_("Infrastructure owner organism"),
+    )
     geo_area = models.ManyToManyField(
         GeoArea,
         blank=True,
@@ -38,7 +47,7 @@ class Infrastructure(BaseModel):
         verbose_name=_("Associated Administrative and Natural Areas"),
         help_text=_("Associated Administrative and Natural Areas"),
     )
-    sensitivity_areas = models.ManyToManyField(
+    sensitivity_area = models.ManyToManyField(
         SensitiveArea,
         blank=True,
         related_name="%(app_label)s_%(class)s_sensitive_area",
@@ -271,9 +280,9 @@ class Equipment(BaseModel):
         verbose_name=_("Segment the equipment is installed on"),
         help_text=_("Segment the equipment is installed on"),
     )
-    equipment_date = models.DateTimeField(
-        editable=False, default=datetime.now()
-    )
+    # equipment_date = models.DateTimeField(
+    #     editable=False, default=datetime.now()
+    # )
     media = models.ManyToManyField(
         Media,
         blank=True,

@@ -1,3 +1,5 @@
+# from functools import partial
+
 from rest_framework.serializers import ModelSerializer
 
 from .models import Equipment, Pole, Segment, Visit
@@ -8,8 +10,9 @@ class PoleSerializer(ModelSerializer):
 
     class Meta:
         model = Pole
-        fields = "__all__"
-        depth = 1
+        fields = ["id", "owner", "geo_area", "sensitivity_area"]
+        partial = True
+        # depth = 1
 
 
 class SegmentSerializer(ModelSerializer):

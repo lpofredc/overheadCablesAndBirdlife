@@ -1,10 +1,12 @@
-from django.http import HttpResponse
 from rest_framework import viewsets
-from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
+from rest_framework.permissions import (
+    DjangoModelPermissions,  # IsAuthenticated
+)
 
 from .filters import (
     EquipmentFilter,
     PoleEquipmentFilter,
+    PoleFilter,
     SegmentEquipmentFilter,
 )
 from .models import Equipment, Pole, Segment, Visit
@@ -16,16 +18,13 @@ from .serializers import (
 )
 
 
-def index(request):
-    return HttpResponse("UNITTEST")
-
-
 class PoleViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Pole items"""
 
     serializer_class = PoleSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Pole.objects.all()
+    filterset_class = PoleFilter
 
 
 class SegmentViewSet(viewsets.ModelViewSet):

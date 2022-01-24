@@ -1,4 +1,30 @@
 # from django.contrib.auth.models import Permission, User
+from django.test import TestCase
+
+from commons.tests import createTestUser, logTestUser
+
+# from rest_framework.authtoken.models import Token
+
+# from media.models import Media
+
+# from rest_framework.test import APIClient
+
+
+class MediaTestCase(TestCase):
+    def setUp(self):
+        self.user = createTestUser("user", "password", "add_media")
+
+    def test_create(self):
+        client = logTestUser("user", "password")
+        resp = client.post(
+            "/api/media/list/", data={"media": "coucou"}, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+
+
+################################################################################################
+################################################################################################
+# from django.contrib.auth.models import Permission, User
 # from django.test import Client, TestCase
 # from rest_framework.authtoken.models import Token
 # from rest_framework.test import APIClient
