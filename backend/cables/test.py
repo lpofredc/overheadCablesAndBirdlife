@@ -10,10 +10,6 @@ class PoleTestCase(TestCase):
     # From this fixtures, nomenclatures of type "owner" matched to pk 13 or 14 among nomenclature items
 
     def setUp(self):
-        #     self.user1 = createTestUser("user1", "password")
-        #     self.anonymous_client = APIClient()
-        #     self.unauthentified_client = logTestUser("user1", "wrong-password")
-        #     self.unauthorized_client = logTestUser("user1", "password")
         self.user2 = createTestUser(
             "user2",
             "password",
@@ -24,7 +20,7 @@ class PoleTestCase(TestCase):
         )
         self.authorized_client = logTestUser("user2", "password")
 
-    def test_post_with_authorized_user(self):
+    def test_all_with_authorized_user(self):
         # create 3 DB entries with owner pk = 13
         for i in range(3):
             resp = self.authorized_client.post(
@@ -41,10 +37,13 @@ class PoleTestCase(TestCase):
 
         pole_set = Pole.objects.all()
         self.assertEquals(len(pole_set), 6)
+
+        first_id = Pole.objects.filter(owner=13)[0].id
+
         resp = self.authorized_client.put(
-            "/api/cables/poles/1/",
+            f"/api/cables/poles/{first_id}/",
             data={
-                "id": 1,
+                "id": first_id,
                 "owner": 14,
                 "geo_area": [],
                 "sensitivity_area": [],
@@ -55,13 +54,13 @@ class PoleTestCase(TestCase):
         self.assertEquals(pole.owner_id, 14)
 
         resp = self.authorized_client.patch(
-            "/api/cables/poles/1/", data={"owner": 13}
+            f"/api/cables/poles/{first_id}/", data={"owner": 13}
         )
         self.assertEquals(resp.status_code, 200)
         pole = Pole.objects.get(pk=1)
         self.assertEquals(pole.owner_id, 13)
 
-        resp = self.authorized_client.get("/api/cables/poles/1/")
+        resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
         self.assertEquals(resp.status_code, 200)
         self.assertEquals(resp.json()["id"], 1)
 
@@ -75,8 +74,23 @@ class PoleTestCase(TestCase):
         self.assertEquals(len(resp.json()), 6)
         self.assertIsInstance(resp.json()[0]["owner"], dict)
 
-    # # self.assertEquals(resp.json()[0]["owner"], 14)
-    # resp = self.authorized_client.get("/api/cables/poles-full/", format="json")
-    # self.assertEquals(resp.status_code, 200)
+        resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
+        self.assertEquals(resp.status_code, 200)
+        self.assertIsInstance(resp.json()["owner"], int)
 
-    # print(resp.json()[0]["owner"])
+        resp = self.authorized_client.get(
+            f"/api/cables/poles-full/{first_id}/"
+        )
+        self.assertEquals(resp.status_code, 200)
+        self.assertIsInstance(resp.json()["owner"], dict)
+
+        resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
+        self.assertEquals(resp.status_code, 200)
+        resp = self.authorized_client.delete(f"/api/cables/poles/{first_id}/")
+        self.assertEquals(resp.status_code, 204)
+        resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
+        self.assertEquals(resp.status_code, 404)
+        resp = self.authorized_client.get(
+            f"/api/cables/poles-full/{first_id}/"
+        )
+        self.assertEquals(resp.status_code, 404)
