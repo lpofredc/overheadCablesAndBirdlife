@@ -36,21 +36,21 @@ class Infrastructure(BaseModel):
         limit_choices_to={"type__mnemonic": "organism"},
         null=True,
         blank=True,
-        related_name="%(app_label)s_%(class)s_owner",
+        related_name="%(class)s_owner",
         verbose_name=_("Infrastructure owner organism"),
         help_text=_("Infrastructure owner organism"),
     )
     geo_area = models.ManyToManyField(
         GeoArea,
         blank=True,
-        related_name="%(app_label)s_%(class)s_geo_area",
+        related_name="%(class)s_geo_area",
         verbose_name=_("Associated Administrative and Natural Areas"),
         help_text=_("Associated Administrative and Natural Areas"),
     )
     sensitivity_area = models.ManyToManyField(
         SensitiveArea,
         blank=True,
-        related_name="%(app_label)s_%(class)s_sensitive_area",
+        related_name="%(class)s_sensitive_area",
         verbose_name=_("Associated Sensitivity Areas"),
         help_text=_("Associated Sensitivity Areas"),
     )

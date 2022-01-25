@@ -1,7 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import (
-    DjangoModelPermissions,  # IsAuthenticated
-)
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 
 from .filters import (
     EquipmentFilter,
@@ -12,17 +10,27 @@ from .filters import (
 from .models import Equipment, Pole, Segment, Visit
 from .serializers import (
     EquipmentSerializer,
+    PoleFullReadOnlySerializer,
     PoleSerializer,
     SegmentSerializer,
     VisitSerializer,
 )
 
 
+class PoleFullReadOnlyViewSet(viewsets.ModelViewSet):
+    """A simple viewset to retrieve all the Pole items with full data (nested data)"""
+
+    serializer_class = PoleFullReadOnlySerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Pole.objects.all()
+    filterset_class = PoleFilter
+
+
 class PoleViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Pole items"""
+    """A simple viewset to retrieve all the Pole items with pk reference as ForeignKey"""
 
     serializer_class = PoleSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Pole.objects.all()
     filterset_class = PoleFilter
 

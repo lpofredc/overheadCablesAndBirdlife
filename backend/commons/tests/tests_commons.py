@@ -1,5 +1,3 @@
-# import json
-
 from django.contrib.auth.models import Permission, User
 from rest_framework.test import APIClient
 

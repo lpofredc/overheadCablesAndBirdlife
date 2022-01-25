@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (  # EquipmentViewSet,; PoleEquipmentViewSet,; SegmentEquipmentViewSet,; SegmentViewSet,; VisitViewSet,
+    PoleFullReadOnlyViewSet,
     PoleViewSet,
 )
 
@@ -8,9 +9,26 @@ from .views import (  # EquipmentViewSet,; PoleEquipmentViewSet,; SegmentEquipme
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path(
+        "poles-full/",
+        PoleFullReadOnlyViewSet.as_view({"get": "list"}),
+        name="full_pole_list",
+    ),
+    path(
         "poles/",
-        PoleViewSet.as_view({"get": "list", "post": "create"}),
+        PoleViewSet.as_view(
+            {
+                "get": "list",
+                "post": "create",
+                "put": "update",
+                "patch": "partial_update",
+            }
+        ),
         name="pole_list",
+    ),
+    path(
+        "poles-full/<int:pk>/",
+        PoleFullReadOnlyViewSet.as_view({"get": "retrieve"}),
+        name="full_pole",
     ),
     path(
         "poles/<int:pk>/",
