@@ -1,23 +1,37 @@
-from rest_framework.serializers import ModelSerializer
+# from rest_framework.serializers import ModelSerializer
+from rest_framework_gis.serializers import (
+    GeoFeatureModelSerializer,
+    ModelSerializer,
+)
+from sinp_nomenclatures.serializers import ItemSerializer
+
+from geo_area.serializers import GeoAreaSerializer
+from sensitive_area.serializers import SensitiveAreaSerializer
 
 from .models import Equipment, Pole, Segment, Visit
 
 
-class PoleFullReadOnlySerializer(ModelSerializer):
+class PoleSerializer(GeoFeatureModelSerializer):
+    """Serializer for Pole model"""
+
+    owner = ItemSerializer()
+    geo_area = GeoAreaSerializer(many=True)
+    sensitive_area = SensitiveAreaSerializer(many=True)
+
+    class Meta:
+        model = Pole
+        geo_field = "geom"
+        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
+
+
+class PoleSerializerUpd(GeoFeatureModelSerializer):
     """Serializer for Pole model"""
 
     class Meta:
         model = Pole
-        fields = ["id", "owner", "geo_area", "sensitivity_area"]
-        depth = 1
 
-
-class PoleSerializer(ModelSerializer):
-    """Serializer for Pole model"""
-
-    class Meta:
-        model = Pole
-        fields = ["id", "owner", "geo_area", "sensitivity_area"]
+        geo_field = "geom"
+        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
 
 
 class SegmentSerializer(ModelSerializer):

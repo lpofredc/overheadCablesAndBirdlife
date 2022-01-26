@@ -10,26 +10,26 @@ from .filters import (
 from .models import Equipment, Pole, Segment, Visit
 from .serializers import (
     EquipmentSerializer,
-    PoleFullReadOnlySerializer,
     PoleSerializer,
+    PoleSerializerUpd,
     SegmentSerializer,
     VisitSerializer,
 )
 
 
-class PoleFullReadOnlyViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Pole items with full data (nested data)"""
+class PoleFullVieweSet(viewsets.ModelViewSet):
+    """A ViewSet to retrieve one specific item or the list of items, both with full data (nested data)"""
 
-    serializer_class = PoleFullReadOnlySerializer
+    serializer_class = PoleSerializer
     permission_classes = [IsAuthenticated]
     queryset = Pole.objects.all()
     filterset_class = PoleFilter
 
 
 class PoleViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Pole items with pk reference as ForeignKey"""
+    """A ViewSet to create or retrieve one specific item or the list of items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Pole item"""
 
-    serializer_class = PoleSerializer
+    serializer_class = PoleSerializerUpd
     permission_classes = [DjangoModelPermissions]
     queryset = Pole.objects.all()
     filterset_class = PoleFilter
@@ -96,74 +96,3 @@ class SegmentEquipmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(segment__isnull=False)
-
-
-# class EquipmentViewSet(viewsets.ModelViewSet):
-#     """A simple viewset to retrieve all the Visit items"""
-
-#     serializer_class = EquipmentSerializer
-#     # permission_classes = [IsAuthenticated]
-#     queryset = Equipment.objects.all()
-#     filterset_fields = ["installed"]
-
-#     def get_queryset(self):
-#         pole = self.kwargs["pole_id"]
-#         queryset = Equipment.objects.all()
-#         if pole is not None:
-#             queryset = queryset.filter(pole__lt=pole)
-#         return queryset
-
-
-# class EquipmentViewSet(viewsets.ModelViewSet):
-#     """A simple viewset to retrieve all the Visit items"""
-
-#     serializer_class = EquipmentSerializer
-#     # permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         pole = self.request.query_params.get("pole_id")
-#         queryset = Equipment.objects.all()
-#         if pole is not None:
-#             queryset = queryset.filter(pole=pole)
-#         return queryset
-
-
-# # TEST_TMP
-# class EquipmentList(generics.ListAPIView):
-#     queryset = Equipment.objects.all()
-#     serializer_class = EquipmentSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     # filterset_fields = ["pole"]
-#     filterset_class = EquipmentFilter
-
-
-# TEST_TMP
-# class EquipmentList(generics.ListAPIView):
-#     serializer_class = EquipmentSerializer
-
-#     def get_queryset(self):
-#         """
-#         Optionally restricts the returned purchases to a given user,
-#         by filtering against a `username` query parameter in the URL.
-#         """
-#         queryset = Equipment.objects.all()
-#         pole = self.kwargs["pole_id"]
-#         if pole is not None:
-#             queryset = queryset.filter(pole=pole)
-#         return queryset
-
-
-# TEST_TMP
-# class EquipmentList(generics.ListAPIView):
-#     serializer_class = EquipmentSerializer
-
-#     def get_queryset(self):
-#         """
-#         Optionally restricts the returned purchases to a given user,
-#         by filtering against a `username` query parameter in the URL.
-#         """
-#         queryset = Equipment.objects.all()
-#         segment = self.request.query_params.get("segment")
-#         if segment is not None:
-#             queryset = queryset.filter(segment__lt=segment)
-#         return queryset

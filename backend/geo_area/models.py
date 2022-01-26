@@ -15,16 +15,22 @@ class GeoArea(models.Model):
     As for nomenclature Items, instances of this class is related to a nomenclature Type, itself related to a nomenclature Source.
     """
 
-    name = models.ForeignKey(
+    name = models.CharField(_("geo area name"), max_length=200)
+    code = models.CharField(max_length=100)
+
+    type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "geoarea_name"},
-        null=True,
-        related_name="geoarea_name",
-        verbose_name=_("Name of the geographical area"),
-        help_text=_("Name of the geographical area"),
+        limit_choices_to={"type__mnemonic": "geoarea_type"},
+        related_name="geoarea_type",
+        verbose_name=_("Type of the geographical area"),
+        help_text=_("Type of the geographical area"),
     )
-    geom = gis_models.PolygonField(null=True, blank=True, srid=4326)
+    geom = gis_models.PolygonField(srid=4326)
+
+    def __str__(self):
+        return f"{self.name} - [{self.code}]"
 
     class Meta:
+        unique_together = [["code", "name"]]
         db_table = "geo_area"

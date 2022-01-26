@@ -34,8 +34,6 @@ class Infrastructure(BaseModel):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "organism"},
-        null=True,
-        blank=True,
         related_name="%(class)s_owner",
         verbose_name=_("Infrastructure owner organism"),
         help_text=_("Infrastructure owner organism"),
@@ -47,7 +45,7 @@ class Infrastructure(BaseModel):
         verbose_name=_("Associated Administrative and Natural Areas"),
         help_text=_("Associated Administrative and Natural Areas"),
     )
-    sensitivity_area = models.ManyToManyField(
+    sensitive_area = models.ManyToManyField(
         SensitiveArea,
         blank=True,
         related_name="%(class)s_sensitive_area",
@@ -65,10 +63,10 @@ class Pole(Infrastructure):
     Define an electric pole.
     """
 
-    geom = gis_models.PointField(null=True, blank=True, srid=4326)
+    geom = gis_models.PointField(srid=4326)
 
     def __str__(self):
-        return f"Pole-({self.id})"
+        return f"Pole {self.id} - [{self.owner.label}]"
 
 
 class Segment(Infrastructure):

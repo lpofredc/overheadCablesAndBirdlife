@@ -8,4 +8,4 @@ class SensitiveAreaSerializer(ModelSerializer):
 
     class Meta:
         model = SensitiveArea
-        fields = "__all__"
+        fields = ["id", "name", "code"]

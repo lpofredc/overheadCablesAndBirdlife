@@ -1,20 +1,15 @@
 from django.urls import path
 
-from .views import (  # EquipmentViewSet,; PoleEquipmentViewSet,; SegmentEquipmentViewSet,; SegmentViewSet,; VisitViewSet,
-    PoleFullReadOnlyViewSet,
-    PoleViewSet,
-)
+from .views import PoleFullVieweSet, PoleViewSet
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path(
-        "poles-full/",
-        PoleFullReadOnlyViewSet.as_view({"get": "list"}),
-        name="full_pole_list",
+        "poles/info",
+        PoleFullVieweSet.as_view({"get": "list"}),
+        name="pole_list_info",
     ),
     path(
-        "poles/",
+        "poles/edit",
         PoleViewSet.as_view(
             {
                 "get": "list",
@@ -23,15 +18,15 @@ urlpatterns = [
                 "patch": "partial_update",
             }
         ),
-        name="pole_list",
+        name="pole_list_edit",
     ),
     path(
-        "poles-full/<int:pk>/",
-        PoleFullReadOnlyViewSet.as_view({"get": "retrieve"}),
-        name="full_pole",
+        "poles/info/<int:pk>/",
+        PoleFullVieweSet.as_view({"get": "retrieve"}),
+        name="pole_info",
     ),
     path(
-        "poles/<int:pk>/",
+        "poles/edit/<int:pk>/",
         PoleViewSet.as_view(
             {
                 "get": "retrieve",
@@ -40,19 +35,6 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="pole",
+        name="pole_edit",
     ),
-    # path("equipments/", EquipmentViewSet.as_view({"get": "list"})),
-    # path(
-    #     "equipments/<int:pk>",
-    #     EquipmentViewSet.as_view({"get": "retrieve", "put": "update"}),
-    # ),
-    # path("pole-equipments/", PoleEquipmentViewSet.as_view({"get": "list"})),
-    # path(
-    #     "segment-equipments/", SegmentEquipmentViewSet.as_view({"get": "list"})
-    # ),
-    # path("equipmentsall/", WholeEquipmentViewSet.as_view({"get": "list"})),
-    # re_path("equipments/(?P<pole>[0-9]+)/$", EquipmentViewSet.as_view({"get": "list"})),
-    # re_path("^equipments/(?P<pole>[0-9]+)/$", EquipmentList.as_view()),
-    # path("equipments/", EquipmentList.as_view()),
 ]
