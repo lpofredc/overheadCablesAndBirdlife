@@ -17,7 +17,11 @@ class Media(BaseModel):
     """
 
     media = models.ImageField(upload_to="uploads/")
-    author = models.ForeignKey(
+    author = models.CharField(_("Author"), max_length=200)
+    date = models.DateField(_("Visit date"))
+    source = models.CharField(_("Source of data"), max_length=200)
+    remark = models.TextField(_("Remark"))
+    added_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,
         blank=True,

@@ -4,12 +4,12 @@ from .views import PoleFullVieweSet, PoleViewSet
 
 urlpatterns = [
     path(
-        "poles/info",
+        "poles/info/",
         PoleFullVieweSet.as_view({"get": "list"}),
         name="pole_list_info",
     ),
     path(
-        "poles/edit",
+        "poles/edit/",
         PoleViewSet.as_view(
             {
                 "get": "list",

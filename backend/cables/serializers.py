@@ -8,7 +8,7 @@ from sinp_nomenclatures.serializers import ItemSerializer
 from geo_area.serializers import GeoAreaSerializer
 from sensitive_area.serializers import SensitiveAreaSerializer
 
-from .models import Equipment, Pole, Segment, Visit
+from .models import Operation, Pole, Segment, Visit
 
 
 class PoleSerializer(GeoFeatureModelSerializer):
@@ -54,5 +54,5 @@ class EquipmentSerializer(ModelSerializer):
     """Serializer for Equipment model"""
 
     class Meta:
-        model = Equipment
+        model = Operation
         fields = "__all__"

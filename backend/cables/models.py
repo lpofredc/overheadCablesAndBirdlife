@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import datetime
 from uuid import uuid4
 
 from django.contrib.gis.db import models as gis_models
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
@@ -33,10 +33,10 @@ class Infrastructure(BaseModel):
     owner = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "organism"},
+        limit_choices_to={"type__mnemonic": "owner"},
         related_name="%(class)s_owner",
-        verbose_name=_("Infrastructure owner organism"),
-        help_text=_("Infrastructure owner organism"),
+        verbose_name=_("Infrastructure owner"),
+        help_text=_("Infrastructure owner"),
     )
     geo_area = models.ManyToManyField(
         GeoArea,
@@ -81,6 +81,12 @@ class Segment(Infrastructure):
         return f"Segment-({self.id})"
 
 
+class PoleType(models.Model):
+    """PoleType define type of Pole an electric pole."""
+
+    name = models.CharField(_("Type of pole"), max_length=200)
+
+
 class Visit(BaseModel):
     """Visit model with metadata fields
 
@@ -114,7 +120,7 @@ class Visit(BaseModel):
         verbose_name=_("Segment attached with this visit"),
         help_text=_("Segment attached with this visit"),
     )
-    visit_date = models.DateField(_("Visit date"), default=timezone.now)
+    visit_date = models.DateField(_("Visit date"), default=datetime.date.today)
     visit = models.TextField(_("Visit"), blank=True, null=True)
     neutralized = models.BooleanField(_("Neutralized"), default=False)
     media = models.ManyToManyField(
@@ -128,8 +134,8 @@ class Visit(BaseModel):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "infrastr_condition"},
-        null=True,
-        blank=True,
+        # null=True,
+        # blank=True,
         editable=False,
         related_name="pole_condition",
         verbose_name=_("Pole condition"),
@@ -137,42 +143,47 @@ class Visit(BaseModel):
     )
     isolation_advice = models.BooleanField(
         _("Isolation"),
-        null=True,
-        blank=True,
+        default=False,
     )
     dissuasion_advice = models.BooleanField(
         _("Dissuasion"),
-        null=True,
-        blank=True,
+        default=False,
     )
     attraction_advice = models.BooleanField(
         _("Attraction"),
-        null=True,
+        default=False,
+    )
+
+    pole_type = models.ManyToManyField(
+        PoleType,
         blank=True,
+        related_name="visit_poletype",
+        verbose_name=_("Type of pole attached with this visit"),
+        help_text=_("Type of pole attached with this visit"),
     )
-    pole_type_primary = models.ForeignKey(
-        Nomenclature,
-        on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "pole_type"},
-        null=True,
-        related_name="pole_type_primary",
-        verbose_name=_("Primary pole type"),
-        help_text=_("Primary pole type"),
-    )
-    pole_type_secondary = models.ForeignKey(
-        Nomenclature,
-        on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "pole_type"},
-        null=True,
-        related_name="pole_type_secondary",
-        verbose_name=_("Secondary pole type"),
-        help_text=_("Secondary pole type"),
-    )
+    # pole_type_primary = models.ForeignKey(
+    #     Nomenclature,
+    #     on_delete=models.PROTECT,
+    #     limit_choices_to={"type__mnemonic": "pole_type"},
+    #     null=True,
+    #     related_name="pole_type_primary",
+    #     verbose_name=_("Primary pole type"),
+    #     help_text=_("Primary pole type"),
+    # )
+    # pole_type_secondary = models.ForeignKey(
+    #     Nomenclature,
+    #     on_delete=models.PROTECT,
+    #     limit_choices_to={"type__mnemonic": "pole_type"},
+    #     null=True,
+    #     related_name="pole_type_secondary",
+    #     verbose_name=_("Secondary pole type"),
+    #     help_text=_("Secondary pole type"),
+    # )
     pole_attractivity = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
-        null=True,
+        # null=True,
         related_name="pole_attractivity",
         verbose_name=_("Attractivity level of risk"),
         help_text=_("Attractivity level of risk"),
@@ -181,7 +192,7 @@ class Visit(BaseModel):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
-        null=True,
+        # null=True,
         related_name="pole_dangerousness",
         verbose_name=_("dangerousness level of risk"),
         help_text=_("dangerousness level of risk"),
@@ -244,11 +255,11 @@ class Visit(BaseModel):
         )
 
 
-class Equipment(BaseModel):
-    """Equipment model with metadata fields
+class Operation(BaseModel):
+    """Operation model with metadata fields
 
-    Equipment instance contains information related to an equipment installed on an infrastructure (pole or segment).
-    Planned use: one instance of Equipment is created to record equipment installation. Each installed equipment matches to an Equipment instance.
+    Operation instance contains information related to an operation on an infrastructure (pole or segment) such as plan, install or repare an equipment.
+    Planned use: one instance of Operation is created to record equipment installation (or plan of installation).
 
     uuid is a unique identifier (not primary key). It can be used as data identifier in case of
     data gathered from various origin (e.g. populating data from various DB)
@@ -265,28 +276,28 @@ class Equipment(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="equipment_pole",
-        verbose_name=_("Pole the equipment is installed on"),
-        help_text=_("Pole the equipment is installed on"),
+        related_name="operation_pole",
+        verbose_name=_("Pole the operation is related to"),
+        help_text=_("Pole the operation is related to"),
     )
     segment = models.ForeignKey(
         Segment,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="equipment_segment",
-        verbose_name=_("Segment the equipment is installed on"),
-        help_text=_("Segment the equipment is installed on"),
+        related_name="operation_segment",
+        verbose_name=_("Segment tthe operation is related to"),
+        help_text=_("Segment the operation is related to"),
     )
-    # equipment_date = models.DateTimeField(
-    #     editable=False, default=datetime.now()
-    # )
+    visit_date = models.DateField(
+        _("Operation date"), default=datetime.date.today
+    )
     media = models.ManyToManyField(
         Media,
         blank=True,
-        related_name="equipment_media",
-        verbose_name=_("Media attached with this equipment"),
-        help_text=_("Media attached with this equipment"),
+        related_name="operation_media",
+        verbose_name=_("Media attached with this operation"),
+        help_text=_("Media attached with this operation"),
     )
     installed = models.BooleanField(
         _("Installed"),
@@ -296,12 +307,12 @@ class Equipment(BaseModel):
     eqmt_type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-        limit_choices_to={"type__mnemonic": "equipment_type"},
-        related_name="equipment_pole_eqmt_type",
-        verbose_name=_("Type of equipment for pole"),
-        help_text=_("Type of equipment for pole"),
+        # null=True,
+        # blank=True,
+        limit_choices_to={"type__mnemonic": "operation_type"},
+        related_name="operation_pole_eqmt_type",
+        verbose_name=_("Type of operation for pole"),
+        help_text=_("Type of operation for pole"),
     )
     pole_nb_equipments = models.PositiveIntegerField(
         _("Number of equipments"), default=1
@@ -326,7 +337,7 @@ class Equipment(BaseModel):
 
     def __str__(self):
         return (
-            f"Equipment for Pole {self.id} (Type: {self.eqmt_type})"
+            f"Operation for Pole {self.id} (Type: {self.eqmt_type})"
             if (self.pole)
-            else f"Equipment for Segment {self.id} (Type: {self.eqmt_type})"
+            else f"Operation for Segment {self.id} (Type: {self.eqmt_type})"
         )

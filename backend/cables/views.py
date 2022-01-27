@@ -7,7 +7,7 @@ from .filters import (
     PoleFilter,
     SegmentEquipmentFilter,
 )
-from .models import Equipment, Pole, Segment, Visit
+from .models import Operation, Pole, Segment, Visit
 from .serializers import (
     EquipmentSerializer,
     PoleSerializer,
@@ -58,7 +58,7 @@ class EquipmentViewSet(viewsets.ModelViewSet):
 
     serializer_class = EquipmentSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Equipment.objects.all()
+    queryset = Operation.objects.all()
     filterset_class = EquipmentFilter
 
     def get_queryset(self):
@@ -66,7 +66,7 @@ class EquipmentViewSet(viewsets.ModelViewSet):
         segment = self.request.query_params.get("segment")
         pole_qs = self.queryset
         sgmt_qs = self.queryset
-        queryset = Equipment.objects.all()
+        queryset = Operation.objects.all()
         if pole is not None:
             pole_qs = queryset.filter(pole=pole)
         if segment is not None:
@@ -79,7 +79,7 @@ class PoleEquipmentViewSet(viewsets.ModelViewSet):
 
     serializer_class = EquipmentSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Equipment.objects.all()
+    queryset = Operation.objects.all()
     filterset_class = PoleEquipmentFilter
 
     def get_queryset(self):
@@ -91,7 +91,7 @@ class SegmentEquipmentViewSet(viewsets.ModelViewSet):
 
     serializer_class = EquipmentSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Equipment.objects.all()
+    queryset = Operation.objects.all()
     filterset_class = SegmentEquipmentFilter
 
     def get_queryset(self):

@@ -11,6 +11,22 @@ from sinp_nomenclatures.models import Item as Nomenclature
 from commons.models import BaseModel
 from media.models import Media
 
+STATUS_CHOICES = (
+    ("VALID", _("Valide")),
+    ("FREEZE", _("Gelée")),
+)
+
+
+class Species(models.Model):
+    """Species model describing a species."""
+
+    code = models.CharField(_("Species code"), max_length=100)
+    scientific_name = models.CharField(_("Species code"), max_length=200)
+    vernacular_name = models.CharField(_("Species code"), max_length=200)
+    status = models.CharField(
+        _("Statut"), max_length=50, choices=STATUS_CHOICES
+    )
+
 
 class Mortality(BaseModel):
     """Mortality model extending BaseModel model with metadata fields

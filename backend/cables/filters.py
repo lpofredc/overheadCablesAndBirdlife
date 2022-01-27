@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from .models import Equipment, Pole
+from .models import Operation, Pole
 
 
 class BaseModelFilter(filters.FilterSet):
@@ -72,7 +72,7 @@ class EquipmentFilter(filters.FilterSet):
     If no value given for "pole" (and/or "segment") parameter (get parameters), no filter will be applied to Poles (and/or Segment) all instances will be returned with result"""
 
     class Meta:
-        model = Equipment
+        model = Operation
         fields = ["installed"]
 
 
@@ -80,7 +80,7 @@ class PoleEquipmentFilter(filters.FilterSet):
     """Filter for Pole Equipment instances"""
 
     class Meta:
-        model = Equipment
+        model = Operation
         fields = ["pole", "installed"]
 
 
@@ -88,5 +88,5 @@ class SegmentEquipmentFilter(filters.FilterSet):
     """Filter for Segment Equipment instances"""
 
     class Meta:
-        model = Equipment
+        model = Operation
         fields = ["segment", "installed"]
