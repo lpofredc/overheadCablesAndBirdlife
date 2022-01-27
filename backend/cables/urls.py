@@ -1,11 +1,11 @@
 from django.urls import path
 
-from .views import PoleFullVieweSet, PoleViewSet
+from .views import PoleFullViewSet, PoleViewSet
 
 urlpatterns = [
     path(
         "poles/info/",
-        PoleFullVieweSet.as_view({"get": "list"}),
+        PoleFullViewSet.as_view({"get": "list"}),
         name="pole_list_info",
     ),
     path(
@@ -22,7 +22,7 @@ urlpatterns = [
     ),
     path(
         "poles/info/<int:pk>/",
-        PoleFullVieweSet.as_view({"get": "retrieve"}),
+        PoleFullViewSet.as_view({"get": "retrieve"}),
         name="pole_info",
     ),
     path(

@@ -1,4 +1,3 @@
-# from rest_framework.serializers import ModelSerializer
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer,
     ModelSerializer,
@@ -11,8 +10,10 @@ from sensitive_area.serializers import SensitiveAreaSerializer
 from .models import Operation, Pole, Segment, Visit
 
 
-class PoleSerializer(GeoFeatureModelSerializer):
-    """Serializer for Pole model"""
+class PoleSerializerInfo(GeoFeatureModelSerializer):
+    """Serializer for Pole model
+
+    Allow to get all data from pole(including nested) but not allow create and update"""
 
     owner = ItemSerializer()
     geo_area = GeoAreaSerializer(many=True)
@@ -24,8 +25,10 @@ class PoleSerializer(GeoFeatureModelSerializer):
         fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
 
 
-class PoleSerializerUpd(GeoFeatureModelSerializer):
-    """Serializer for Pole model"""
+class PoleSerializerEdit(GeoFeatureModelSerializer):
+    """Serializer for Pole model
+
+    Allow to get data from pole(not nested data, only FK) but allow create and update"""
 
     class Meta:
         model = Pole

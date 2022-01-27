@@ -26,6 +26,7 @@
 #             resp = self.authorized_client.post("/api/cables/poles/", data={"owner": 13})
 #             self.assertEquals(resp.status_code, 201)
 
+
 #         # create 3 DB entries with owner pk = 14
 #         for i in range(3):
 #             resp = self.authorized_client.post("/api/cables/poles/", data={"owner": 14})

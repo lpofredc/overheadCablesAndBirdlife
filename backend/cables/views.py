@@ -10,17 +10,17 @@ from .filters import (
 from .models import Operation, Pole, Segment, Visit
 from .serializers import (
     EquipmentSerializer,
-    PoleSerializer,
-    PoleSerializerUpd,
+    PoleSerializerEdit,
+    PoleSerializerInfo,
     SegmentSerializer,
     VisitSerializer,
 )
 
 
-class PoleFullVieweSet(viewsets.ModelViewSet):
+class PoleFullViewSet(viewsets.ModelViewSet):
     """A ViewSet to retrieve one specific item or the list of items, both with full data (nested data)"""
 
-    serializer_class = PoleSerializer
+    serializer_class = PoleSerializerInfo
     permission_classes = [IsAuthenticated]
     queryset = Pole.objects.all()
     filterset_class = PoleFilter
@@ -29,7 +29,7 @@ class PoleFullVieweSet(viewsets.ModelViewSet):
 class PoleViewSet(viewsets.ModelViewSet):
     """A ViewSet to create or retrieve one specific item or the list of items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Pole item"""
 
-    serializer_class = PoleSerializerUpd
+    serializer_class = PoleSerializerEdit
     permission_classes = [DjangoModelPermissions]
     queryset = Pole.objects.all()
     filterset_class = PoleFilter
@@ -39,7 +39,7 @@ class SegmentViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Segment items"""
 
     serializer_class = SegmentSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Segment.objects.all()
 
 
