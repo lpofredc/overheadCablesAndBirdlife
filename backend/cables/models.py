@@ -121,7 +121,7 @@ class Visit(BaseModel):
         help_text=_("Segment attached with this visit"),
     )
     visit_date = models.DateField(_("Visit date"), default=datetime.date.today)
-    visit = models.TextField(_("Visit"), blank=True, null=True)
+    remark = models.TextField(_("Remarks"), blank=True, null=True)
     neutralized = models.BooleanField(_("Neutralized"), default=False)
     media = models.ManyToManyField(
         Media,
@@ -156,7 +156,6 @@ class Visit(BaseModel):
 
     pole_type = models.ManyToManyField(
         PoleType,
-        blank=True,
         related_name="visit_poletype",
         verbose_name=_("Type of pole attached with this visit"),
         help_text=_("Type of pole attached with this visit"),

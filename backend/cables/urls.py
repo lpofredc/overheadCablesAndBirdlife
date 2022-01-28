@@ -5,6 +5,8 @@ from .views import (
     PoleViewSetInfo,
     SegmentViewSetEdit,
     SegmentViewSetInfo,
+    VisitViewSetEdit,
+    VisitViewSetInfo,
 )
 
 urlpatterns = [
@@ -57,12 +59,12 @@ urlpatterns = [
                 "patch": "partial_update",
             }
         ),
-        name="segments_list_edit",
+        name="segment_list_edit",
     ),
     path(
         "segments/info/<int:pk>/",
         SegmentViewSetInfo.as_view({"get": "retrieve"}),
-        name="segments_info",
+        name="segment_info",
     ),
     path(
         "segments/edit/<int:pk>/",
@@ -74,6 +76,40 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="segments_edit",
+        name="segment_edit",
+    ),
+    path(
+        "visits/info/",
+        VisitViewSetInfo.as_view({"get": "list"}),
+        name="visit_list_info",
+    ),
+    path(
+        "visits/edit/",
+        VisitViewSetEdit.as_view(
+            {
+                "get": "list",
+                "post": "create",
+                "put": "update",
+                "patch": "partial_update",
+            }
+        ),
+        name="visit_list_edit",
+    ),
+    path(
+        "visits/info/<int:pk>/",
+        SegmentViewSetInfo.as_view({"get": "retrieve"}),
+        name="visits_info",
+    ),
+    path(
+        "visits/edit/<int:pk>/",
+        SegmentViewSetEdit.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            }
+        ),
+        name="visits_edit",
     ),
 ]

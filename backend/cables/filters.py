@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from .models import Operation, Pole, Segment
+from .models import Operation, Pole, Segment, Visit
 
 
 class BaseModelFilter(filters.FilterSet):
@@ -79,6 +79,35 @@ class SegmentFilter(BaseModelFilter):
     class Meta:
         model = Segment
         fields = {"owner_id": ["exact"]}
+
+
+class VisitFilter(BaseModelFilter):
+    """Filter for Visit instances:
+
+    Herits from BaseModelFilter (refer related doc).
+    Allowed filters:
+    - by organism owner of the object => created_by (owner id)
+    """
+
+    # is_pole = filters.DateFilter(field_name="pole", lookup_expr="pole__isnull")
+    # is_segment = filters.DateFilter(field_name="segment", lookup_expr="segment__isnull")
+    visit_date = filters.DateFilter(
+        field_name="visit_date", lookup_expr="date"
+    )
+    from_visit_date = filters.DateFilter(
+        field_name="visit_date", lookup_expr="date__gte"
+    )
+    to_visit_date = filters.DateFilter(
+        field_name="visit_date", lookup_expr="date__lte"
+    )
+
+    class Meta:
+        model = Visit
+        fields = [
+            "visit_date",
+            "from_visit_date",
+            "to_visit_date",
+        ]
 
 
 class EquipmentFilter(filters.FilterSet):

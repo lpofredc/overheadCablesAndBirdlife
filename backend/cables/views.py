@@ -7,6 +7,7 @@ from .filters import (
     PoleFilter,
     SegmentEquipmentFilter,
     SegmentFilter,
+    VisitFilter,
 )
 from .models import Operation, Pole, Segment, Visit
 from .serializers import (
@@ -15,7 +16,8 @@ from .serializers import (
     PoleSerializerInfo,
     SegmentSerializerEdit,
     SegmentSerializerInfo,
-    VisitSerializer,
+    VisitSerializerEdit,
+    VisitSerializerInfo,
 )
 
 
@@ -55,14 +57,26 @@ class SegmentViewSetEdit(viewsets.ModelViewSet):
     filterset_class = SegmentFilter
 
 
-class VisitViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Visit items"""
+class VisitViewSetInfo(viewsets.ModelViewSet):
+    """A ViewSet to retrieve one specific Visit item or the list of Visit items, both with full data (nested data)"""
 
-    serializer_class = VisitSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = VisitSerializerInfo
+    # permission_classes = [IsAuthenticated]
     queryset = Visit.objects.all()
+    filterset_class = VisitFilter
 
 
+class VisitViewSetEdit(viewsets.ModelViewSet):
+    """A ViewSet to create or retrieve one specific Visit item or the list of Visit items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Segment item"""
+
+    serializer_class = VisitSerializerEdit
+    # permission_classes = [DjangoModelPermissions]
+    queryset = Visit.objects.all()
+    filterset_class = VisitFilter
+
+
+###################################################################################################
+###################################################################################################
 class EquipmentViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Visit items
 
