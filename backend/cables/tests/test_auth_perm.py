@@ -13,7 +13,6 @@ class AuthPermTestCase(TestCase):
     This test is based on Pole as example. "isAuthenticated" and "DjangoModelPermissions" are used and tested.
     """
 
-    # fixtures = ["nomenclatures.json"]
     # From this fixtures, nomenclatures of type "owner" matched to pk 13 or 14 among nomenclature items
 
     def setUp(self):
