@@ -6,19 +6,21 @@ from .filters import (
     PoleEquipmentFilter,
     PoleFilter,
     SegmentEquipmentFilter,
+    SegmentFilter,
 )
 from .models import Operation, Pole, Segment, Visit
 from .serializers import (
     EquipmentSerializer,
     PoleSerializerEdit,
     PoleSerializerInfo,
-    SegmentSerializer,
+    SegmentSerializerEdit,
+    SegmentSerializerInfo,
     VisitSerializer,
 )
 
 
 class PoleViewSetInfo(viewsets.ModelViewSet):
-    """A ViewSet to retrieve one specific item or the list of items, both with full data (nested data)"""
+    """A ViewSet to retrieve one specific Pole item or the list of Pole items, both with full data (nested data)"""
 
     serializer_class = PoleSerializerInfo
     permission_classes = [IsAuthenticated]
@@ -27,7 +29,7 @@ class PoleViewSetInfo(viewsets.ModelViewSet):
 
 
 class PoleViewSetEdit(viewsets.ModelViewSet):
-    """A ViewSet to create or retrieve one specific item or the list of items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Pole item"""
+    """A ViewSet to create or retrieve one specific Pole item or the list of Pole items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Pole item"""
 
     serializer_class = PoleSerializerEdit
     permission_classes = [DjangoModelPermissions]
@@ -35,12 +37,22 @@ class PoleViewSetEdit(viewsets.ModelViewSet):
     filterset_class = PoleFilter
 
 
-class SegmentViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Segment items"""
+class SegmentViewSetInfo(viewsets.ModelViewSet):
+    """A ViewSet to retrieve one specific Segment item or the list of Segment items, both with full data (nested data)"""
 
-    serializer_class = SegmentSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = SegmentSerializerInfo
+    # permission_classes = [IsAuthenticated]
     queryset = Segment.objects.all()
+    filterset_class = SegmentFilter
+
+
+class SegmentViewSetEdit(viewsets.ModelViewSet):
+    """A ViewSet to create or retrieve one specific Segment item or the list of Segment items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Segment item"""
+
+    serializer_class = SegmentSerializerEdit
+    # permission_classes = [DjangoModelPermissions]
+    queryset = Segment.objects.all()
+    filterset_class = SegmentFilter
 
 
 class VisitViewSet(viewsets.ModelViewSet):

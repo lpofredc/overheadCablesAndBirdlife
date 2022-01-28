@@ -37,12 +37,28 @@ class PoleSerializerEdit(GeoFeatureModelSerializer):
         fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
 
 
-class SegmentSerializer(ModelSerializer):
-    """Serializer for Segment model"""
+class SegmentSerializerInfo(ModelSerializer):
+    """Serializer for Segment model
+
+    Allow to get all data from segments(including nested) but not allow create and update"""
+
+    owner = ItemSerializer()
+    geo_area = GeoAreaSerializer(many=True)
+    sensitive_area = SensitiveAreaSerializer(many=True)
 
     class Meta:
         model = Segment
-        fields = "__all__"
+        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
+
+
+class SegmentSerializerEdit(ModelSerializer):
+    """Serializer for Segment model
+
+    Allow to get data from pole(not nested data, only FK) but allow create and update"""
+
+    class Meta:
+        model = Segment
+        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
 
 
 class VisitSerializer(ModelSerializer):

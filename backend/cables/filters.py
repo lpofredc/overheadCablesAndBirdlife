@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from .models import Operation, Pole
+from .models import Operation, Pole, Segment
 
 
 class BaseModelFilter(filters.FilterSet):
@@ -52,7 +52,7 @@ class BaseModelFilter(filters.FilterSet):
 
 
 class PoleFilter(BaseModelFilter):
-    """Filter for both Poles instances
+    """Filter for both Infrastructure instances: Pole and Segment
 
     Herits from BaseModelFilter (refer related doc).
     Allowed filters:
@@ -63,6 +63,21 @@ class PoleFilter(BaseModelFilter):
 
     class Meta:
         model = Pole
+        fields = {"owner_id": ["exact"]}
+
+
+class SegmentFilter(BaseModelFilter):
+    """Filter for both Infrastructure instances: Pole and Segment
+
+    Herits from BaseModelFilter (refer related doc).
+    Allowed filters:
+    - by organism owner of the object => created_by (owner id)
+    """
+
+    owner_id = filters.NumberFilter(field_name="owner")
+
+    class Meta:
+        model = Segment
         fields = {"owner_id": ["exact"]}
 
 
