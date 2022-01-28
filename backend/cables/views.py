@@ -17,7 +17,7 @@ from .serializers import (
 )
 
 
-class PoleFullViewSet(viewsets.ModelViewSet):
+class PoleViewSetInfo(viewsets.ModelViewSet):
     """A ViewSet to retrieve one specific item or the list of items, both with full data (nested data)"""
 
     serializer_class = PoleSerializerInfo
@@ -26,7 +26,7 @@ class PoleFullViewSet(viewsets.ModelViewSet):
     filterset_class = PoleFilter
 
 
-class PoleViewSet(viewsets.ModelViewSet):
+class PoleViewSetEdit(viewsets.ModelViewSet):
     """A ViewSet to create or retrieve one specific item or the list of items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Pole item"""
 
     serializer_class = PoleSerializerEdit

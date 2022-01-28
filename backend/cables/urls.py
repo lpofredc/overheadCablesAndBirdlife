@@ -1,16 +1,16 @@
 from django.urls import path
 
-from .views import PoleFullViewSet, PoleViewSet
+from .views import PoleViewSetEdit, PoleViewSetInfo
 
 urlpatterns = [
     path(
         "poles/info/",
-        PoleFullViewSet.as_view({"get": "list"}),
+        PoleViewSetInfo.as_view({"get": "list", "post": "create"}),
         name="pole_list_info",
     ),
     path(
         "poles/edit/",
-        PoleViewSet.as_view(
+        PoleViewSetEdit.as_view(
             {
                 "get": "list",
                 "post": "create",
@@ -22,12 +22,12 @@ urlpatterns = [
     ),
     path(
         "poles/info/<int:pk>/",
-        PoleFullViewSet.as_view({"get": "retrieve"}),
+        PoleViewSetInfo.as_view({"get": "retrieve"}),
         name="pole_info",
     ),
     path(
         "poles/edit/<int:pk>/",
-        PoleViewSet.as_view(
+        PoleViewSetEdit.as_view(
             {
                 "get": "retrieve",
                 "put": "update",
