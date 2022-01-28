@@ -117,6 +117,7 @@ class Visit(BaseModel):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="visit_segment",
         verbose_name=_("Segment attached with this visit"),
         help_text=_("Segment attached with this visit"),
     )
@@ -134,9 +135,6 @@ class Visit(BaseModel):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "infrastr_condition"},
-        # null=True,
-        # blank=True,
-        editable=False,
         related_name="pole_condition",
         verbose_name=_("Pole condition"),
         help_text=_("Pole condition"),
@@ -153,12 +151,13 @@ class Visit(BaseModel):
         _("Attraction"),
         default=False,
     )
-
-    pole_type = models.ManyToManyField(
-        PoleType,
-        related_name="visit_poletype",
-        verbose_name=_("Type of pole attached with this visit"),
-        help_text=_("Type of pole attached with this visit"),
+    pole_type = models.ForeignKey(
+        Nomenclature,
+        on_delete=models.PROTECT,
+        limit_choices_to={"type__mnemonic": "pole_type"},
+        related_name="visit_pole_type",
+        verbose_name=_("Type of pole"),
+        help_text=_("Type of pole"),
     )
     # pole_type_primary = models.ForeignKey(
     #     Nomenclature,
@@ -196,7 +195,7 @@ class Visit(BaseModel):
         verbose_name=_("dangerousness level of risk"),
         help_text=_("dangerousness level of risk"),
     )
-    segt_build_integr_risk = models.ForeignKey(
+    sgmt_build_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
@@ -204,7 +203,7 @@ class Visit(BaseModel):
         verbose_name=_("Building integration level of risk"),
         help_text=_("Building integration level of risk"),
     )
-    segt_moving_risk = models.ForeignKey(
+    sgmt_moving_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
@@ -249,7 +248,7 @@ class Visit(BaseModel):
     def __str__(self):
         return (
             f"Visit for Pole {self.id}"
-            if (self.segment__isnull)
+            if (self.segment is None)
             else f"Visit for Segment {self.id}"
         )
 

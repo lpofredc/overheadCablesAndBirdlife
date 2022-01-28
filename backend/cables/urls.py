@@ -97,12 +97,12 @@ urlpatterns = [
     ),
     path(
         "visits/info/<int:pk>/",
-        SegmentViewSetInfo.as_view({"get": "retrieve"}),
+        VisitViewSetInfo.as_view({"get": "retrieve"}),
         name="visits_info",
     ),
     path(
         "visits/edit/<int:pk>/",
-        SegmentViewSetEdit.as_view(
+        VisitViewSetEdit.as_view(
             {
                 "get": "retrieve",
                 "put": "update",

@@ -40,14 +40,14 @@ class BaseModelFilter(filters.FilterSet):
     class Meta:
         model = Pole
         fields = [
-            "created_by_id",
-            "created_by",
-            "year",
-            "from_year",
-            "to_year",
-            "date",
-            "from_date",
-            "to_date",
+            # "created_by_id",
+            # "created_by",
+            # "year",
+            # "from_year",
+            # "to_year",
+            # "date",
+            # "from_date",
+            # "to_date",
         ]
 
 
@@ -89,8 +89,16 @@ class VisitFilter(BaseModelFilter):
     - by organism owner of the object => created_by (owner id)
     """
 
-    # is_pole = filters.DateFilter(field_name="pole", lookup_expr="pole__isnull")
-    # is_segment = filters.DateFilter(field_name="segment", lookup_expr="segment__isnull")
+    pole = filters.NumberFilter(field_name="pole__id")
+    segment = filters.NumberFilter(field_name="segment__id")
+    # if segment__id is null => is_pole = true (due to constrainst on model)
+    is_pole = filters.BooleanFilter(
+        field_name="segment__id", lookup_expr="isnull"
+    )
+    # if pole__id is null => is_segment = true (due to constrainst on model)
+    is_segment = filters.BooleanFilter(
+        field_name="pole__id", lookup_expr="isnull"
+    )
     visit_date = filters.DateFilter(
         field_name="visit_date", lookup_expr="date"
     )
@@ -100,14 +108,12 @@ class VisitFilter(BaseModelFilter):
     to_visit_date = filters.DateFilter(
         field_name="visit_date", lookup_expr="date__lte"
     )
+    condition = filters.NumberFilter(field_name="condition__id")
+    pole_type = filters.NumberFilter(field_name="pole_type__id")
 
     class Meta:
         model = Visit
-        fields = [
-            "visit_date",
-            "from_visit_date",
-            "to_visit_date",
-        ]
+        fields = ["neutralized"]
 
 
 class EquipmentFilter(filters.FilterSet):

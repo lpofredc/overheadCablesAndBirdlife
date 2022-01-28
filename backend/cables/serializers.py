@@ -71,12 +71,12 @@ class VisitSerializerInfo(ModelSerializer):
     segment = SegmentSerializerInfo()
     media = MediaSerializer(many=True)
     condition = ItemSerializer()
-    # pole_type = PoleTypeSerializer()
+    pole_type = ItemSerializer()
     pole_attractivity = ItemSerializer()
     pole_dangerousness = ItemSerializer()
-    segt_build_integr_risk = ItemSerializer()
-    segt_moving_risk = ItemSerializer()
-    gmt_topo_integr_risk = ItemSerializer()
+    sgmt_build_integr_risk = ItemSerializer()
+    sgmt_moving_risk = ItemSerializer()
+    sgmt_topo_integr_risk = ItemSerializer()
     sgmt_veget_integr_risk = ItemSerializer()
 
     class Meta:
