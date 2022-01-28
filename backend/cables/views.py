@@ -41,7 +41,7 @@ class SegmentViewSetInfo(viewsets.ModelViewSet):
     """A ViewSet to retrieve one specific Segment item or the list of Segment items, both with full data (nested data)"""
 
     serializer_class = SegmentSerializerInfo
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Segment.objects.all()
     filterset_class = SegmentFilter
 
@@ -50,7 +50,7 @@ class SegmentViewSetEdit(viewsets.ModelViewSet):
     """A ViewSet to create or retrieve one specific Segment item or the list of Segment items (both with pk reference as ForeignKey only, not nested data), or update, partially update or delete a specific Segment item"""
 
     serializer_class = SegmentSerializerEdit
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     queryset = Segment.objects.all()
     filterset_class = SegmentFilter
 
@@ -59,7 +59,7 @@ class VisitViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the Visit items"""
 
     serializer_class = VisitSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Visit.objects.all()
 
 

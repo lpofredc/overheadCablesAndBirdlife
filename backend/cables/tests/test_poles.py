@@ -6,9 +6,6 @@ from commons.tests.tests_commons import createTestUser, logTestUser
 
 
 class PoleTestCase(TestCase):
-
-    # From this fixtures, nomenclatures of type "owner" matched to pk 13 or 14 among nomenclature items
-
     def setUp(self):
         self.user = createTestUser(
             "user",
@@ -43,7 +40,7 @@ class PoleTestCase(TestCase):
             self.owner_pk.append(item.id)
 
     def test_create_pole_requests_OK(self):
-        # create 3 DB entries with owner pk = self.owner_pk[0]
+        # create DB entry with owner pk = self.owner_pk[0]
         resp = self.authorized_client.post(
             "/api/cables/poles/edit/",
             data={
@@ -62,12 +59,15 @@ class PoleTestCase(TestCase):
         resp = self.authorized_client.get("/api/cables/poles/edit/")
         self.assertEquals(resp.status_code, 200)
         self.assertEquals(len(resp.json()["features"]), 1)
-        self.assertEquals(resp.json()["features"][0]["properties"]["owner"], 1)
+        self.assertEquals(
+            resp.json()["features"][0]["properties"]["owner"], self.owner_pk[0]
+        )
         resp = self.authorized_client.get("/api/cables/poles/info/")
         self.assertEquals(resp.status_code, 200)
         self.assertEquals(len(resp.json()["features"]), 1)
         self.assertEquals(
-            resp.json()["features"][0]["properties"]["owner"]["id"], 1
+            resp.json()["features"][0]["properties"]["owner"]["id"],
+            self.owner_pk[0],
         )
 
     def test_fail_create_pole_requests_with_wrong_data(self):
