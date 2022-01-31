@@ -287,7 +287,7 @@ class Operation(BaseModel):
         verbose_name=_("Segment tthe operation is related to"),
         help_text=_("Segment the operation is related to"),
     )
-    visit_date = models.DateField(
+    operation_date = models.DateField(
         _("Operation date"), default=datetime.date.today
     )
     media = models.ManyToManyField(
@@ -297,17 +297,11 @@ class Operation(BaseModel):
         verbose_name=_("Media attached with this operation"),
         help_text=_("Media attached with this operation"),
     )
-    installed = models.BooleanField(
-        _("Installed"),
-        null=True,
-        blank=True,
-    )
+    installed = models.BooleanField(_("Installed"), default=True)
     eqmt_type = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
-        # null=True,
-        # blank=True,
-        limit_choices_to={"type__mnemonic": "operation_type"},
+        limit_choices_to={"type__mnemonic": "equipment_type"},
         related_name="operation_pole_eqmt_type",
         verbose_name=_("Type of operation for pole"),
         help_text=_("Type of operation for pole"),

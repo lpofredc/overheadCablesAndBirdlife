@@ -1,6 +1,8 @@
 from django.urls import path
 
 from .views import (
+    OperationViewSetEdit,
+    OperationViewSetInfo,
     PoleViewSetEdit,
     PoleViewSetInfo,
     SegmentViewSetEdit,
@@ -111,5 +113,39 @@ urlpatterns = [
             }
         ),
         name="visits_edit",
+    ),
+    path(
+        "operations/info/",
+        OperationViewSetInfo.as_view({"get": "list"}),
+        name="operation_list_info",
+    ),
+    path(
+        "operations/edit/",
+        OperationViewSetEdit.as_view(
+            {
+                "get": "list",
+                "post": "create",
+                "put": "update",
+                "patch": "partial_update",
+            }
+        ),
+        name="operation_list_edit",
+    ),
+    path(
+        "operations/info/<int:pk>/",
+        OperationViewSetInfo.as_view({"get": "retrieve"}),
+        name="operations_info",
+    ),
+    path(
+        "operations/edit/<int:pk>/",
+        OperationViewSetEdit.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            }
+        ),
+        name="operations_edit",
     ),
 ]

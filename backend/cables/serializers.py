@@ -85,7 +85,7 @@ class VisitSerializerInfo(ModelSerializer):
 
 
 class VisitSerializerEdit(ModelSerializer):
-    """Serializer for Vsit model
+    """Serializer for Visit model
 
     Allow to get data from visits (not nested data, only FK) but allow create and update"""
 
@@ -94,9 +94,26 @@ class VisitSerializerEdit(ModelSerializer):
         exclude = ["uuid"]
 
 
-class EquipmentSerializer(ModelSerializer):
-    """Serializer for Equipment model"""
+class OperationSerializerInfo(ModelSerializer):
+    """Serializer for Operation model
+
+    Allow to get all data from operations (including nested) but not allow create and update"""
+
+    pole = PoleSerializerInfo()
+    segment = SegmentSerializerInfo()
+    media = MediaSerializer(many=True)
+    eqmt_type = ItemSerializer()
 
     class Meta:
         model = Operation
-        fields = "__all__"
+        exclude = ["uuid"]
+
+
+class OperationSerializerEdit(ModelSerializer):
+    """Serializer for Operation model
+
+    Allow to get data from operations (not nested data, only FK) but allow create and update"""
+
+    class Meta:
+        model = Operation
+        exclude = ["uuid"]
