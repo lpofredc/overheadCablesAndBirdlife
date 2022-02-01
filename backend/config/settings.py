@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     "django_filters",
     "djoser",
+    "polymorphic",
     "commons.apps.BaseModelConfig",
     "cables.apps.CablesConfig",
     "mortality.apps.CaseConfig",

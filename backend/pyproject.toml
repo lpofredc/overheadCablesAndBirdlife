@@ -16,6 +16,8 @@ djangorestframework-gis = "^0.18"
 django-filter = "^21.1"
 djoser = "^2.1.0"
 coverage = "^6.2"
+django-polymorphic = "^3.1.0"
+django-rest-polymorphic = "^0.1.9"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"

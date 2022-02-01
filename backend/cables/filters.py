@@ -139,7 +139,7 @@ class OperationFilter(BaseModelFilter):
 
     class Meta:
         model = Operation
-        fields = ["installed"]
+        fields = []
 
 
 # class EquipmentFilter(filters.FilterSet):

@@ -221,6 +221,17 @@ python-versions = ">=3.6"
 Django = ">=2.2"
 
 [[package]]
+name = "django-polymorphic"
+version = "3.1.0"
+description = "Seamless polymorphic inheritance for Django models"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=2.1"
+
+[[package]]
 name = "django-rest-framework"
 version = "0.1.0"
 description = "alias."
@@ -230,6 +241,20 @@ python-versions = "*"
 
 [package.dependencies]
 djangorestframework = "*"
+
+[[package]]
+name = "django-rest-polymorphic"
+version = "0.1.9"
+description = "Polymorphic serializers for Django REST Framework."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = "*"
+django-polymorphic = "*"
+djangorestframework = "*"
+six = "*"
 
 [[package]]
 name = "django-templated-mail"
@@ -742,7 +767,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "73331a42ec1eef9417039d069679f10764962ad72965655286edb807aaa68a5c"
+content-hash = "5913256f5bd5873b6d4df326ab022d82edfccf0f17dc2837e0c343e8ed21c289"
 
 [metadata.files]
 asgiref = [
@@ -939,8 +964,16 @@ django-filter = [
     {file = "django-filter-21.1.tar.gz", hash = "sha256:632a251fa8f1aadb4b8cceff932bb52fe2f826dd7dfe7f3eac40e5c463d6836e"},
     {file = "django_filter-21.1-py3-none-any.whl", hash = "sha256:f4a6737a30104c98d2e2a5fb93043f36dd7978e0c7ddc92f5998e85433ea5063"},
 ]
+django-polymorphic = [
+    {file = "django-polymorphic-3.1.0.tar.gz", hash = "sha256:d6955b5308bf6e41dcb22ba7c96f00b51dfa497a8a5ab1e9c06c7951bf417bf8"},
+    {file = "django_polymorphic-3.1.0-py3-none-any.whl", hash = "sha256:08bc4f4f4a773a19b2deced5a56deddd1ef56ebd15207bf4052e2901c25ef57e"},
+]
 django-rest-framework = [
     {file = "django-rest-framework-0.1.0.tar.gz", hash = "sha256:47a8f496fa69e3b6bd79f68dd7a1527d907d6b77f009e9db7cf9bb21cc565e4a"},
+]
+django-rest-polymorphic = [
+    {file = "django-rest-polymorphic-0.1.9.tar.gz", hash = "sha256:43d7f8c5b43a225fe792ac40e98d196d4c8d6872a796b61246085819b1b5f1c6"},
+    {file = "django_rest_polymorphic-0.1.9-py2.py3-none-any.whl", hash = "sha256:ae9dd7a104bd6d2faac3bb7cdc31d3c3c768a4bb25f75451e866d9fab66fb6eb"},
 ]
 django-templated-mail = [
     {file = "django-templated-mail-1.1.1.tar.gz", hash = "sha256:8db807effebb42a532622e2d142dfd453dafcd0d7794c4c3332acb90656315f9"},
