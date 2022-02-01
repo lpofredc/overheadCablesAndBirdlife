@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import viewsets
 
 # from .filters import OperationFilter, PoleFilter, SegmentFilter, VisitFilter
@@ -14,6 +16,8 @@ from .serializers import (
 )
 
 # from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
+
+logger = logging.getLogger(__name__)
 
 
 class InfrastructureViewSet(viewsets.ModelViewSet):
