@@ -1,12 +1,24 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticated,  # DjangoModelPermissions,
+)
 
-from .models import Mortality
+from mortality.serializers import SpeciesSerializer
+
+from .models import Mortality, Species
 from .serializers import MortalitySerializer
 
 
+class SpeciesViewSet(viewsets.ModelViewSet):
+    """A simple viewset to handle all the Species items"""
+
+    serializer_class = SpeciesSerializer
+    # permission_classes = [DjangoModelPermissions]
+    queryset = Species.objects.all()
+
+
 class MortalityViewSet(viewsets.ModelViewSet):
-    """A simple viewset to retrieve all the Mortality items"""
+    """A simple viewset to handle all the Mortality items"""
 
     serializer_class = MortalitySerializer
     permission_classes = [IsAuthenticated]

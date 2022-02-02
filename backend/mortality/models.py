@@ -11,20 +11,20 @@ from sinp_nomenclatures.models import Item as Nomenclature
 from commons.models import BaseModel
 from media.models import Media
 
-STATUS_CHOICES = (
-    ("VALID", _("Valide")),
-    ("FREEZE", _("Gelée")),
-)
-
 
 class Species(models.Model):
     """Species model describing a species."""
 
-    code = models.CharField(_("Species code"), max_length=100)
-    scientific_name = models.CharField(_("Species code"), max_length=200)
-    vernacular_name = models.CharField(_("Species code"), max_length=200)
-    status = models.CharField(
-        _("Statut"), max_length=50, choices=STATUS_CHOICES
+    code = models.CharField(_("Species code"), unique=True, max_length=100)
+    scientific_name = models.CharField(_("Scientific name"), max_length=200)
+    vernacular_name = models.CharField(_("Vernacular name"), max_length=200)
+    status = models.ForeignKey(
+        Nomenclature,
+        on_delete=models.PROTECT,
+        limit_choices_to={"type__mnemonic": "activated_status"},
+        related_name="species_activated_status",
+        verbose_name=_("Species activated status"),
+        help_text=_("Species activated status"),
     )
 
 
@@ -43,28 +43,22 @@ class Mortality(BaseModel):
         help_text=_("Author of the mortality observation"),
         on_delete=models.SET_NULL,
     )
-    date_mortality = models.DateField(
+    date = models.DateField(
         _("Mortality observation date"), default=timezone.now
     )
-    # TODO review how to manage species list (not determined yet)
     species = models.ForeignKey(
-        Nomenclature,
+        Species,
         on_delete=models.PROTECT,
-        limit_choices_to={"type__mnemonic": "species"},
-        null=True,
-        blank=True,
-        related_name="species_name",
-        verbose_name=_("Species"),
-        help_text=_("Species"),
+        related_name="mortality_species",
+        verbose_name=_("Found dead species"),
+        help_text=_("Found dead species"),
     )
     nb_death = models.IntegerField(_("Number found dead"), default=1)
     death_cause = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "cause_of_death"},
-        null=True,
-        blank=True,
-        related_name="+",
+        related_name="mortality_cod",
         verbose_name=_("Cause of death"),
         help_text=_("Cause of death"),
     )

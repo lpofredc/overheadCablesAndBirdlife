@@ -20,7 +20,7 @@ urlpatterns = [
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     path("api/cables/", include("cables.urls")),
-    path("api/geo/", include("geo_area.urls")),
+    path("api/geoareas/", include("geo_area.urls")),
     path("api/sensitive/", include("sensitive_area.urls")),
     path("api/mortality/", include("mortality.urls")),
     path("api/media/", include("media.urls")),

@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from .models import Media
 from .serializers import MediaSerializer
 
-# from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
+# from rest_framework.permissions import DjangoModelPermissions
 
 
 class MediaViewSet(viewsets.ModelViewSet):

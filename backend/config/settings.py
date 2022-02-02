@@ -168,6 +168,10 @@ DJOSER = {
     "SERIALIZERS": {},
 }
 
+
+# APPLICATION SPECIFICS
+MEDIA_UPLOAD = config("MEDIA_UPLOAD", default="uploads/")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 

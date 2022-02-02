@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (  # PoleViewSet,
+from .views import (
     ActionViewSet,
     InfrastructureViewSet,
     OperationViewSet,
@@ -23,9 +23,7 @@ urlpatterns = [
     ),
     path(
         "poles/",
-        PoleViewSet.as_view(
-            {"get": "list", "post": "create", "delete:": "destroy"}
-        ),
+        PoleViewSet.as_view({"get": "list", "post": "create"}),
         name="pole_list",
     ),
     path(
@@ -35,7 +33,6 @@ urlpatterns = [
                 "get": "retrieve",
                 "put": "update",
                 "patch": "partial_update",
-                "delete": "destroy",
             }
         ),
         name="pole_detail",
@@ -57,7 +54,6 @@ urlpatterns = [
                 "get": "retrieve",
                 "put": "update",
                 "patch": "partial_update",
-                "delete": "destroy",
             }
         ),
         name="segment_detail",
@@ -77,9 +73,6 @@ urlpatterns = [
         ActionViewSet.as_view(
             {
                 "get": "retrieve",
-                "put": "update",
-                "patch": "partial_update",
-                "delete": "destroy",
             }
         ),
         name="action_detail",
@@ -101,7 +94,6 @@ urlpatterns = [
                 "get": "retrieve",
                 "put": "update",
                 "patch": "partial_update",
-                "delete": "destroy",
             }
         ),
         name="visit_detail",
@@ -123,7 +115,6 @@ urlpatterns = [
                 "get": "retrieve",
                 "put": "update",
                 "patch": "partial_update",
-                "delete": "destroy",
             }
         ),
         name="operation_detail",

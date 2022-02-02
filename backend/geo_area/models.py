@@ -7,12 +7,16 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
+"""These application models are using nomenclature Items 'cf. sinp_nomenclatures' module
+
+    Item works like dictionnary term used to configure related application. Each Item is related to a Type, itself related to a Source. An application can authorize for a specific field to complete it with list of all Item terms with a defined Type (selected by Type mnemonic field). This allows to set up authorized entries for these field through database entries, not through hardcoded way,making application more flexible and more maintanable.
+    """
+
 
 class GeoArea(models.Model):
-    """Class inheriting from sinp_nomenclature Item (refer sinp_nomenclature module).
+    """GeoArea model
 
-    This class describes a nomenclature Item containing geometry attribute (PolygonField).
-    As for nomenclature Items, instances of this class is related to a nomenclature Type, itself related to a nomenclature Source.
+    Define a geographical area that can be administrative area (city, department, region, ...) or natural area (Natura2000, ZNIEF, ...)
     """
 
     name = models.CharField(_("geo area name"), max_length=200)

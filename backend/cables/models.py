@@ -15,23 +15,10 @@ from geo_area.models import GeoArea
 from media.models import Media
 from sensitive_area.models import SensitiveArea
 
-# class Poto(models.Model):
+"""These application models are using nomenclature Items 'cf. sinp_nomenclatures' module
 
-#     name = models.CharField(max_length=200)
-
-
-# class Elem(models.Model):
-#     desc = models.CharField(max_length=200)
-#     poto = models.ForeignKey(
-#         Poto,
-#         on_delete=models.CASCADE,
-#         null=True,
-#         blank=True,
-#         related_name="elem",
-#     )
-
-###############################################################################################
-###############################################################################################
+    Item works like dictionnary term used to configure related application. Each Item is related to a Type, itself related to a Source. An application can authorize for a specific field to complete it with list of all Item terms with a defined Type (selected by Type mnemonic field). This allows to set up authorized entries for these field through database entries, not through hardcoded way,making application more flexible and more maintanable.
+    """
 
 
 class Infrastructure(BaseModel, PolymorphicModel):

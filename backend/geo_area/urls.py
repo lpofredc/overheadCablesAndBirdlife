@@ -1,15 +1,19 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
-from .views import GeoAreaGeoViewSet, GeoAreaViewSet
+from .views import GeoAreaViewSet
 
 app_name = "geo_area"
 
-router = routers.SimpleRouter()
-router.register(r"areas", GeoAreaGeoViewSet)
-router.register(r"areas_no_geom", GeoAreaViewSet)
-urlpatterns = router.urls
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "",
+        GeoAreaViewSet.as_view({"get": "list"}),
+        name="georea-list",
+    ),
+    path(
+        "<int:pk>/",
+        GeoAreaViewSet.as_view({"get": "retrieve"}),
+        name="georea-detail",
+    ),
 ]

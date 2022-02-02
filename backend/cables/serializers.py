@@ -22,10 +22,10 @@ class ActionSerializer(ModelSerializer):
 
     class Meta:
         model = Action
-        exclude = ["uuid"]
+        fields = ["id", "infrastructure", "date", "remark", "media"]
 
 
-class VisitSerializer(ActionSerializer):
+class VisitSerializer(ModelSerializer):
     """Serializer for Visit
 
     Used to serialize all data from visits.
@@ -43,6 +43,7 @@ class VisitSerializer(ActionSerializer):
     class Meta:
         model = Visit
         fields = [
+            "id",
             "infrastructure",
             "date",
             "remark",
@@ -62,7 +63,37 @@ class VisitSerializer(ActionSerializer):
         ]
 
 
-class OperationSerializer(ActionSerializer):
+class VisitWriteSerializer(ModelSerializer):
+    """Serializer for Visit: used for creation and updating
+
+    Used to serialize all data from visits.
+    inherit from GeoAreaSerializer as contains geo data.
+    """
+
+    class Meta:
+        model = Visit
+        fields = [
+            "id",
+            "infrastructure",
+            "date",
+            "remark",
+            "neutralized",
+            "condition",
+            "isolation_advice",
+            "dissuasion_advice",
+            "attraction_advice",
+            "pole_type",
+            "pole_attractivity",
+            "pole_dangerousness",
+            "sgmt_build_integr_risk",
+            "sgmt_moving_risk",
+            "sgmt_topo_integr_risk",
+            "sgmt_veget_integr_risk",
+            "media",
+        ]
+
+
+class OperationSerializer(ModelSerializer):
     """Serializer for Operation
 
     Used to serialize all data from operations.
@@ -74,6 +105,7 @@ class OperationSerializer(ActionSerializer):
     class Meta:
         model = Visit
         fields = [
+            "id",
             "infrastructure",
             "date",
             "remark",
@@ -83,7 +115,7 @@ class OperationSerializer(ActionSerializer):
         ]
 
 
-class InfrastructureSerializer(GeoAreaSerializer):
+class InfrastructureSerializer(ModelSerializer):
     """Serializer for Infrastructure
 
     Used to serialize all data from infrastructures.
@@ -97,7 +129,7 @@ class InfrastructureSerializer(GeoAreaSerializer):
 
     class Meta:
         model = Infrastructure
-        geo_field = "geom"
+        # geo_field = "geom"
         fields = [
             "id",
             "owner",
@@ -157,13 +189,7 @@ class PoleWriteSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Pole
         geo_field = "geom"
-        fields = [
-            "geom",
-            "owner",
-            "geo_area",
-            "sensitive_area",
-            "actions_infrastructure",
-        ]
+        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
 
 
 class SegmentSerializer(GeoFeatureModelSerializer):

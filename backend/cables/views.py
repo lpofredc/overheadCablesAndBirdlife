@@ -1,6 +1,7 @@
 import logging
 
 from rest_framework import viewsets
+from rest_framework.permissions import DjangoModelPermissions
 
 # from .filters import OperationFilter, PoleFilter, SegmentFilter, VisitFilter
 from .models import Action, Infrastructure, Operation, Pole, Segment, Visit
@@ -13,6 +14,7 @@ from .serializers import (
     SegmentSerializer,
     SegmentWriteSerializer,
     VisitSerializer,
+    VisitWriteSerializer,
 )
 
 # from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
@@ -24,7 +26,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     """ViewSet for Infrastructure item"""
 
     serializer_class = InfrastructurePolymorphicSerializer
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     queryset = Infrastructure.objects.all()
     # filterset_class = PoleFilter
 
@@ -54,7 +56,7 @@ class PoleViewSet(viewsets.ModelViewSet):
 class SegmentViewSet(viewsets.ModelViewSet):
     """ViewSet for Segment item"""
 
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Segment.objects.all()
     # filterset_class = SegmentFilter
 
@@ -77,7 +79,7 @@ class ActionViewSet(viewsets.ModelViewSet):
     """ViewSet for Action item"""
 
     serializer_class = ActionPolymorphicSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Action.objects.all()
     # filterset_class = SegmentFilter
 
@@ -86,18 +88,46 @@ class VisitViewSet(viewsets.ModelViewSet):
     """ViewSet for Visit item"""
 
     serializer_class = VisitSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Visit.objects.all()
     # filterset_class = SegmentFilter
+
+    def get_serializer_class(self):
+        """Method that select appropriate serializer depending on request method
+
+        Returns:
+            [Serializer]: return appropriate serializer depending on request method.
+        """
+        serializer = {
+            "GET": VisitSerializer,
+            "PATCH": VisitWriteSerializer,
+            "PUT": VisitWriteSerializer,
+            "POST": VisitWriteSerializer,
+        }
+        return serializer[self.request.method]
 
 
 class OperationViewSet(viewsets.ModelViewSet):
     """ViewSet for Operation item"""
 
     serializer_class = OperationSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissions]
     queryset = Operation.objects.all()
     # filterset_class = SegmentFilter
+
+    def get_serializer_class(self):
+        """Method that select appropriate serializer depending on request method
+
+        Returns:
+            [Serializer]: return appropriate serializer depending on request method.
+        """
+        serializer = {
+            "GET": OperationSerializer,
+            "PATCH": OperationSerializer,
+            "PUT": OperationSerializer,
+            "POST": OperationSerializer,
+        }
+        return serializer[self.request.method]
 
 
 #################################################################################################
