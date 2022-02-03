@@ -27,9 +27,7 @@
       "@nuxt/types",
       "@nuxtjs/axios",
       "@types/node",
-      "@nuxtjs/auth-next",
-      "@nuxt/vue-app",
-      "nuxt-leaflet"
+      "@nuxtjs/auth_next",
     ]
   },
   "exclude": [
