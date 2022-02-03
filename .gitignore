@@ -131,3 +131,15 @@ dmypy.json
 
 # Other
 .dccache
+
+# Snyk?
+.dccache
+
+# image upload folder
+uploads
+
+# .rest files
+*.rest
+
+# for frontend
+frontend/node_modules

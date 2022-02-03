@@ -1,14 +1,25 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
 from .views import MediaViewSet
 
 app_name = "media"
 
-router = routers.SimpleRouter()
-router.register(r"pictures", MediaViewSet)
-urlpatterns = router.urls
-
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "",
+        MediaViewSet.as_view({"get": "list", "post": "create"}),
+        name="media_list",
+    ),
+    path(
+        "<int:pk>/",
+        MediaViewSet.as_view(
+            {
+                "get": "retrieve",
+                "patch": "update",
+                "put": "partial_update",
+                "delete": "destroy",
+            }
+        ),
+        name="media_detail",
+    ),
 ]

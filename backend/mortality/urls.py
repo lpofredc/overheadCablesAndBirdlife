@@ -1,14 +1,25 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
 from .views import MortalityViewSet
 
 app_name = "mortality"
 
-router = routers.SimpleRouter()
-router.register(r"entries", MortalityViewSet)
-urlpatterns = router.urls
-
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "",
+        MortalityViewSet.as_view({"get": "list", "post": "create"}),
+        name="mortality_case_list",
+    ),
+    path(
+        "<int:pk>/",
+        MortalityViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            }
+        ),
+        name="mortality_case_detail",
+    ),
 ]

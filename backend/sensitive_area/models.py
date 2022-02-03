@@ -3,12 +3,13 @@
 
 from uuid import uuid4
 
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from commons.models import BaseModel
+
+# from sinp_nomenclatures.models import Item as Nomenclature
 
 
 class SensitiveArea(BaseModel):
@@ -26,23 +27,15 @@ class SensitiveArea(BaseModel):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
-    geom = gis_models.PolygonField(null=True, blank=True, srid=4326)
-    name_validator = UnicodeUsernameValidator()
     name = models.CharField(
-        _("sensible area name"),
-        max_length=200,
-        unique=True,
-        help_text=_(
-            "Required. 200 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
-        validators=[name_validator],
-        error_messages={
-            "unique": _("A sensible area with that name already exists.")
-        },
-    )
+        _("sensitive area name"), max_length=200
+    )  # , null=True)
+    code = models.CharField(max_length=100)  # , null=True)
+    geom = gis_models.PolygonField(srid=4326)  # null=True, blank=True,
 
     def __str__(self):
-        return f"Sensitive Area :{self.name}"
+        return f"{self.name} - [{self.code}]"
 
     class Meta:
+        unique_together = [["code", "name"]]
         db_table = "sensitive_area"

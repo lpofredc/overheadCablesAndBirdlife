@@ -27,7 +27,8 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
+# DEFAULT_C
 
 
 # Application definition
@@ -40,12 +41,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
+    "django_filters",
+    "djoser",
+    "polymorphic",
     "commons.apps.BaseModelConfig",
     "cables.apps.CablesConfig",
-    "mortality.apps.CaseConfig",
+    "mortality.apps.MortalityConfig",
     "sensitive_area.apps.SensitiveAreaConfig",
     "geo_area.apps.GeoAreaConfig",
     "media.apps.MediaConfig",
+    "species.apps.SpeciesConfig",
     "rest_framework",
     "rest_framework_gis",
     "sinp_nomenclatures",
@@ -144,7 +149,46 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default filter backend
 # https://www.django-rest-framework.org/api-guide/filtering/
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend"
-    ]
+    ],
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("JWT",),
+}
+
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "#/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SERIALIZERS": {},
+}
+
+
+# APPLICATION SPECIFICS
+MEDIA_UPLOAD = config("MEDIA_UPLOAD", default="uploads/")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = config("DEBUG", cast=bool)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "cables": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
 }

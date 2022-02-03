@@ -1,14 +1,19 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 
 from .views import SensitiveAreaViewSet
 
 app_name = "sensitive_area"
 
-router = routers.SimpleRouter()
-router.register(r"areas", SensitiveAreaViewSet)
-urlpatterns = router.urls
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path(
+        "",
+        SensitiveAreaViewSet.as_view({"get": "list"}),
+        name="sensitivearea-list",
+    ),
+    path(
+        "<int:pk>/",
+        SensitiveAreaViewSet.as_view({"get": "retrieve"}),
+        name="sensitivearea-detail",
+    ),
 ]
