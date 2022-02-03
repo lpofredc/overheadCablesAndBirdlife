@@ -28,6 +28,8 @@
       "@nuxtjs/axios",
       "@types/node",
       "@nuxtjs/auth_next",
+      "@nuxt/vue-app",
+      "nuxt-leaflet"
     ]
   },
   "exclude": [
