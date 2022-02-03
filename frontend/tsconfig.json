@@ -27,7 +27,7 @@
       "@nuxt/types",
       "@nuxtjs/axios",
       "@types/node",
-      "@nuxtjs/auth_next",
+      "@nuxtjs/auth-next",
       "@nuxt/vue-app",
       "nuxt-leaflet"
     ]
