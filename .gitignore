@@ -138,3 +138,7 @@ uploads
 
 # .rest files
 *.rest
+
+
+# frontend
+frontend/node_modules
