@@ -1,82 +1,84 @@
-from django.test import TestCase
-from django.utils.timezone import datetime
-from sinp_nomenclatures.models import Item, Type
+# from django.test import TestCase
+# from django.utils.timezone import datetime
+# from sinp_nomenclatures.models import Item, Type
 
-from commons.tests.tests_commons import createTestUser, logTestUser
+# from commons.tests.tests_commons import createTestUser, logTestUser
 
 
-class PoleTestCase(TestCase):
-    def setUp(self):
-        self.user = createTestUser(
-            "user",
-            "password",
-            "view_pole",
-            "add_pole",
-            "change_pole",
-            "delete_pole",
-        )
-        self.authorized_client = logTestUser("user", "password")
+# class PoleTestCase(TestCase):
+#     fixtures = ["nomenclatures.xml"]
 
-        # create 2 owners (nomenclature items) needed to create poles
-        type = Type.objects.create(
-            code="code",
-            mnemonic="owner",
-            label="owner",
-            status="VALID",
-            created_by=self.user,
-            create_date=datetime.today(),
-            update_date=datetime.today(),
-        )
-        type.save()
-        self.owner_pk = []
-        for i in [1, 2]:
-            item = Item.objects.create(
-                type=type,
-                code=f"owner{i}",
-                mnemonic=f"owner{i}",
-                label=f"owner{i}",
-            )
-            item.save()
-            self.owner_pk.append(item.id)
+#     def setUp(self):
+#         self.user = createTestUser(
+#             "user",
+#             "password",
+#             "view_pole",
+#             "add_pole",
+#             "change_pole",
+#             "delete_pole",
+#         )
+#         self.authorized_client = logTestUser("user", "password")
 
-    def test_create_pole_requests_OK(self):
-        # create DB entry with owner pk = self.owner_pk[0]
-        resp = self.authorized_client.post(
-            "/api/cables/poles/edit/",
-            data={
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [0, 0],
-                },
-                "properties": {
-                    "owner": self.owner_pk[0],
-                },
-            },
-            format="json",
-        )
-        self.assertEquals(resp.status_code, 201)
-        resp = self.authorized_client.get("/api/cables/poles/edit/")
-        self.assertEquals(resp.status_code, 200)
-        self.assertEquals(len(resp.json()["features"]), 1)
-        self.assertEquals(
-            resp.json()["features"][0]["properties"]["owner"], self.owner_pk[0]
-        )
-        resp = self.authorized_client.get("/api/cables/poles/info/")
-        self.assertEquals(resp.status_code, 200)
-        self.assertEquals(len(resp.json()["features"]), 1)
-        self.assertEquals(
-            resp.json()["features"][0]["properties"]["owner"]["id"],
-            self.owner_pk[0],
-        )
+#         # create 2 owners (nomenclature items) needed to create poles
+#         type = Type.objects.create(
+#             code="code",
+#             mnemonic="owner",
+#             label="owner",
+#             status="VALID",
+#             created_by=self.user,
+#             create_date=datetime.today(),
+#             update_date=datetime.today(),
+#         )
+#         type.save()
+#         self.owner_pk = []
+#         for i in [1, 2]:
+#             item = Item.objects.create(
+#                 type=type,
+#                 code=f"owner{i}",
+#                 mnemonic=f"owner{i}",
+#                 label=f"owner{i}",
+#             )
+#             item.save()
+#             self.owner_pk.append(item.id)
 
-    def test_fail_create_pole_requests_with_wrong_data(self):
-        resp = self.authorized_client.post(
-            "/api/cables/poles/edit/",
-            data={"owner": "wrong"},
-            format="json",
-        )
-        self.assertEquals(resp.status_code, 400)
+# def test_create_pole_requests_OK(self):
+#         # create DB entry with owner pk = self.owner_pk[0]
+#         resp = self.authorized_client.post(
+#             "/api/cables/poles/edit/",
+#             data={
+#                 "type": "Feature",
+#                 "geometry": {
+#                     "type": "Point",
+#                     "coordinates": [0, 0],
+#                 },
+#                 "properties": {
+#                     "owner": self.owner_pk[0],
+#                 },
+#             },
+#             format="json",
+#         )
+#         self.assertEquals(resp.status_code, 201)
+#         resp = self.authorized_client.get("/api/cables/poles/edit/")
+#         self.assertEquals(resp.status_code, 200)
+#         self.assertEquals(len(resp.json()["features"]), 1)
+#         self.assertEquals(
+#             resp.json()["features"][0]["properties"]["owner"], self.owner_pk[0]
+#         )
+#         resp = self.authorized_client.get("/api/cables/poles/info/")
+#         self.assertEquals(resp.status_code, 200)
+#         self.assertEquals(len(resp.json()["features"]), 1)
+#         self.assertEquals(
+#             resp.json()["features"][0]["properties"]["owner"]["id"],
+#             self.owner_pk[0],
+#         )
+
+#     def test_fail_create_pole_requests_with_wrong_data(self):
+#         resp = self.authorized_client.post(
+#             "/api/cables/poles/edit/",
+#             data={"owner": "wrong"},
+#             format="json",
+#         )
+#         self.assertEquals(resp.status_code, 400)
 
 
 #         # create 3 DB entries with owner pk = 14

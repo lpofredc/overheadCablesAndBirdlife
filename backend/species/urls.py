@@ -1,18 +1,18 @@
 from django.urls import path
 
-from .views import MortalityViewSet
+from .views import SpeciesViewSet
 
-app_name = "mortality"
+app_name = "species"
 
 urlpatterns = [
     path(
         "",
-        MortalityViewSet.as_view({"get": "list", "post": "create"}),
-        name="mortality_case_list",
+        SpeciesViewSet.as_view({"get": "list", "post": "create"}),
+        name="species_list",
     ),
     path(
         "<int:pk>/",
-        MortalityViewSet.as_view(
+        SpeciesViewSet.as_view(
             {
                 "get": "retrieve",
                 "put": "update",
@@ -20,6 +20,6 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="mortality_case_detail",
+        name="species_detail",
     ),
 ]

@@ -1,25 +1,30 @@
 from rest_framework import viewsets
-from rest_framework.permissions import (
-    IsAuthenticated,  # DjangoModelPermissions,
-)
 
-from mortality.serializers import SpeciesSerializer
+from .models import Mortality
+from .serializers import MortalitySerializer, MortalityWriteSerializer
 
-from .models import Mortality, Species
-from .serializers import MortalitySerializer
-
-
-class SpeciesViewSet(viewsets.ModelViewSet):
-    """A simple viewset to handle all the Species items"""
-
-    serializer_class = SpeciesSerializer
-    # permission_classes = [DjangoModelPermissions]
-    queryset = Species.objects.all()
+# from rest_framework.permissions import (
+#     IsAuthenticated,  # DjangoModelPermissions,
+# )
 
 
 class MortalityViewSet(viewsets.ModelViewSet):
-    """A simple viewset to handle all the Mortality items"""
+    """ViewSet for Mortality item"""
 
     serializer_class = MortalitySerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Mortality.objects.all()
+
+    def get_serializer_class(self):
+        """Method that select appropriate serializer depending on request method
+
+        Returns:
+            [Serializer]: return appropriate serializer depending on request method.
+        """
+        serializer = {
+            "GET": MortalitySerializer,
+            "PATCH": MortalityWriteSerializer,
+            "PUT": MortalityWriteSerializer,
+            "POST": MortalityWriteSerializer,
+        }
+        return serializer[self.request.method]

@@ -17,13 +17,15 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("auth/", include("djoser.urls")),
-    path("auth/", include("djoser.urls.jwt")),
-    path("api/cables/", include("cables.urls")),
-    path("api/geoareas/", include("geo_area.urls")),
-    path("api/sensitive/", include("sensitive_area.urls")),
-    path("api/mortality/", include("mortality.urls")),
-    path("api/media/", include("media.urls")),
+    path("api/v1/auth/", include("djoser.urls")),
+    path("api/v1/auth/", include("djoser.urls.jwt")),
+    path("api/v1/cables/", include("cables.urls")),
+    path("api/v1/geoareas/", include("geo_area.urls")),
+    path("api/v1/sensitive/", include("sensitive_area.urls")),
+    path("api/v1/cables/", include("cables.urls")),
+    path("api/v1/mortality/", include("mortality.urls")),
+    path("api/v1/species/", include("species.urls")),
+    path("api/v1/media/", include("media.urls")),
     path("api/v1/", include("sinp_nomenclatures.urls")),
     path("admin/", admin.site.urls),
 ]
