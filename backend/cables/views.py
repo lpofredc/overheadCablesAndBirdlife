@@ -34,7 +34,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
 class PoleViewSet(viewsets.ModelViewSet):
     """ViewSet for Pole item"""
 
-    # permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissions]
     queryset = Pole.objects.all()
     # filterset_class = PoleFilter
 

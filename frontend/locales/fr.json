@@ -1,0 +1,14 @@
+{
+  "app": {
+    "appname": "Overhead Cables & BirdLife",
+    "disconnected": "Hors connection"
+  },
+  "login": {
+    "cancel": "Annuler",
+    "password": "Password",
+    "required_pwd_msg": "Le mot de passe est requis",
+    "required_username_msg": "Le nom d'utilisateur est requis",
+    "sign-in": "Se connecter",
+    "username": "Identifiant"
+  }
+}

@@ -18,7 +18,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['~/assets/styles'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -34,6 +34,7 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/i18n',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -44,13 +45,55 @@ export default {
     '@nuxtjs/auth-next',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    'nuxt-leaflet'
-
+    'nuxt-leaflet',
   ],
+
+  router: {
+    middleware: ['auth'],
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL: 'http://localhost:8000/api/v1/',
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        scheme: 'refresh',
+        token: {
+          property: 'access', // property name of access token get from Back-end
+          global: true,
+          required: true,
+          type: 'JWT',
+        },
+        user: {
+          property: false,
+          autoFetch: true,
+        },
+        refreshToken: {
+          // it sends request automatically when the access token expires, and its expire time has set on the Back-end
+          property: 'refresh', // property name of refresh token get from Back-end
+          data: 'refresh', // data can be used to set the name of the property you want to send in the request.
+        },
+        endpoints: {
+          login: {
+            url: 'auth/jwt/create/',
+            method: 'post',
+          },
+          refresh: { url: 'auth/jwt/refresh', method: 'post' },
+          logout: false, //  we don't have an endpoint for our logout in our API and we just remove the token from localstorage
+          user: {
+            url: 'auth/users/me',
+            method: 'get',
+            property: false,
+          },
+          redirectUri: '/login',
+          logoutRedirectUri: '/login',
+        },
+      },
+    },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -64,7 +107,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -77,6 +120,20 @@ export default {
         },
       },
     },
+  },
+
+  i18n: {
+    locales: [
+      { code: 'en', iso: 'en-US', file: 'en.json' },
+      { code: 'fr', iso: 'fr-FR', file: 'fr.json' },
+    ],
+
+    defaultLocale: 'fr',
+    vueI18n: {
+      // fallbackLocale: 'fr',
+    },
+    // lazy: true,
+    langDir: '~/locales/',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

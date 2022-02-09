@@ -8,6 +8,7 @@
       "ESNext.AsyncIterable",
       "DOM"
     ],
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
@@ -29,7 +30,8 @@
       "@types/node",
       "@nuxtjs/auth-next",
       "@nuxt/vue-app",
-      "nuxt-leaflet"
+      "@nuxtjs/i18n",
+      "nuxt-leaflet",
     ]
   },
   "exclude": [

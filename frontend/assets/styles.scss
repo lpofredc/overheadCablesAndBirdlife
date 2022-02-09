@@ -1,0 +1,10 @@
+@import "./variables.scss";
+
+
+.logged {
+  color: $connected-color;
+}
+
+.unlogged {
+  color: $disconnected-color;
+}
