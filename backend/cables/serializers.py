@@ -31,14 +31,16 @@ class VisitSerializer(ModelSerializer):
     Used to serialize all data from visits.
     """
 
-    condition = ItemSerializer()
-    pole_type = ItemSerializer()
-    pole_attractivity = ItemSerializer()
-    pole_dangerousness = ItemSerializer()
-    sgmt_build_integr_risk = ItemSerializer()
-    sgmt_moving_risk = ItemSerializer()
-    sgmt_topo_integr_risk = ItemSerializer()
-    sgmt_veget_integr_risk = ItemSerializer()
+    # Allow to display nested data
+    condition = ItemSerializer(read_only=True)
+    pole_type = ItemSerializer(read_only=True)
+    pole_attractivity = ItemSerializer(read_only=True)
+    pole_dangerousness = ItemSerializer(read_only=True)
+    sgmt_build_integr_risk = ItemSerializer(read_only=True)
+    sgmt_moving_risk = ItemSerializer(read_only=True)
+    sgmt_topo_integr_risk = ItemSerializer(read_only=True)
+    sgmt_veget_integr_risk = ItemSerializer(read_only=True)
+    media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = Visit
@@ -49,48 +51,57 @@ class VisitSerializer(ModelSerializer):
             "remark",
             "neutralized",
             "condition",
+            "condition_id",
             "isolation_advice",
             "dissuasion_advice",
             "attraction_advice",
             "pole_type",
+            "pole_type_id",
             "pole_attractivity",
+            "pole_attractivity_id",
             "pole_dangerousness",
+            "pole_dangerousness_id",
             "sgmt_build_integr_risk",
+            "sgmt_build_integr_risk_id",
             "sgmt_moving_risk",
+            "sgmt_moving_risk_id",
             "sgmt_topo_integr_risk",
+            "sgmt_topo_integr_risk_id",
             "sgmt_veget_integr_risk",
+            "sgmt_veget_integr_risk_id",
             "media",
+            "media_id",
         ]
-
-
-class VisitWriteSerializer(ModelSerializer):
-    """Serializer for Visit: used for creation and updating
-
-    Used to serialize all data from visits.
-    inherit from GeoAreaSerializer as contains geo data.
-    """
-
-    class Meta:
-        model = Visit
-        fields = [
-            "id",
-            "infrastructure",
-            "date",
-            "remark",
-            "neutralized",
-            "condition",
-            "isolation_advice",
-            "dissuasion_advice",
-            "attraction_advice",
-            "pole_type",
-            "pole_attractivity",
-            "pole_dangerousness",
-            "sgmt_build_integr_risk",
-            "sgmt_moving_risk",
-            "sgmt_topo_integr_risk",
-            "sgmt_veget_integr_risk",
-            "media",
-        ]
+        # Allow to handle create/update/partial_update with nested data
+        extra_kwargs = {
+            "condition_id": {"source": "condition", "write_only": True},
+            "pole_type_id": {"source": "pole_type", "write_only": True},
+            "pole_attractivity_id": {
+                "source": "pole_attractivity",
+                "write_only": True,
+            },
+            "pole_dangerousness_id": {
+                "source": "pole_dangerousness",
+                "write_only": True,
+            },
+            "sgmt_build_integr_risk_id": {
+                "source": "sgmt_build_integr_risk",
+                "write_only": True,
+            },
+            "sgmt_moving_risk_id": {
+                "source": "sgmt_moving_risk",
+                "write_only": True,
+            },
+            "sgmt_topo_integr_risk_id": {
+                "source": "sgmt_topo_integr_risk",
+                "write_only": True,
+            },
+            "sgmt_veget_integr_risk_id": {
+                "source": "sgmt_veget_integr_risk",
+                "write_only": True,
+            },
+            "media_id": {"source": "media", "write_only": True},
+        }
 
 
 class OperationSerializer(ModelSerializer):
@@ -99,20 +110,34 @@ class OperationSerializer(ModelSerializer):
     Used to serialize all data from operations.
     """
 
-    operation_type = ItemSerializer()
-    eqmt_type = ItemSerializer()
+    # Allow to display nested data
+    operation_type = ItemSerializer(read_only=True)
+    eqmt_type = ItemSerializer(read_only=True)
+    media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Visit
+        model = Operation
         fields = [
             "id",
             "infrastructure",
             "date",
             "remark",
             "operation_type",
+            "operation_type_id",
             "eqmt_type",
+            "eqmt_type_id",
             "media",
+            "media_id",
         ]
+        # Allow to handle create/update/partial_update with nested data
+        extra_kwargs = {
+            "operation_type_id": {
+                "source": "operation_type",
+                "write_only": True,
+            },
+            "eqmt_type_id": {"source": "eqmt_type", "write_only": True},
+            "media_id": {"source": "media", "write_only": True},
+        }
 
 
 class InfrastructureSerializer(ModelSerializer):
@@ -122,6 +147,7 @@ class InfrastructureSerializer(ModelSerializer):
     inherit from GeoAreaSerializer as contains geo data.
     """
 
+    # Allow to display nested data
     owner = ItemSerializer()
     geo_area = GeoAreaSerializer(many=True)
     sensitive_area = SensitiveAreaSerializer(many=True)
@@ -161,10 +187,13 @@ class PoleSerializer(GeoFeatureModelSerializer):
     inherit from GeoAreaSerializer as contains geo data.
     """
 
-    owner = ItemSerializer()
-    geo_area = GeoAreaSerializer(many=True)
-    sensitive_area = SensitiveAreaSerializer(many=True)
-    actions_infrastructure = ActionPolymorphicSerializer(many=True)
+    # Allow to display nested data
+    owner = ItemSerializer(read_only=True)
+    geo_area = GeoAreaSerializer(many=True, read_only=True)
+    sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
+    actions_infrastructure = ActionPolymorphicSerializer(
+        many=True, read_only=True
+    )
 
     class Meta:
         model = Pole
@@ -173,23 +202,22 @@ class PoleSerializer(GeoFeatureModelSerializer):
             "id",
             "geom",
             "owner",
+            "owner_id",
             "geo_area",
+            "geo_area_id",
             "sensitive_area",
+            "sensitive_area_id",
             "actions_infrastructure",
         ]
-
-
-class PoleWriteSerializer(GeoFeatureModelSerializer):
-    """Serializer for Pole: used for creation and updating
-
-    Used to serialize all data from poles.
-    inherit from GeoAreaSerializer as contains geo data.
-    """
-
-    class Meta:
-        model = Pole
-        geo_field = "geom"
-        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
+        # Allow to handle create/update/partial_update with nested data
+        extra_kwargs = {
+            "owner_id": {"source": "owner", "write_only": True},
+            "geo_area_id": {"source": "geo_area", "write_only": True},
+            "sensitive_area_id": {
+                "source": "sensitive_area",
+                "write_only": True,
+            },
+        }
 
 
 class SegmentSerializer(GeoFeatureModelSerializer):
@@ -199,10 +227,11 @@ class SegmentSerializer(GeoFeatureModelSerializer):
     inherit from GeoAreaSerializer as contains geo data.
     """
 
-    owner = ItemSerializer()
-    geo_area = GeoAreaSerializer(many=True)
-    sensitive_area = SensitiveAreaSerializer(many=True)
-    actions_infrastructure = ActionSerializer(many=True)
+    # Allow to display nested data
+    owner = ItemSerializer(read_only=True)
+    geo_area = GeoAreaSerializer(many=True, read_only=True)
+    sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
+    actions_infrastructure = ActionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Segment
@@ -211,41 +240,22 @@ class SegmentSerializer(GeoFeatureModelSerializer):
             "id",
             "geom",
             "owner",
+            "owner_id",
             "geo_area",
+            "geo_area_id",
             "sensitive_area",
+            "sensitive_area_id",
             "actions_infrastructure",
         ]
-
-
-class SegmentWriteSerializer(GeoFeatureModelSerializer):
-    """Serializer for Segment: used for creation and updating
-
-    Used to serialize all data from segments.
-    inherit from GeoAreaSerializer as contains geo data.
-    """
-
-    class Meta:
-        model = Segment
-        geo_field = "geom"
-        fields = [
-            "id",
-            "geom",
-            "owner",
-            "geo_area",
-            "sensitive_area",
-            "actions_infrastructure",
-        ]
-
-    # def update(self, instance, validated_data):
-    #     #     for op in validated_data["operation_pole"]:
-    #     #         op = Operation(pole=instance)
-    #     #         op.save()
-
-    #     op = Operation(pole=instance)
-
-    #     op.save()
-
-    #     return instance
+        # Allow to handle create/update/partial_update with nested data
+        extra_kwargs = {
+            "owner_id": {"source": "owner", "write_only": True},
+            "geo_area_id": {"source": "geo_area", "write_only": True},
+            "sensitive_area_id": {
+                "source": "sensitive_area",
+                "write_only": True,
+            },
+        }
 
 
 class InfrastructurePolymorphicSerializer(PolymorphicSerializer):
@@ -261,158 +271,3 @@ class InfrastructurePolymorphicSerializer(PolymorphicSerializer):
         Pole: PoleSerializer,
         Segment: SegmentSerializer,
     }
-
-    # def update(self, instance, validated_data):
-    #     #     for op in validated_data["operation_pole"]:
-    #     #         op = Operation(pole=instance)
-    #     #         op.save()
-
-    #     op = Operation(pole=instance)
-
-    #     op.save()
-
-    #     return instance
-
-
-# class ElemSerializer(ModelSerializer):
-#     class Meta:
-#         model = Elem
-#         fields = ["desc"]
-
-
-# class PotoSerializer(ModelSerializer):
-#     elem = ElemSerializer(many=True)
-
-#     class Meta:
-#         model = Poto
-#         fields = ["id", "elem"]
-
-#     def update(self, instance, validated_data):
-#         for item in validated_data["elem"]:
-#             elem = Elem(desc=item["desc"], poto=instance)
-#             elem.save()
-
-#         return instance
-
-
-# #################################################################################################
-# class InfrastructureSerializer(ModelSerializer):
-#     """Serializer for Pole model
-
-#     Allow to get all data from poles (including nested) but not allow create and update"""
-
-#     owner = ItemSerializer()
-#     geo_area = GeoAreaSerializer(many=True)
-#     sensitive_area = SensitiveAreaSerializer(many=True)
-
-#     class Meta:
-#         model = Infrastructure
-#         fields = ["id", "owner", "geo_area", "sensitive_area"]
-
-
-class PoleSerializerInfo(GeoFeatureModelSerializer):
-    """Serializer for Pole model
-
-    Allow to get all data from poles (including nested) but not allow create and update"""
-
-    owner = ItemSerializer()
-    geo_area = GeoAreaSerializer(many=True)
-    sensitive_area = SensitiveAreaSerializer(many=True)
-
-    class Meta:
-        model = Pole
-        geo_field = "geom"
-        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
-
-
-class PoleSerializerEdit(GeoFeatureModelSerializer):
-    """Serializer for Pole model
-
-    Allow to get data from poles (not nested data, only FK) but allow create and update"""
-
-    class Meta:
-        model = Pole
-
-        geo_field = "geom"
-        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
-
-
-class SegmentSerializerInfo(ModelSerializer):
-    """Serializer for Segment model
-
-    Allow to get all data from segments (including nested) but not allow create and update"""
-
-    owner = ItemSerializer()
-    geo_area = GeoAreaSerializer(many=True)
-    sensitive_area = SensitiveAreaSerializer(many=True)
-
-    class Meta:
-        model = Segment
-        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
-
-
-class SegmentSerializerEdit(ModelSerializer):
-    """Serializer for Segment model
-
-    Allow to get data from segments (not nested data, only FK) but allow create and update"""
-
-    class Meta:
-        model = Segment
-        fields = ["id", "geom", "owner", "geo_area", "sensitive_area"]
-
-
-class VisitSerializerInfo(ModelSerializer):
-    """Serializer for Visit model
-
-    Allow to get all data from visits (including nested) but not allow create and update"""
-
-    pole = PoleSerializerInfo()
-    segment = SegmentSerializerInfo()
-    media = MediaSerializer(many=True)
-    condition = ItemSerializer()
-    pole_type = ItemSerializer()
-    pole_attractivity = ItemSerializer()
-    pole_dangerousness = ItemSerializer()
-    sgmt_build_integr_risk = ItemSerializer()
-    sgmt_moving_risk = ItemSerializer()
-    sgmt_topo_integr_risk = ItemSerializer()
-    sgmt_veget_integr_risk = ItemSerializer()
-
-    class Meta:
-        model = Visit
-        exclude = ["uuid"]
-
-
-class VisitSerializerEdit(ModelSerializer):
-    """Serializer for Visit model
-
-    Allow to get data from visits (not nested data, only FK) but allow create and update"""
-
-    class Meta:
-        model = Visit
-        exclude = ["uuid"]
-
-
-class OperationSerializerInfo(ModelSerializer):
-    """Serializer for Operation model
-
-    Allow to get all data from operations (including nested) but not allow create and update"""
-
-    # pole = PoleSerializerInfo()
-    segment = SegmentSerializerInfo()
-    media = MediaSerializer(many=True)
-    eqmt_type = ItemSerializer()
-
-    class Meta:
-        model = Operation
-        exclude = ["uuid"]
-
-
-class OperationSerializerEdit(ModelSerializer):
-    """Serializer for Operation model
-
-    Allow to get data from operations (not nested data, only FK) but allow create and update"""
-
-    class Meta:
-        model = Operation
-        exclude = ["uuid"]

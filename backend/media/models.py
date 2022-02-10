@@ -19,8 +19,8 @@ class Media(BaseModel):
 
     # "upload_to" defined through config param
     storage = models.ImageField(upload_to=MEDIA_UPLOAD)
-    author = models.CharField(_("Author"), max_length=200)
     date = models.DateField(_("Date"))
+    author = models.CharField(_("Author"), max_length=200)
     source = models.CharField(_("Source of data"), max_length=200)
     remark = models.TextField(_("Remark"), null=True, blank=True)
     # TMP See if this field is required

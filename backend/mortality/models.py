@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from sinp_nomenclatures.models import Item as Nomenclature
 
+from cables.models import Infrastructure
 from commons.models import BaseModel
 from media.models import Media
 from species.models import Species
@@ -29,6 +30,15 @@ class Mortality(BaseModel):
         related_name="mortality_species",
         verbose_name=_("Found dead species"),
         help_text=_("Found dead species"),
+    )
+    infrstr = models.ForeignKey(
+        Infrastructure,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="mortality_infrstr",
+        verbose_name=_("Infrastructure related to mortality case"),
+        help_text=_("Infrastructure related to mortality case"),
     )
     nb_death = models.IntegerField(_("Number found dead"), default=1)
     death_cause = models.ForeignKey(
