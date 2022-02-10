@@ -6,14 +6,17 @@ app_name = "geo_area"
 
 
 urlpatterns = [
-    path(
-        "",
-        GeoAreaViewSet.as_view({"get": "list"}),
-        name="georea-list",
-    ),
+    path("", GeoAreaViewSet.as_view({"get": "list"}), name="georea-list"),
     path(
         "<int:pk>/",
-        GeoAreaViewSet.as_view({"get": "retrieve"}),
+        GeoAreaViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            }
+        ),
         name="georea-detail",
     ),
 ]

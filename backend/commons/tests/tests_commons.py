@@ -27,7 +27,7 @@ def logTestUser(username, password):
     client = APIClient()
 
     resp = client.post(
-        "/auth/jwt/create/",
+        "/api/v1/auth/jwt/create/",
         data={"username": username, "password": password},
         format="json",
     )

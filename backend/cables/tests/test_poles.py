@@ -1,48 +1,152 @@
-# from django.test import TestCase
+from django.test import TestCase
+
 # from django.utils.timezone import datetime
+from rest_framework.test import APIClient
+
+from cables.models import Pole
+from commons.tests.tests_commons import createTestUser, logTestUser
+
 # from sinp_nomenclatures.models import Item, Type
 
-# from commons.tests.tests_commons import createTestUser, logTestUser
+
+class PoleAnonymousAuthenticationTestCase(TestCase):
+    """Class to test authentication/permission scheme for Pole and anonymous user.
+
+    Include tests for user trying to log-in with wrong password
+    """
+
+    # fixture includes:
+    # - at least 2 poles, 2 segments, 3 visits, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # (pictures), 2 mortality cases
+    # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
+    fixtures = ["test_nomenclatures.xml"]
+
+    def setUp(self):
+        self.anonymous_client = APIClient()
+        # create user trying to log-in with wrong password
+        self.user = createTestUser("user", "password")
+        self.unauthentified_client = logTestUser("user", "wrong-password")
+        # get pk from the first Segment
+        self.pk = Pole.objects.all()[0].id
+
+    def test_get_list_with_anonymous_user(self):
+        resp = self.anonymous_client.get("/api/v1/cables/poles/")
+        self.assertEquals(resp.status_code, 401)
+        resp = self.unauthentified_client.get("/api/v1/cables/poles/")
+        self.assertEquals(resp.status_code, 401)
+
+    def test_get_detail_with_anonymous_user(self):
+        resp = self.anonymous_client.get(f"/api/v1/cables/poles/{self.pk}/")
+        self.assertEquals(resp.status_code, 401)
+        resp = self.unauthentified_client.get(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 401)
+
+    def test_create_with_anonymous_user(self):
+        resp = self.anonymous_client.post("/api/v1/cables/poles/")
+        self.assertEquals(resp.status_code, 401)
+        resp = self.unauthentified_client.post("/api/v1/cables/poles/")
+        self.assertEquals(resp.status_code, 401)
+
+    def test_update_with_anonymous_user(self):
+        resp = self.anonymous_client.put(f"/api/v1/cables/poles/{self.pk}/")
+        self.assertEquals(resp.status_code, 401)
+        resp = self.unauthentified_client.put(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 401)
+
+    def test_partial_update_with_anonymous_user(self):
+        resp = self.anonymous_client.patch(f"/api/v1/cables/poles/{self.pk}/")
+        self.assertEquals(resp.status_code, 401)
+        resp = self.unauthentified_client.patch(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 401)
+
+    def test_partial_delete_with_anonymous_user(self):
+        resp = self.anonymous_client.delete(f"/api/v1/cables/poles/{self.pk}/")
+        self.assertEquals(resp.status_code, 401)
+        resp = self.unauthentified_client.delete(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 401)
 
 
-# class PoleTestCase(TestCase):
-#     fixtures = ["nomenclatures.xml"]
+class PoleUnauthorizedAuthenticationTestCase(TestCase):
+    """Class to test authentication/permission scheme for Pole and unauthorized user."""
 
-#     def setUp(self):
-#         self.user = createTestUser(
-#             "user",
-#             "password",
-#             "view_pole",
-#             "add_pole",
-#             "change_pole",
-#             "delete_pole",
+    # fixture includes:
+    # - at least 2 poles, 2 segments, 3 visits, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # (pictures), 2 mortality cases
+    # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
+    fixtures = ["test_nomenclatures.xml"]
+
+    def setUp(self):
+        self.user = createTestUser("user", "password")
+        self.unauthorized_client = logTestUser("user", "password")
+        # get pk from the first Pole
+        self.pk = Pole.objects.all()[0].id
+
+    # no restriction for read only by default with Django
+    def test_get_list_with_unauthorized_user(self):
+        resp = self.unauthorized_client.get("/api/v1/cables/poles/")
+        self.assertEquals(resp.status_code, 200)
+
+    # no restriction for read only by default with Django
+    def test_get_detail_with_unauthorized_user(self):
+        resp = self.unauthorized_client.get(f"/api/v1/cables/poles/{self.pk}/")
+        self.assertEquals(resp.status_code, 200)
+
+    def test_create_with_unauthorized_user(self):
+        resp = self.unauthorized_client.post(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 403)
+
+    def test_update_with_unauthorized_user(self):
+        resp = self.unauthorized_client.put(f"/api/v1/cables/poles/{self.pk}/")
+        self.assertEquals(resp.status_code, 403)
+
+    def test_partial_update_with_unauthorized_user(self):
+        resp = self.unauthorized_client.patch(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 403)
+
+    def test_partial_delete_with_unauthorized_user(self):
+        resp = self.unauthorized_client.delete(
+            f"/api/v1/cables/poles/{self.pk}/"
+        )
+        self.assertEquals(resp.status_code, 403)
+
+
+# def test_all_with_authorized_user(self):
+#     # create owners (nomenclature items) needed to create poles
+#     type = Type.objects.create(
+#         code="code",
+#         mnemonic="owner",
+#         label="owner",
+#         status="VALID",
+#         created_by=self.user,
+#         create_date=datetime.today(),
+#         update_date=datetime.today(),
+#     )
+#     type.save()
+#     owner_pk = []
+#     for i in [1, 2]:
+#         item = Item.objects.create(
+#             type=type,
+#             code=f"owner{i}",
+#             mnemonic=f"owner{i}",
+#             label=f"owner{i}",
 #         )
-#         self.authorized_client = logTestUser("user", "password")
+#         item.save()
+#         owner_pk.append(item.id)
 
-#         # create 2 owners (nomenclature items) needed to create poles
-#         type = Type.objects.create(
-#             code="code",
-#             mnemonic="owner",
-#             label="owner",
-#             status="VALID",
-#             created_by=self.user,
-#             create_date=datetime.today(),
-#             update_date=datetime.today(),
-#         )
-#         type.save()
-#         self.owner_pk = []
-#         for i in [1, 2]:
-#             item = Item.objects.create(
-#                 type=type,
-#                 code=f"owner{i}",
-#                 mnemonic=f"owner{i}",
-#                 label=f"owner{i}",
-#             )
-#             item.save()
-#             self.owner_pk.append(item.id)
-
-# def test_create_pole_requests_OK(self):
-#         # create DB entry with owner pk = self.owner_pk[0]
+#     # create 3 DB entries with owner_pk[0]
+#     for i in range(3):
 #         resp = self.authorized_client.post(
 #             "/api/cables/poles/edit/",
 #             data={
@@ -52,93 +156,75 @@
 #                     "coordinates": [0, 0],
 #                 },
 #                 "properties": {
-#                     "owner": self.owner_pk[0],
+#                     "owner": owner_pk[0],
 #                 },
 #             },
 #             format="json",
 #         )
 #         self.assertEquals(resp.status_code, 201)
-#         resp = self.authorized_client.get("/api/cables/poles/edit/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertEquals(len(resp.json()["features"]), 1)
-#         self.assertEquals(
-#             resp.json()["features"][0]["properties"]["owner"], self.owner_pk[0]
-#         )
-#         resp = self.authorized_client.get("/api/cables/poles/info/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertEquals(len(resp.json()["features"]), 1)
-#         self.assertEquals(
-#             resp.json()["features"][0]["properties"]["owner"]["id"],
-#             self.owner_pk[0],
-#         )
 
-#     def test_fail_create_pole_requests_with_wrong_data(self):
+#     # create 3 DB entries with owner_pk[1]
+#     for i in range(3):
 #         resp = self.authorized_client.post(
 #             "/api/cables/poles/edit/",
-#             data={"owner": "wrong"},
+#             data={
+#                 "type": "Feature",
+#                 "geometry": {
+#                     "type": "Point",
+#                     "coordinates": [0, 0],
+#                 },
+#                 "properties": {
+#                     "owner": owner_pk[1],
+#                 },
+#             },
 #             format="json",
 #         )
-#         self.assertEquals(resp.status_code, 400)
+#         self.assertEquals(resp.status_code, 201)
 
+#     # get id of first Pole with owner=owner_pk[0]
+#     first_id = Pole.objects.filter(owner=owner_pk[0])[0].id
+#     # get json data from this Pole
+#     resp = self.authorized_client.get(
+#         f"/api/cables/poles/edit/{first_id}/"
+#     )
+#     data = resp.json()
+#     # change owner value from these data to make put request thereafter
+#     data["properties"]["owner"] = owne/manage.py test --pattern="tests_*.py"
+#     )
+#     self.assertEquals(resp.status_code, 200)
+#     # change again the owner with patch request
+#     resp = self.authorized_client.patch(
+#         f"/api/cables/poles/edit/{first_id}/", data={"owner": owner_pk[0]}
+#     )
+#     self.assertEquals(resp.status_code, 200)
+#     # test get method on a detail Pole (through edit ViewSet)
+#     resp = self.authorized_client.get(
+#         f"/api/cables/poles/edit/{first_id}/"
+#     )
+#     self.assertEquals(resp.status_code, 200)
 
-#         # create 3 DB entries with owner pk = 14
-#         for i in range(3):
-#             resp = self.authorized_client.post("/api/cables/poles/", data={"owner": 14})
-#             self.assertEquals(resp.status_code, 201)
+#     # test get method on a list Pole (through edit ViewSet)
+#     resp = self.authorized_client.get("/api/cables/poles/edit/")
+#     self.assertEquals(resp.status_code, 200)
 
-#         pole_set = Pole.objects.all()
-#         self.assertEquals(len(pole_set), 6)
+#     # test get method on a detail Pole (through info ViewSet)
+#     resp = self.authorized_client.get(
+#         f"/api/cables/poles/info/{first_id}/"
+#     )
+#     self.assertEquals(resp.status_code, 200)
 
-#         first_id = Pole.objects.filter(owner=13)[0].id
+#     # test get method on a list Pole (through info ViewSet)
+#     resp = self.authorized_client.get("/api/cables/poles/info/")
+#     self.assertEquals(resp.status_code, 200)
 
-#         resp = self.authorized_client.put(
-#             f"/api/cables/poles/{first_id}/",
-#             data={
-#                 "id": first_id,
-#                 "owner": 14,
-#                 "geo_area": [],
-#                 "sensitivity_area": [],
-#             },
-#         )
-#         self.assertEquals(resp.status_code, 200)
-#         pole = Pole.objects.get(pk=first_id)
-#         self.assertEquals(pole.owner_id, 14)
+#     # test delete method on a detail Pole
+#     resp = self.authorized_client.delete(
+#         f"/api/cables/poles/edit/{first_id}/"
+#     )
+#     self.assertEquals(resp.status_code, 204)
 
-#         resp = self.authorized_client.patch(f"/api/cables/poles/{first_id}/", data={"owner": 13})
-#         self.assertEquals(resp.status_code, 200)
-#         pole = Pole.objects.get(pk=first_id)
-#         self.assertEquals(pole.owner_id, 13)
-
-#         resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertEquals(resp.json()["id"], first_id)
-
-#         resp = self.authorized_client.get("/api/cables/poles/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertEquals(len(resp.json()), 6)
-#         self.assertIsInstance(resp.json()[0]["owner"], int)
-
-#         resp = self.authorized_client.get("/api/cables/poles-full/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertEquals(len(resp.json()), 6)
-#         self.assertIsInstance(resp.json()[0]["owner"], dict)
-
-#         resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertIsInstance(resp.json()["owner"], int)
-
-#         resp = self.authorized_client.get(f"/api/cables/poles-full/{first_id}/")
-#         self.assertEquals(resp.status_code, 200)
-#         self.assertIsInstance(resp.json()["owner"], dict)
-
-#         poles = Pole.objects.all()
-#         nb_before = len(poles)
-#         resp = self.authorized_client.delete(f"/api/cables/poles/{first_id}/")
-#         self.assertEquals(resp.status_code, 204)
-#         poles = Pole.objects.all()
-#         nb_after = len(poles)
-#         self.assertEquals(nb_after, nb_before - 1)
-#         resp = self.authorized_client.get(f"/api/cables/poles/{first_id}/")
-#         self.assertEquals(resp.status_code, 404)
-#         resp = self.authorized_client.get(f"/api/cables/poles-full/{first_id}/")
-#         self.assertEquals(resp.status_code, 404)
+#     # test get method returns 404
+#     resp = self.authorized_client.get(
+#         f"/api/cables/poles/info/{first_id}/"
+#     )
+#     self.assertEquals(resp.status_code, 404)
