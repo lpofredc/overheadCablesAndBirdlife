@@ -42,13 +42,14 @@
 <script>
 export default {
   name: 'LoginPage',
+  // layout: 'default2',
   auth: false,
   data() {
     return {
       valid: true,
       login: {
-        username: '',
-        password: '',
+        username: 'sylvain',
+        password: 'sylvain',
       },
       nameRules: [(v) => !!v || this.$t('login.required_username_msg')],
       pwdRules: [(v) => !!v || this.$t('login.required_pwd_msg')],
@@ -66,7 +67,7 @@ export default {
           data: this.login,
         })
         // this.$store.commit('setConnectedStatus', true)
-        this.$router.push('/map')
+        this.$router.push('/main')
       } catch (err) {
         console.log(err)
       }
