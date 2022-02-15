@@ -5,11 +5,6 @@ from commons.tests.tests_commons import createTestUser, logTestUser
 
 
 class Err404TestCase(TestCase):
-    """Class to test authentication/permission scheme from Django.
-
-    This test is based on Pole as example. "isAuthenticated" and "DjangoModelPermissions" are used and tested.
-    """
-
     def setUp(self):
         self.user = createTestUser("user", "password")
         self.anonymous_client = APIClient()

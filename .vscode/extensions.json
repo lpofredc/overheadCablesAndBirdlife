@@ -1,5 +1,13 @@
 {
     "recommendations": [
-        "snyk-security.snyk-vulnerability-scanner"
+        "snyk-security.snyk-vulnerability-scanner",
+        "njpwerner.autodocstring",
+        "batisteo.vscode-django",
+        "ryanluker.vscode-coverage-gutters",
+        "octref.vetur",
+        "vuetifyjs.vuetify-vscode",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "mikestead.dotenv"
     ]
 }
