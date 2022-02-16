@@ -140,7 +140,7 @@ class OperationSerializer(ModelSerializer):
         }
 
 
-class InfrastructureSerializer(ModelSerializer):
+class InfrastructureSerializer(GeoFeatureModelSerializer):
     """Serializer for Infrastructure
 
     Used to serialize all data from infrastructures.
@@ -155,10 +155,11 @@ class InfrastructureSerializer(ModelSerializer):
 
     class Meta:
         model = Infrastructure
-        # geo_field = "geom"
+        geo_field = "geom"
         fields = [
             "id",
             "owner",
+            "geom",
             "geo_area",
             "sensitive_area",
             "actions_infrastructure",

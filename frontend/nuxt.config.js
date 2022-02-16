@@ -22,7 +22,6 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
-  // plugins: ['~/plugins/vue-multipane.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -138,5 +137,13 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  // build: {},
+
+  build: {
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    },
+  },
 }

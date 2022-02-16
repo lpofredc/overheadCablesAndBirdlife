@@ -30,7 +30,8 @@
           <v-icon
             >mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon
           ></v-btn
-        ></v-navigation-drawer
+        >
+        <drawer-menu /></v-navigation-drawer
       ><v-main>
         <Nuxt />
       </v-main>
