@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from commons.admin import GisModelAdmin
+
 from .models import GeoArea
 
 
@@ -9,7 +11,7 @@ def do_nothing(modeladmin, request, queryset):
     pass
 
 
-class GeoAreaAdmin(admin.ModelAdmin):
+class GeoAreaAdmin(GisModelAdmin):
     list_display = ("name",)
     list_filter = ("name",)
     # TODO to be deleted => test add action in admin menu

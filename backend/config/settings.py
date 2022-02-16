@@ -161,9 +161,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
@@ -204,3 +202,8 @@ LOGGING = {
         },
     },
 }
+
+
+# Backoffice maps
+DEFAULT_LAT = config("DEFAULT_LAT", default=45, cast=float)
+DEFAULT_LON = config("DEFAULT_LON", default=5, cast=float)
