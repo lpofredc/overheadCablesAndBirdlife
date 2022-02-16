@@ -4,20 +4,24 @@
       <!--
       @click="addMarker" -->
       <l-tile-layer :url="url" :attribution="attribution" />
-      <!-- <l-marker
-        v-for="marker in markers"
-        :key="marker.id"
-        :visible="marker.visible"
-        :draggable="marker.draggable"
-        :lat-lng.sync="marker.position"
-        :icon="marker.icon"
-      /> -->
-      <l-geo-json
+      
+       <!-- <l-geo-json
         v-if="cablesData"
         :geojson="cablesData"
         :options-style="styleData"
-        :on-each-feature="onEachFeature"
-        :point-to-layer="changePointMarker"
+        :options="GeojsonOptions"
+      /> -->
+            <l-geo-json
+        v-if="cablesData"
+        :geojson="lineStringData"
+        :options-style="styleData"
+        :options="GeojsonOptions"
+      />
+            <l-geo-json
+        v-if="cablesData"
+        :geojson="pointData"
+        :options-style="styleData"
+        :options="GeojsonOptions"
       />
 
       <v-speed-dial
@@ -70,10 +74,37 @@ export default {
       markers: [],
     }
   },
-  methods: {
-    onEachFeature(_feature, layer) {
-      layer.bindPopup('coucou')
+  computed: {
+    
+    GeojsonOptions() {
+      return {
+        onEachFeature: this.GeoJsonOnEachFeature,
+        pointToLayer: this.GeoJsonPointToLayer
+      }
     },
+    GeoJsonOnEachFeature() {
+      return (feature, layer) => {
+        layer.bindPopup(`ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties.id}`)
+      }
+    },
+    pointData() {
+      const geoJson = {type:'FeatureCollection',features:this.cablesData.filter((e) => e.geometry.type === 'Point')}
+      console.log('pointData', geoJson)
+      return geoJson
+    },
+    lineStringData() {
+      const geoJson = {type:'FeatureCollection',features:this.cablesData.filter((e) => e.geometry.type === 'LineString')}
+      console.log('lineStringData', geoJson)
+      return geoJson
+    }
+  },
+  methods: {
+    // INFO: Passé en computed, onEachFeature devient alors un object
+    // (j'avais un message comme quoi le props options attendait un obkjet et non une function)
+    // C'est aussi le cas ici: https://vue2-leaflet.netlify.app/examples/geo-json.html
+    // onEachFeature(_feature, layer) {
+    //   layer.bindPopup('coucou', _feature)
+    // },
     changePointMarker(_feature, latlng) {
       if (feature.geometry.type === 'Point') {
         console.log('############################################### ')
@@ -83,6 +114,18 @@ export default {
         })
       }
     },
+    GeoJsonPointToLayer(feature, latlng) {
+        return L.circleMarker(latlng, {
+    radius: 8,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+});
+    
+      }
+  ,
     styleData(feature) {
       // const weight = 0.5
       // const linecolor = 'red'
@@ -107,7 +150,7 @@ export default {
         }
       }
     },
-  },
+  }
   //   addMarker(event) {
   //     const newMarker = {
   //       position: event.latlng,
