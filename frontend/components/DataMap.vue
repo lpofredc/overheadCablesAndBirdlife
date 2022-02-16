@@ -13,11 +13,11 @@
         :icon="marker.icon"
       /> -->
       <l-geo-json
-        v-if="myData"
-        :geojson="myData"
+        v-if="cablesData"
+        :geojson="cablesData"
         :options-style="styleData"
         :on-each-feature="onEachFeature"
-        :point-to-layer="pointToLayer"
+        :point-to-layer="changePointMarker"
       />
 
       <v-speed-dial
@@ -57,7 +57,8 @@ import { LCircleMarker } from 'vue2-leaflet'
 
 export default {
   name: 'DataMap',
-  props: { myData: FeatureCollection },
+  props: { cablesData: FeatureCollection },
+
   data() {
     return {
       zoom: 5,
@@ -73,7 +74,7 @@ export default {
     onEachFeature(_feature, layer) {
       layer.bindPopup('coucou')
     },
-    pointToLayer(_feature, latlng) {
+    changePointMarker(_feature, latlng) {
       if (feature.geometry.type === 'Point') {
         console.log('############################################### ')
         return LCircleMarker(latlng, {

@@ -42,7 +42,6 @@
 <script>
 export default {
   name: 'LoginPage',
-  // layout: 'default2',
   auth: false,
   data() {
     return {

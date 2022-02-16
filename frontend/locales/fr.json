@@ -4,11 +4,21 @@
     "disconnected": "Hors connection"
   },
   "login": {
+    "application": "Application",
     "cancel": "Annuler",
+    "home_page": "Acceuil",
     "password": "Password",
     "required_pwd_msg": "Le mot de passe est requis",
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
     "username": "Identifiant"
+  },
+  "display": {
+    "sensitive-areas": "Zones Sensibles",
+    "mortality-cases": "Cas de mortalité",
+    "poles": "Poteaux/Pylônes",
+    "segments": "Segments",
+    "poles-eqmt": "Equipements Poteaux/Pylônes",
+    "segments-eqmt": "Equipements Segments"
   }
 }

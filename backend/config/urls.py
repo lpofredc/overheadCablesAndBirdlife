@@ -21,7 +21,7 @@ urlpatterns = [
     path("api/v1/auth/", include("djoser.urls.jwt")),
     path("api/v1/cables/", include("cables.urls")),
     path("api/v1/geoareas/", include("geo_area.urls")),
-    path("api/v1/sensitive/", include("sensitive_area.urls")),
+    path("api/v1/sensitive-areas/", include("sensitive_area.urls")),
     path("api/v1/cables/", include("cables.urls")),
     path("api/v1/mortality/", include("mortality.urls")),
     path("api/v1/species/", include("species.urls")),

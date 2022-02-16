@@ -4,11 +4,21 @@
     "disconnected": "Logged out"
   },
   "login": {
+    "application": "Application",
     "cancel": "Cancel",
+    "home_page": "Home Page",
     "password": "Password",
     "required_pwd_msg": "Username is required",
     "required_username_msg": "Username is required",
     "sign-in": "Sign in",
     "username": "Username"
+  },
+  "display": {
+    "sensitive-areas": "Sensitive areas",
+    "mortality-cases": "Mortality cases",
+    "poles": "Poles/Pylons",
+    "segments": "Segments",
+    "poles-eqmt": "Poles Equipements",
+    "segments-eqmt": "Segments Equipements"
   }
 }

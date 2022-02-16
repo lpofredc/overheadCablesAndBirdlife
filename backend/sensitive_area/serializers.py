@@ -1,11 +1,12 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from .models import SensitiveArea
 
 
-class SensitiveAreaSerializer(ModelSerializer):
+class SensitiveAreaSerializer(GeoFeatureModelSerializer):
     """Serializer for SensitiveArea model"""
 
     class Meta:
         model = SensitiveArea
-        fields = ["id", "name", "code"]
+        geo_field = "geom"
+        fields = ["id", "name", "code", "geom"]
