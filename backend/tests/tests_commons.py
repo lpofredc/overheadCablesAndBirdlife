@@ -13,10 +13,10 @@ class Err404TestCase(TestCase):
         self.user = createTestUser(
             "user2",
             "password",
-            "view_pole",
-            "add_pole",
-            "change_pole",
-            "delete_pole",
+            "view_point",
+            "add_point",
+            "change_point",
+            "delete_point",
         )
         self.authorized_client = logTestUser("user2", "password")
 

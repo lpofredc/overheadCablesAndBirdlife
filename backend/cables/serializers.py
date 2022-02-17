@@ -9,7 +9,7 @@ from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
 from sensitive_area.serializers import SensitiveAreaSerializer
 
-from .models import Action, Infrastructure, Operation, Pole, Segment, Visit
+from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
 
 
 class ActionSerializer(ModelSerializer):
@@ -25,10 +25,10 @@ class ActionSerializer(ModelSerializer):
         fields = ["id", "infrastructure", "date", "remark", "media"]
 
 
-class VisitSerializer(ModelSerializer):
-    """Serializer for Visit
+class DiagnosisSerializer(ModelSerializer):
+    """Serializer for Diagnosis
 
-    Used to serialize all data from visits.
+    Used to serialize all data from Diagnosis.
     """
 
     # Allow to display nested data
@@ -43,7 +43,7 @@ class VisitSerializer(ModelSerializer):
     media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Visit
+        model = Diagnosis
         fields = [
             "id",
             "infrastructure",
@@ -103,6 +103,15 @@ class VisitSerializer(ModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
+    def create(self, validated_data):
+        old_diags = Diagnosis.objects.all().filter(
+            infrastructure=validated_data["infrastructure"]
+        )
+        for diag in old_diags:
+            diag.history = True
+            diag.save()
+        return Diagnosis.objects.create(**validated_data)
+
 
 class OperationSerializer(ModelSerializer):
     """Serializer for Operation
@@ -139,6 +148,15 @@ class OperationSerializer(ModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
+    def create(self, validated_data):
+        old_ops = Operation.objects.all().filter(
+            infrastructure=validated_data["infrastructure"]
+        )
+        for op in old_ops:
+            op.history = True
+            op.save()
+        return Operation.objects.create(**validated_data)
+
 
 class InfrastructureSerializer(GeoFeatureModelSerializer):
     """Serializer for Infrastructure
@@ -167,24 +185,19 @@ class InfrastructureSerializer(GeoFeatureModelSerializer):
 
 
 class ActionPolymorphicSerializer(PolymorphicSerializer):
-    """Serializer for Action taking into account polymorphism
-
-    Used to serialize all data from actions.
-    This allow handle specific data for classe inheriting from ActionModel (e.g. Visit, Operation), as each object from inheriting classes are instances of ActionModel.
-    Inherit from PolymorphicSerializer.
-    """
+    """Serializer for Action taking into account polymorphismrequest"""
 
     model_serializer_mapping = {
         Action: ActionSerializer,
-        Visit: VisitSerializer,
+        Diagnosis: DiagnosisSerializer,
         Operation: OperationSerializer,
     }
 
 
-class PoleSerializer(GeoFeatureModelSerializer):
-    """Serializer for Pole
+class PointSerializer(GeoFeatureModelSerializer):
+    """Serializer for Point
 
-    Used to serialize all data from poles.
+    Used to serialize all data from Point.
     inherit from GeoAreaSerializer as contains geo data.
     """
 
@@ -197,7 +210,7 @@ class PoleSerializer(GeoFeatureModelSerializer):
     )
 
     class Meta:
-        model = Pole
+        model = Point
         geo_field = "geom"
         fields = [
             "id",
@@ -221,10 +234,10 @@ class PoleSerializer(GeoFeatureModelSerializer):
         }
 
 
-class SegmentSerializer(GeoFeatureModelSerializer):
-    """Serializer for Segment
+class LineSerializer(GeoFeatureModelSerializer):
+    """Serializer for Line
 
-    Used to serialize all data from segments.
+    Used to serialize all data from lines.
     inherit from GeoAreaSerializer as contains geo data.
     """
 
@@ -235,7 +248,7 @@ class SegmentSerializer(GeoFeatureModelSerializer):
     actions_infrastructure = ActionSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Segment
+        model = Line
         geo_field = "geom"
         fields = [
             "id",
@@ -248,7 +261,7 @@ class SegmentSerializer(GeoFeatureModelSerializer):
             "sensitive_area_id",
             "actions_infrastructure",
         ]
-        # Allow to handle create/update/partial_update with nested data
+        # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
             "owner_id": {"source": "owner", "write_only": True},
             "geo_area_id": {"source": "geo_area", "write_only": True},
@@ -269,6 +282,6 @@ class InfrastructurePolymorphicSerializer(PolymorphicSerializer):
 
     model_serializer_mapping = {
         Infrastructure: InfrastructureSerializer,
-        Pole: PoleSerializer,
-        Segment: SegmentSerializer,
+        Point: PointSerializer,
+        Line: LineSerializer,
     }

@@ -7,8 +7,8 @@
         ><data-display
           :sa-data="SAreas"
           :mortality-data="mortality"
-          :pole-data="poles"
-          :segment-data="segments" /></v-col
+          :point-data="points"
+          :line-data="lines" /></v-col
     ></v-row>
 
     <v-tabs
@@ -24,8 +24,8 @@
         <data-display
           :sa-data="SAreas"
           :mortality-data="mortality"
-          :pole-data="poles"
-          :segment-data="segments"
+          :point-data="points"
+          :line-data="lines"
         />
       </v-tab-item>
     </v-tabs>
@@ -41,19 +41,17 @@ export default {
       app_name: 'Overhead Cables & BirdLife',
       drawer_opened: true, // drawer closed by default
       miniVariant: true, // wide drawer when opening by default
-      infrst: [], // geojson data for infrastructures (poles and segments)
-      poles: [], // geojson data for poles
-      segments: [], // geojson data for poles
+      infrst: [], // geojson data for infrastructures (points and lines)
+      points: [], // geojson data for points
+      lines: [], // geojson data for points
       SAreas: [], // geojson data for sensitive areas
       mortality: [], // geojson data for mortality cases
     }
   },
   async fetch() {
     this.infrst = await this.$axios.$get('cables/infrastructures/')
-    this.poles = this.infrst.filter((item) => item.resourcetype === 'Pole')
-    this.segments = this.infrst.filter(
-      (item) => item.resourcetype === 'Segment'
-    )
+    this.points = this.infrst.filter((item) => item.resourcetype === 'Point')
+    this.lines = this.infrst.filter((item) => item.resourcetype === 'Line')
     this.SAreas = await this.$axios.$get('sensitive-areas/')
     this.SAreas = this.SAreas.features
     this.mortality = await this.$axios.$get('mortality/')

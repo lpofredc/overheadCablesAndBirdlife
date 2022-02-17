@@ -4,20 +4,20 @@
       <!--
       @click="addMarker" -->
       <l-tile-layer :url="url" :attribution="attribution" />
-      
-       <!-- <l-geo-json
+
+      <!-- <l-geo-json
         v-if="cablesData"
         :geojson="cablesData"
         :options-style="styleData"
         :options="GeojsonOptions"
       /> -->
-            <l-geo-json
+      <l-geo-json
         v-if="cablesData"
         :geojson="lineStringData"
         :options-style="styleData"
         :options="GeojsonOptions"
       />
-            <l-geo-json
+      <l-geo-json
         v-if="cablesData"
         :geojson="pointData"
         :options-style="styleData"
@@ -75,28 +75,37 @@ export default {
     }
   },
   computed: {
-    
     GeojsonOptions() {
       return {
         onEachFeature: this.GeoJsonOnEachFeature,
-        pointToLayer: this.GeoJsonPointToLayer
+        pointToLayer: this.GeoJsonPointToLayer,
       }
     },
     GeoJsonOnEachFeature() {
       return (feature, layer) => {
-        layer.bindPopup(`ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties.id}`)
+        layer.bindPopup(
+          `ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties.id}`
+        )
       }
     },
     pointData() {
-      const geoJson = {type:'FeatureCollection',features:this.cablesData.filter((e) => e.geometry.type === 'Point')}
+      const geoJson = {
+        type: 'FeatureCollection',
+        features: this.cablesData.filter((e) => e.geometry.type === 'Point'),
+      }
       console.log('pointData', geoJson)
       return geoJson
     },
     lineStringData() {
-      const geoJson = {type:'FeatureCollection',features:this.cablesData.filter((e) => e.geometry.type === 'LineString')}
+      const geoJson = {
+        type: 'FeatureCollection',
+        features: this.cablesData.filter(
+          (e) => e.geometry.type === 'LineString'
+        ),
+      }
       console.log('lineStringData', geoJson)
       return geoJson
-    }
+    },
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
@@ -114,18 +123,16 @@ export default {
         })
       }
     },
-    GeoJsonPointToLayer(feature, latlng) {
-        return L.circleMarker(latlng, {
-    radius: 8,
-    fillColor: "#ff7800",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-});
-    
-      }
-  ,
+    GeoJsonPointToLayer(_feature, latlng) {
+      return L.circleMarker(latlng, {
+        radius: 8,
+        fillColor: '#ff7800',
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8,
+      })
+    },
     styleData(feature) {
       // const weight = 0.5
       // const linecolor = 'red'
@@ -150,7 +157,7 @@ export default {
         }
       }
     },
-  }
+  },
   //   addMarker(event) {
   //     const newMarker = {
   //       position: event.latlng,

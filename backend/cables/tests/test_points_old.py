@@ -42,15 +42,7 @@
 #             self.owner_pk.append(item.id)
 
 # def test_create_pole_requests_OK(self):
-#         # create DB entry with owner pk = self.owner_pk[0]
-#         resp = self.authorized_client.post(
-#             "/api/cables/poles/edit/",
-#             data={
-#                 "type": "Feature",
-#                 "geometry": {
-#                     "type": "Point",
-#                     "coordinates": [0, 0],
-#                 },
+#         # create DB entry with owner pkA
 #                 "properties": {
 #                     "owner": self.owner_pk[0],
 #                 },

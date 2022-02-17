@@ -2,9 +2,9 @@ from django.contrib import admin
 
 from commons.admin import GisModelAdmin
 
-from .models import Operation, Pole, Segment, Visit
+from .models import Diagnosis, Line, Operation, Point
 
-admin.site.register(Pole, GisModelAdmin)
-admin.site.register(Segment, GisModelAdmin)
-admin.site.register(Visit)
+admin.site.register(Point, GisModelAdmin)
+admin.site.register(Line, GisModelAdmin)
+admin.site.register(Diagnosis)
 admin.site.register(Operation)

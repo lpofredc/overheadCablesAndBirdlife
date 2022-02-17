@@ -16,10 +16,10 @@ class OperationsAnonymousAuthenticationTestCase(TestCase):
     """
 
     # fixture includes:
-    # - at least 2 poles, 2 segments, 3 visits, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml"]
+    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
 
     def setUp(self):
         self.anonymous_client = APIClient()
@@ -86,10 +86,10 @@ class OperationUnauthorizedAuthenticationTestCase(TestCase):
     """Class to test authentication/permission scheme for Operation and unauthorized user."""
 
     # fixture includes:
-    # - at least 2 poles, 2 segments, 3 visits, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml"]
+    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
 
     def setUp(self):
         self.user = createTestUser("user", "password")
@@ -129,6 +129,6 @@ class OperationUnauthorizedAuthenticationTestCase(TestCase):
 
     def test_partial_delete_with_unauthorized_user(self):
         resp = self.unauthorized_client.delete(
-            f"/api/v1/cables/poles/{self.pk}/"
+            f"/api/v1/cables/points/{self.pk}/"
         )
         self.assertEquals(resp.status_code, 403)

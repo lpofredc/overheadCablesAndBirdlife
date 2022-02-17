@@ -2,11 +2,11 @@ from django.urls import path
 
 from .views import (
     ActionViewSet,
+    DiagnosisViewSet,
     InfrastructureViewSet,
+    LineViewSet,
     OperationViewSet,
-    PoleViewSet,
-    SegmentViewSet,
-    VisitViewSet,
+    PointViewSet,
 )
 
 urlpatterns = [
@@ -22,13 +22,13 @@ urlpatterns = [
         name="infrastructure_detail",
     ),
     path(
-        "poles/",
-        PoleViewSet.as_view({"get": "list", "post": "create"}),
-        name="pole_list",
+        "points/",
+        PointViewSet.as_view({"get": "list", "post": "create"}),
+        name="point_list",
     ),
     path(
-        "poles/<int:pk>/",
-        PoleViewSet.as_view(
+        "points/<int:pk>/",
+        PointViewSet.as_view(
             {
                 "get": "retrieve",
                 "put": "update",
@@ -36,16 +36,16 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="pole_detail",
+        name="point_detail",
     ),
     path(
-        "segments/",
-        SegmentViewSet.as_view({"get": "list", "post": "create"}),
-        name="segment_list",
+        "lines/",
+        LineViewSet.as_view({"get": "list", "post": "create"}),
+        name="line_list",
     ),
     path(
-        "segments/<int:pk>/",
-        SegmentViewSet.as_view(
+        "lines/<int:pk>/",
+        LineViewSet.as_view(
             {
                 "get": "retrieve",
                 "put": "update",
@@ -53,7 +53,7 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="segment_detail",
+        name="line_detail",
     ),
     # No create, update or delete on Infrastructure parent class: to be done on inherited classes
     path(
@@ -67,13 +67,13 @@ urlpatterns = [
         name="action_detail",
     ),
     path(
-        "visits/",
-        VisitViewSet.as_view({"get": "list", "post": "create"}),
-        name="visit_list",
+        "diagnosis/",
+        DiagnosisViewSet.as_view({"get": "list", "post": "create"}),
+        name="diag_list",
     ),
     path(
-        "visits/<int:pk>/",
-        VisitViewSet.as_view(
+        "diagnosis/<int:pk>/",
+        DiagnosisViewSet.as_view(
             {
                 "get": "retrieve",
                 "put": "update",
@@ -81,7 +81,7 @@ urlpatterns = [
                 "delete": "destroy",
             }
         ),
-        name="visit_detail",
+        name="diag_detail",
     ),
     path(
         "operations/",

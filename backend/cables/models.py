@@ -25,7 +25,7 @@ class Infrastructure(BaseModel, PolymorphicModel):
     """Common shared infrastructure model with metadata fields, inheriting from BaseModel and PolymorphicModel
 
     This model define generic information relative to an infrastructure such as electrical pole/pylon or power line segment.
-    Model defined as PolymorphicModel: all specific infrastructures classes (e.g. Pole, Segment) will inherit from this class.
+    Model defined as PolymorphicModel: all specific infrastructures classes (e.g. Point, Line) will inherit from this class.
     uuid is a unique identifier (not primary key). It can be used as data identifier in case of
     data gathered from various origin (e.g. populating data from various DB)
     """
@@ -60,10 +60,10 @@ class Infrastructure(BaseModel, PolymorphicModel):
     )
 
 
-class Pole(Infrastructure):
-    """Pole model inheriting from InfrastructureModel
+class Point(Infrastructure):
+    """Point model inheriting from InfrastructureModel
 
-    Define an electric pole/pylon.
+    Used for a point infrastructure like an electric pole/pylon.
     """
 
     geom = gis_models.PointField(srid=4326)
@@ -72,22 +72,22 @@ class Pole(Infrastructure):
         return f"Pole {self.id} - [{self.owner.label}]"
 
 
-class Segment(Infrastructure):
-    """Segment model inheriting InfrastructureModel
+class Line(Infrastructure):
+    """Line model inheriting InfrastructureModel
 
-    Define a power line segment.
+    Used for a point infrastructure a power line segment.
     """
 
     geom = gis_models.LineStringField(null=True, blank=True, srid=4326)
 
     def __str__(self):
-        return f"Segment-({self.id})"
+        return f"Line-({self.id})"
 
 
 class Action(BaseModel, PolymorphicModel):
     """Common shared Action model inheriting from BaseModel
 
-    This model define generic information relative to an action on an infrastructure such as visit or operation.
+    This model define generic information relative to an action on an infrastructure such as diagnosis or operation.
     Model defined as PolymorphicModel: all specific actions classes (e.g. Visit, Operation) will inherit from this class.
     uuid is a unique identifier (not primary key). It can be used as data identifier in case of
     data gathered from various origin (e.g. populating data from various DB)
@@ -115,12 +115,18 @@ class Action(BaseModel, PolymorphicModel):
         verbose_name=_("Media attached with this visit"),
         help_text=_("Media attached with this visit"),
     )
+    # Field usefull for child (Diagnosis or Operation) creation
+    # If Diagnosis or Operation already exists for the infrastructure, the new item received False and # old ones receive True.
+    history = models.BooleanField(
+        _("History"),
+        default=False,
+    )
 
 
-class Visit(Action):
-    """Visit model inheriting ActionModel
+class Diagnosis(Action):
+    """Diagnosis model inheriting ActionModel
 
-    Define a visit on an infrastructure.
+    Stand for a description of an infrastructure. Severa description may exist for the same infrastructure, with informations updated (at the occasion of new diagnosis). This allow to maintain an history of infrastructure diagnosis.
     """
 
     neutralized = models.BooleanField(_("Neutralized"), default=False)
@@ -203,12 +209,8 @@ class Visit(Action):
         help_text=_("vegetation level of risk"),
     )
 
-    # def __str__(self):
-    #     return (
-    #         f"Visit for Pole {self.id}"
-    #         if (self.segment is None)
-    #         else f"Visit for Segment {self.id}"
-    #     )
+    class Meta:
+        verbose_name_plural = _("Diagnosis")
 
 
 class Operation(Action):

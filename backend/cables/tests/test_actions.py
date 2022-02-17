@@ -16,10 +16,10 @@ class ActionAnonymousAuthenticationTestCase(TestCase):
     """
 
     # fixture includes:
-    # - at least 2 poles, 2 segments, 3 visits, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml"]
+    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
 
     def setUp(self):
         self.anonymous_client = APIClient()
@@ -48,10 +48,10 @@ class ActionUnauthorizedAuthenticationTestCase(TestCase):
     """Class to test authentication/permission scheme for Action and unauthorized user."""
 
     # fixture includes:
-    # - at least 2 poles, 2 segments, 3 visits, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml"]
+    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
 
     def setUp(self):
         self.user = createTestUser("user", "password")

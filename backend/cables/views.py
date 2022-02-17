@@ -4,14 +4,14 @@ from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 
 # from .filters import OperationFilter, PoleFilter, SegmentFilter, VisitFilter
-from .models import Action, Infrastructure, Operation, Pole, Segment, Visit
+from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
 from .serializers import (
     ActionPolymorphicSerializer,
+    DiagnosisSerializer,
     InfrastructurePolymorphicSerializer,
+    LineSerializer,
     OperationSerializer,
-    PoleSerializer,
-    SegmentSerializer,
-    VisitSerializer,
+    PointSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -26,22 +26,22 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     # filterset_class = PoleFilter
 
 
-class PoleViewSet(viewsets.ModelViewSet):
-    """ViewSet for Pole item"""
+class PointViewSet(viewsets.ModelViewSet):
+    """ViewSet for Point item"""
 
-    serializer_class = PoleSerializer
+    serializer_class = PointSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Pole.objects.all()
-    # filterset_class = PoleFilter
+    queryset = Point.objects.all()
+    # filterset_class = PointFilter
 
 
-class SegmentViewSet(viewsets.ModelViewSet):
-    """ViewSet for Segment item"""
+class LineViewSet(viewsets.ModelViewSet):
+    """ViewSet for Line item"""
 
-    serializer_class = SegmentSerializer
+    serializer_class = LineSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Segment.objects.all()
-    # filterset_class = SegmentFilter
+    queryset = Line.objects.all()
+    # filterset_class = LineFilter
 
 
 class ActionViewSet(viewsets.ModelViewSet):
@@ -50,16 +50,14 @@ class ActionViewSet(viewsets.ModelViewSet):
     serializer_class = ActionPolymorphicSerializer
     permission_classes = [DjangoModelPermissions]
     queryset = Action.objects.all()
-    # filterset_class = SegmentFilter
 
 
-class VisitViewSet(viewsets.ModelViewSet):
-    """ViewSet for Visit item"""
+class DiagnosisViewSet(viewsets.ModelViewSet):
+    """ViewSet for Diagnosis item"""
 
-    serializer_class = VisitSerializer
+    serializer_class = DiagnosisSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Visit.objects.all()
-    # filterset_class = SegmentFilter
+    queryset = Diagnosis.objects.all()
 
 
 class OperationViewSet(viewsets.ModelViewSet):
@@ -68,4 +66,3 @@ class OperationViewSet(viewsets.ModelViewSet):
     serializer_class = OperationSerializer
     permission_classes = [DjangoModelPermissions]
     queryset = Operation.objects.all()
-    # filterset_class = SegmentFilter
