@@ -18,7 +18,7 @@
       dark
     >
       <v-tab> Map </v-tab>
-      <v-tab-item> <data-map /> </v-tab-item>
+      <v-tab-item> <data-map :cables-data="infrst" /> </v-tab-item>
       <v-tab> DataDisplay </v-tab>
       <v-tab-item>
         <data-display
