@@ -1,4 +1,4 @@
-// Nuxt Store module: CablesStore for Cables module
+// Nuxt Store module: cablesStore for Cables module
 export const state = () => ({
   infstrData: {}, // Infrastructure data
   pointData: {}, // Pole and Pylon data

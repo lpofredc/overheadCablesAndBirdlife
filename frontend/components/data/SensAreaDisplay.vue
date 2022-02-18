@@ -25,10 +25,12 @@ export default {
       ],
     }
   },
+  /** Fetch Sensitive Area from backend and record it to Nuxt Store */
   async fetch() {
     const data = await this.$axios.$get('sensitive-areas/') // get FeatureCollection
-    this.$store.commit('SAStore/add', data)
+    this.$store.commit('saStore/add', data)
   },
-  computed: mapGetters({ SADataFeatures: 'SAStore/SADataFeatures' }),
+  /** Gather Sensitive Area data from Nuxt Store */
+  computed: mapGetters({ SADataFeatures: 'saStore/SADataFeatures' }),
 }
 </script>

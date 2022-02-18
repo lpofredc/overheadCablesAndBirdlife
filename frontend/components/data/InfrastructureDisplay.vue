@@ -39,14 +39,14 @@ export default {
   },
   async fetch() {
     const data = await this.$axios.$get('cables/infrastructures') // get FeatureCollection
-    this.$store.commit('CablesStore/add', data)
+    this.$store.commit('cablesStore/add', data)
     // needed to load data at start
     this.selectedData = this.infstrDataFeatures
   },
   computed: mapGetters({
-    infstrDataFeatures: 'CablesStore/infstrDataFeatures',
-    pointDataFeatures: 'CablesStore/pointDataFeatures',
-    lineDataFeatures: 'CablesStore/lineDataFeatures',
+    infstrDataFeatures: 'cablesStore/infstrDataFeatures',
+    pointDataFeatures: 'cablesStore/pointDataFeatures',
+    lineDataFeatures: 'cablesStore/lineDataFeatures',
   }),
   methods: {
     source(choice) {

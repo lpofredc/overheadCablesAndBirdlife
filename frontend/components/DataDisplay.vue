@@ -11,10 +11,10 @@
       </v-tab-item>
       <v-tab> {{ $t('display.mortality-cases') }} </v-tab>
       <v-tab-item> <data-mortality-display /></v-tab-item>
-      <v-tab> {{ $t('display.poles') }} </v-tab>
-      <v-tab-item> <data-pole-display /></v-tab-item>
-      <v-tab> {{ $t('display.segments') }} </v-tab>
-      <v-tab-item> <data-segment-display /></v-tab-item>
+      <v-tab> {{ $t('display.poles-eqmt') }} </v-tab>
+      <v-tab-item> </v-tab-item>
+      <v-tab> {{ $t('display.segments-eqmt') }} </v-tab>
+      <v-tab-item></v-tab-item>
     </v-tabs>
   </div>
 </template>

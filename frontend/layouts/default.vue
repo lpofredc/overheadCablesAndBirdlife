@@ -34,9 +34,12 @@ export default {
     }
   },
   methods: {
+    /**
+     * Logout user and redirect to welcome page
+     */
     logout() {
       this.$auth.logout()
-      this.$store.$router.push('/login')
+      this.$store.$router.push('/')
     },
   },
 }

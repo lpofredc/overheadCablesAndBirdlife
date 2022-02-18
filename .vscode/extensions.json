@@ -8,6 +8,7 @@
         "vuetifyjs.vuetify-vscode",
         "dbaeumer.vscode-eslint",
         "editorconfig.editorconfig",
-        "mikestead.dotenv"
+        "mikestead.dotenv",
+        "oouo-diogo-perdigao.docthis"
     ]
 }
