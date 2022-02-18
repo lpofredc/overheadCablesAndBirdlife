@@ -1,7 +1,22 @@
 {
   "app": {
     "appname": "Overhead Cables & BirdLife",
-    "disconnected": "Logged out"
+    "disconnected": "Logged out",
+    "id": "Id",
+    "type": "Type"
+  },
+  "display": {
+    "all": "All",
+    "infrastructures": "Poles/Pylons and Cables",
+    "mortality-cases": "Mortality cases",
+    "poles": "Poles/Pylons",
+    "poles-eqmt": "Poles Equipements",
+    "segments": "Segments",
+    "segments-eqmt": "Segments Equipements",
+    "sensitive-areas": "Sensitive areas"
+  },
+  "infra": {
+    "owner": "Owner"
   },
   "login": {
     "application": "Application",
@@ -12,13 +27,5 @@
     "required_username_msg": "Username is required",
     "sign-in": "Sign in",
     "username": "Username"
-  },
-  "display": {
-    "sensitive-areas": "Sensitive areas",
-    "mortality-cases": "Mortality cases",
-    "poles": "Poles/Pylons",
-    "segments": "Segments",
-    "poles-eqmt": "Poles Equipements",
-    "segments-eqmt": "Segments Equipements"
   }
 }

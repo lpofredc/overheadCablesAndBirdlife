@@ -1,7 +1,22 @@
 {
   "app": {
     "appname": "Overhead Cables & BirdLife",
-    "disconnected": "Hors connection"
+    "disconnected": "Hors connection",
+    "id": "Identifiant",
+    "type": "Type"
+  },
+  "infra": {
+    "owner": "Propriétaire"
+  },
+  "display": {
+    "all": "Tout",
+    "infrastructures": "Poteaux/Pylônes et Cables",
+    "mortality-cases": "Cas de mortalité",
+    "poles": "Poteaux/Pylônes",
+    "poles-eqmt": "Equipements Poteaux/Pylônes",
+    "segments": "Segments",
+    "segments-eqmt": "Equipements Segments",
+    "sensitive-areas": "Zones Sensibles"
   },
   "login": {
     "application": "Application",
@@ -12,13 +27,5 @@
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
     "username": "Identifiant"
-  },
-  "display": {
-    "sensitive-areas": "Zones Sensibles",
-    "mortality-cases": "Cas de mortalité",
-    "poles": "Poteaux/Pylônes",
-    "segments": "Segments",
-    "poles-eqmt": "Equipements Poteaux/Pylônes",
-    "segments-eqmt": "Equipements Segments"
   }
 }

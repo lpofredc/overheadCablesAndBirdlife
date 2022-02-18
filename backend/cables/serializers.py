@@ -272,7 +272,9 @@ class LineSerializer(GeoFeatureModelSerializer):
         }
 
 
-class InfrastructurePolymorphicSerializer(PolymorphicSerializer):
+class InfrastructurePolymorphicSerializer(
+    PolymorphicSerializer, GeoFeatureModelSerializer
+):
     """Serializer for Infrastructure taking into account polymorphism
 
     Used to serialize all data from infrastructures.
@@ -285,3 +287,7 @@ class InfrastructurePolymorphicSerializer(PolymorphicSerializer):
         Point: PointSerializer,
         Line: LineSerializer,
     }
+
+    class Meta:
+        model = Infrastructure
+        geo_field = "geom"

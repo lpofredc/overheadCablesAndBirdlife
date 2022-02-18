@@ -28,11 +28,5 @@ export default {
       ],
     }
   },
-  // async fetch() {
-  //   console.log('JE FETCH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-  //   this.infrst = await this.$axios.$get('cables/infrastructures/')
-  //   const data = { a: 'a' }
-  //   this.$store.commit('mydata', data)
-  // },
 }
 </script>
