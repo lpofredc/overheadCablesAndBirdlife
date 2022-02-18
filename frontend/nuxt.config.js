@@ -14,7 +14,8 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    // link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -92,12 +93,20 @@ export default {
           redirectUri: '/login',
           logoutRedirectUri: '/login',
         },
+        cookie: {
+          options: {
+            sameSite: 'Strict',
+            httpOnly: true,
+            secure: true,
+          },
+        },
       },
     },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
+    icon: false,
     manifest: {
       lang: 'en',
     },

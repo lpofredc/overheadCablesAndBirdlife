@@ -1,6 +1,6 @@
 
   <template>
-    <div></div>
+  <div></div>
   <!-- <v-data-table
     :headers="headers"
     :items="mortalityData"
@@ -10,10 +10,10 @@
 </template>
 
 <script>
-import { FeatureCollection } from 'geojson'
+// import { FeatureCollection } from 'geojson'
 export default {
   name: 'MortalityDisplay',
-  props: { mortalityData: FeatureCollection },
+  // props: { mortalityData: FeatureCollection },
 
   data() {
     return {
@@ -28,5 +28,11 @@ export default {
       ],
     }
   },
+  // async fetch() {
+  //   console.log('JE FETCH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+  //   this.infrst = await this.$axios.$get('cables/infrastructures/')
+  //   const data = { a: 'a' }
+  //   this.$store.commit('mydata', data)
+  // },
 }
 </script>

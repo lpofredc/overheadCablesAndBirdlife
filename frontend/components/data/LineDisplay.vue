@@ -10,7 +10,7 @@
 <script>
 import { FeatureCollection } from 'geojson'
 export default {
-  name: 'SegmentsDisplay',
+  name: 'LineDisplay',
   props: { segmentData: FeatureCollection },
 
   data() {

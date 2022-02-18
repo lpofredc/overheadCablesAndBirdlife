@@ -6,7 +6,6 @@
         ><v-app-bar-nav-icon @click.stop="miniVariant = !miniVariant" />
         <v-toolbar-title v-text="app_name" />
         <v-spacer></v-spacer>
-
         <div :class="$auth.loggedIn ? 'logged' : 'unlogged'">
           {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
         </div>

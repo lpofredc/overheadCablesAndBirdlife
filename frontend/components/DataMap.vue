@@ -1,16 +1,8 @@
 <template>
   <div>
     <l-map :zoom="zoom" :center="center" style="height: 90vh; width: 100%">
-      <!--
-      @click="addMarker" -->
       <l-tile-layer :url="url" :attribution="attribution" />
 
-      <!-- <l-geo-json
-        v-if="cablesData"
-        :geojson="cablesData"
-        :options-style="styleData"
-        :options="GeojsonOptions"
-      /> -->
       <l-geo-json
         v-if="cablesData"
         :geojson="lineStringData"
@@ -83,6 +75,7 @@ export default {
     },
     GeoJsonOnEachFeature() {
       return (feature, layer) => {
+        // TODO To be adapted
         layer.bindPopup(
           `ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties.id}`
         )
@@ -93,7 +86,6 @@ export default {
         type: 'FeatureCollection',
         features: this.cablesData.filter((e) => e.geometry.type === 'Point'),
       }
-      console.log('pointData', geoJson)
       return geoJson
     },
     lineStringData() {
@@ -103,7 +95,6 @@ export default {
           (e) => e.geometry.type === 'LineString'
         ),
       }
-      console.log('lineStringData', geoJson)
       return geoJson
     },
   },
@@ -138,7 +129,6 @@ export default {
       // const linecolor = 'red'
       // const opacity = 0.8
       // function (feature: Feature) {
-      console.log(feature.geometry.type + ' id => ' + feature.properties.id)
       if (feature.geometry.type === 'LineString') {
         return {
           color: 'green',

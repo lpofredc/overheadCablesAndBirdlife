@@ -47,8 +47,10 @@ export default {
     return {
       valid: true,
       login: {
-        username: 'sylvain',
-        password: 'sylvain',
+        username: '',
+        password: '',
+        // username: 'sylvain',
+        // password: 'sylvain',
       },
       nameRules: [(v) => !!v || this.$t('login.required_username_msg')],
       pwdRules: [(v) => !!v || this.$t('login.required_pwd_msg')],

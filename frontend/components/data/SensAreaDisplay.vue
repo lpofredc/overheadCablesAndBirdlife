@@ -1,18 +1,16 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="saData"
+    :items="SADataFeatures"
     :items-per-page="5"
     class="elevation-1"
   ></v-data-table>
 </template>
 
 <script>
-import { FeatureCollection } from 'geojson'
+import { mapGetters } from 'vuex'
 export default {
-  name: 'SensitiveAreaDisplay',
-  props: { saData: FeatureCollection },
-
+  name: 'SensAreaDisplay',
   data() {
     return {
       headers: [
@@ -27,5 +25,10 @@ export default {
       ],
     }
   },
+  async fetch() {
+    const data = await this.$axios.$get('sensitive-areas/') // get FeatureCollection
+    this.$store.commit('SAStore/add', data)
+  },
+  computed: mapGetters({ SADataFeatures: 'SAStore/SADataFeatures' }),
 }
 </script>
