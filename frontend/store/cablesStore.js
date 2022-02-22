@@ -31,17 +31,23 @@ export const mutations = {
 }
 
 export const getters = {
-  // get FeatureCollection data
-  infstrData(state) {
-    return state.infstrData
-  },
+  // // get FeatureCollection data
+  // infstrData(state) {
+  //   return state.infstrData
+  // },
   // get FeatureCollection array containing data (Json Object)
   infstrDataFeatures(state) {
     return state.infstrData.features
   },
+  // pointData(state) {
+  //   return state.pointData
+  // },
   pointDataFeatures(state) {
     return state.pointData.features
   },
+  // lineData(state) {
+  //   return state.lineData
+  // },
   lineDataFeatures(state) {
     return state.lineData.features
   },

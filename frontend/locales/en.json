@@ -1,8 +1,11 @@
 {
   "app": {
     "appname": "Overhead Cables & BirdLife",
+    "cancel": "Cancel",
+    "data": "Data",
     "disconnected": "Logged out",
     "id": "Id",
+    "map": "Map",
     "type": "Type"
   },
   "display": {
@@ -20,7 +23,6 @@
   },
   "login": {
     "application": "Application",
-    "cancel": "Cancel",
     "home_page": "Home Page",
     "password": "Password",
     "required_pwd_msg": "Username is required",

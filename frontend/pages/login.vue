@@ -28,7 +28,7 @@
         </v-row>
         <v-row justify="space-around" class="mt-10">
           <v-btn width="150" color="info" @click="reset">
-            {{ $t('login.cancel') }}
+            {{ $t('app.cancel') }}
           </v-btn>
           <v-btn width="150" color="primary" @click="userLogin">
             {{ $t('login.sign-in') }}
@@ -67,10 +67,13 @@ export default {
         await this.$auth.loginWith('local', {
           data: this.login,
         })
-        // this.$store.commit('setConnectedStatus', true)
-        this.$router.push('/main')
+        this.$router.push('/view')
       } catch (err) {
-        console.log(err)
+        // TODO review/adjust statusCode and Message
+        $nuxt.error({
+          statusCode: 512,
+          message: 'Un problème de connexion est survenu',
+        })
       }
     },
   },

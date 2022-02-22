@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-row v-if="$vuetify.breakpoint.lgAndUp"
-      ><v-col width="50%"><data-map /></v-col><v-col><data-display /></v-col
+      ><v-col width="50%"><map-component :edit-mode="false" /></v-col
+      ><v-col><display-component /></v-col
     ></v-row>
 
     <v-tabs
@@ -10,11 +11,11 @@
       background-color="indigo"
       dark
     >
-      <v-tab> Map </v-tab>
-      <v-tab-item> <data-map /> </v-tab-item>
-      <v-tab> DataDisplay </v-tab>
+      <v-tab> {{ $t('app.map') }} </v-tab>
+      <v-tab-item> <map-component :edit-mode="false" /> </v-tab-item>
+      <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>
-        <data-display />
+        <display-component />
       </v-tab-item>
     </v-tabs>
   </div>
@@ -22,7 +23,7 @@
 
 <script>
 export default {
-  name: 'MainPage',
+  name: 'ViewComponent',
   data() {
     return {
       app_name: 'Overhead Cables & BirdLife',

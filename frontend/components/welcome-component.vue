@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'WelcomePage',
+  name: 'WelcomeComponent',
   auth: false,
 }
 </script>

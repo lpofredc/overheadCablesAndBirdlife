@@ -1,6 +1,8 @@
 <template>
   <div>
-    <v-tabs center-active grow color="indigo">
+    {{ newPoint ? newPoint : 'vide' }}
+    <!--
+      <v-tabs center-active grow color="indigo">
       <v-tab> {{ $t('display.infrastructures') }} </v-tab>
       <v-tab-item> <data-infrastructure-display /></v-tab-item>
       <v-tab> {{ $t('display.poles-eqmt') }} </v-tab>
@@ -14,11 +16,22 @@
       <v-tab> {{ $t('display.mortality-cases') }} </v-tab>
       <v-tab-item> <data-mortality-display /></v-tab-item>
     </v-tabs>
+    -->
+    <v-btn @click.stop="back">{{ $t('app.cancel') }}</v-btn>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'DataDisplay',
+  name: 'PointComponent',
+  computed: mapGetters({
+    newPoint: 'pointStore/newCoord',
+  }),
+  methods: {
+    back() {
+      this.$router.back()
+    },
+  },
 }
 </script>
 

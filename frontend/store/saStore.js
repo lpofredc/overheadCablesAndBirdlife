@@ -8,7 +8,7 @@ export const mutations = {
   /**
    * Mutation: apply value change to state of current store module
    *
-   * @param {state} context of this store module
+   * @param {state} state of this store module
    * @param {geoJson object} contains Sensitive Area data get from fetch request
    */
   add(state, data) {

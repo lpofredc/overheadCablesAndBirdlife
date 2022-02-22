@@ -1,8 +1,27 @@
 <template>
   <div>
-    <l-map :zoom="zoom" :center="center" style="height: 90vh; width: 100%">
+    <l-map
+      :class="editMode ? 'change-map' : 'view-map'"
+      :zoom="zoom"
+      :center="center"
+      style="height: 90vh; width: 100%"
+      @click="addMarker"
+    >
       <l-tile-layer :url="url" :attribution="attribution" />
-
+      <!-- <l-marker
+        v-for="marker in markers"
+        :key="marker.id"
+        :visible="marker.visible"
+        :draggable="marker.draggable"
+        :lat-lng.sync="marker.position"
+        :icon="marker.icon"
+      /> -->
+      <l-marker
+        v-if="newMarker"
+        :lat-lng.sync="newMarker.position"
+        :draggable="true"
+        @dragend="updatePosition"
+      />
       <l-geo-json
         v-if="cablesData"
         :geojson="lineStringData"
@@ -24,7 +43,7 @@
         direction="top"
         transition="slide - y - reverse - transition"
       >
-        <template #activator>
+        <template v-if="!editMode" #activator>
           <v-btn color="primary darken-2" dark fab>
             <v-icon x-large> + </v-icon>
           </v-btn>
@@ -32,7 +51,7 @@
         <v-btn fab dark small color="orange">
           <v-icon>mdi-shape-polygon-plus</v-icon>
         </v-btn>
-        <v-btn fab dark small color="green">
+        <v-btn fab dark small color="green" @click.stop="createPoint">
           <v-icon>mdi-transmission-tower</v-icon>
         </v-btn>
         <v-btn fab dark small color="indigo">
@@ -48,31 +67,33 @@
 </template>
 
 <script>
-import { FeatureCollection } from 'geojson'
-import { LCircleMarker } from 'vue2-leaflet'
+// import { FeatureCollection } from 'geojson'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'DataMap',
-  props: { cablesData: FeatureCollection },
+  props: { editMode: Boolean },
 
   data() {
     return {
+      newMarker: null,
       zoom: 5,
       path: '/images/',
       center: [47.41322, -1.219482],
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      markers: [],
     }
   },
   computed: {
+    // Map property options to matching function
     GeojsonOptions() {
       return {
         onEachFeature: this.GeoJsonOnEachFeature,
         pointToLayer: this.GeoJsonPointToLayer,
       }
     },
+    // Define code executed for each Feature
     GeoJsonOnEachFeature() {
       return (feature, layer) => {
         // TODO To be adapted
@@ -81,22 +102,44 @@ export default {
         )
       }
     },
-    pointData() {
-      const geoJson = {
-        type: 'FeatureCollection',
-        features: this.cablesData.filter((e) => e.geometry.type === 'Point'),
-      }
-      return geoJson
-    },
-    lineStringData() {
-      const geoJson = {
-        type: 'FeatureCollection',
-        features: this.cablesData.filter(
-          (e) => e.geometry.type === 'LineString'
-        ),
-      }
-      return geoJson
-    },
+    // pointData() {
+    //   const geoJson = {
+    //     type: 'FeatureCollection',
+    //     features: this.PointData,
+    //   }
+    //   return geoJson
+    // },
+    // lineStringData() {
+    //   const geoJson = {
+    //     type: 'FeatureCollection',
+    //     features: this.cablesData.filter(
+    //       (e) => e.geometry.type === 'LineString'
+    //     ),
+    //   }
+    //   return geoJson
+    // },
+    // pointData() {
+    //   const geoJson = {
+    //     type: 'FeatureCollection',
+    //     features: this.cablesData.filter((e) => e.geometry.type === 'Point'),
+    //   }
+    //   return geoJson
+    // },
+    // lineStringData() {
+    //   const geoJson = {
+    //     type: 'FeatureCollection',
+    //     features: this.cablesData.filter(
+    //       (e) => e.geometry.type === 'LineString'
+    //     ),
+    //   }
+    //   return geoJson
+    // },
+    ...mapGetters({
+      cablesData: 'cablesStore/infstrDataFeatures',
+      pointData: 'cablesStore/pointDataFeatures',
+      lineStringData: 'cablesStore/lineDataFeatures',
+      newCoord: 'pointStore/newMarker',
+    }),
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
@@ -108,14 +151,14 @@ export default {
     changePointMarker(_feature, latlng) {
       if (feature.geometry.type === 'Point') {
         return LCircleMarker(latlng, {
-          radius: 10,
+          radius: 2,
           fillOpacity: 0.85,
         })
       }
     },
     GeoJsonPointToLayer(_feature, latlng) {
       return L.circleMarker(latlng, {
-        radius: 8,
+        radius: 5,
         fillColor: '#ff7800',
         color: '#000',
         weight: 1,
@@ -137,7 +180,7 @@ export default {
           // lineCap: 'butt',
           // lineJoin: 'miter',
           // fillColor: 'rgba(0,0,0,0)',
-          // fillOpacity: '0.0',
+          // fillOpacity: '0.0',green
           // }
         }
       } else {
@@ -146,20 +189,38 @@ export default {
         }
       }
     },
+    createPoint() {
+      this.$router.push('/point')
+    },
+    addMarker(event) {
+      if (this.editMode) {
+        this.newMarker = {
+          position: event.latlng,
+          draggable: true,
+          visible: true,
+        }
+        this.$store.commit('pointStore/add', this.newMarker.position)
+      }
+    },
+    updatePosition() {
+      if (this.editMode) {
+        this.$store.commit('pointStore/add', this.newMarker.position)
+      }
+    },
   },
-  //   addMarker(event) {
-  //     const newMarker = {
-  //       position: event.latlng,
-  //       draggable: true,
-  //       visible: true,
-  //     }
-  //     this.markers.push(newMarker)
-  //   },
 }
 </script>
 
 <style scoped>
 .fab {
   z-index: 10000;
+}
+
+.view-map {
+  cursor: grab;
+}
+
+.change-map {
+  cursor: crosshair;
 }
 </style>
