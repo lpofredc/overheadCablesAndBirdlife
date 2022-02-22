@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                         limit_choices_to={"type__mnemonic": "geoarea_type"},
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="geoarea_type",
-                        to="sinp_nomenclatures.item",
+                        to="sinp_nomenclatures.nomenclature",
                         verbose_name="Type of the geographical area",
                     ),
                 ),

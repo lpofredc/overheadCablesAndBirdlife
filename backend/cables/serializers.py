@@ -3,7 +3,7 @@ from rest_framework_gis.serializers import (
     ModelSerializer,
 )
 from rest_polymorphic.serializers import PolymorphicSerializer
-from sinp_nomenclatures.serializers import ItemSerializer
+from sinp_nomenclatures.serializers import NomenclatureSerializer
 
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
@@ -32,14 +32,14 @@ class DiagnosisSerializer(ModelSerializer):
     """
 
     # Allow to display nested data
-    condition = ItemSerializer(read_only=True)
-    pole_type = ItemSerializer(read_only=True)
-    pole_attractivity = ItemSerializer(read_only=True)
-    pole_dangerousness = ItemSerializer(read_only=True)
-    sgmt_build_integr_risk = ItemSerializer(read_only=True)
-    sgmt_moving_risk = ItemSerializer(read_only=True)
-    sgmt_topo_integr_risk = ItemSerializer(read_only=True)
-    sgmt_veget_integr_risk = ItemSerializer(read_only=True)
+    condition = NomenclatureSerializer(read_only=True)
+    pole_type = NomenclatureSerializer(read_only=True)
+    pole_attractivity = NomenclatureSerializer(read_only=True)
+    pole_dangerousness = NomenclatureSerializer(read_only=True)
+    sgmt_build_integr_risk = NomenclatureSerializer(read_only=True)
+    sgmt_moving_risk = NomenclatureSerializer(read_only=True)
+    sgmt_topo_integr_risk = NomenclatureSerializer(read_only=True)
+    sgmt_veget_integr_risk = NomenclatureSerializer(read_only=True)
     media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
@@ -104,9 +104,7 @@ class DiagnosisSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
-        old_diags = Diagnosis.objects.all().filter(
-            infrastructure=validated_data["infrastructure"]
-        )
+        old_diags = Diagnosis.objects.all().filter(infrastructure=validated_data["infrastructure"])
         for diag in old_diags:
             diag.history = True
             diag.save()
@@ -120,8 +118,8 @@ class OperationSerializer(ModelSerializer):
     """
 
     # Allow to display nested data
-    operation_type = ItemSerializer(read_only=True)
-    eqmt_type = ItemSerializer(read_only=True)
+    operation_type = NomenclatureSerializer(read_only=True)
+    eqmt_type = NomenclatureSerializer(read_only=True)
     media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
@@ -149,9 +147,7 @@ class OperationSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
-        old_ops = Operation.objects.all().filter(
-            infrastructure=validated_data["infrastructure"]
-        )
+        old_ops = Operation.objects.all().filter(infrastructure=validated_data["infrastructure"])
         for op in old_ops:
             op.history = True
             op.save()
@@ -166,7 +162,7 @@ class InfrastructureSerializer(GeoFeatureModelSerializer):
     """
 
     # Allow to display nested data
-    owner = ItemSerializer()
+    owner = NomenclatureSerializer()
     geo_area = GeoAreaSerializer(many=True)
     sensitive_area = SensitiveAreaSerializer(many=True)
     actions_infrastructure = ActionSerializer(many=True)
@@ -202,12 +198,10 @@ class PointSerializer(GeoFeatureModelSerializer):
     """
 
     # Allow to display nested data
-    owner = ItemSerializer(read_only=True)
+    owner = NomenclatureSerializer(read_only=True)
     geo_area = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
-    actions_infrastructure = ActionPolymorphicSerializer(
-        many=True, read_only=True
-    )
+    actions_infrastructure = ActionPolymorphicSerializer(many=True, read_only=True)
 
     class Meta:
         model = Point
@@ -242,7 +236,7 @@ class LineSerializer(GeoFeatureModelSerializer):
     """
 
     # Allow to display nested data
-    owner = ItemSerializer(read_only=True)
+    owner = NomenclatureSerializer(read_only=True)
     geo_area = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     actions_infrastructure = ActionSerializer(many=True, read_only=True)
@@ -272,9 +266,7 @@ class LineSerializer(GeoFeatureModelSerializer):
         }
 
 
-class InfrastructurePolymorphicSerializer(
-    PolymorphicSerializer, GeoFeatureModelSerializer
-):
+class InfrastructurePolymorphicSerializer(PolymorphicSerializer, GeoFeatureModelSerializer):
     """Serializer for Infrastructure taking into account polymorphism
 
     Used to serialize all data from infrastructures.

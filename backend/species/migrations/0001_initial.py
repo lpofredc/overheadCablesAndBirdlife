@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                         },
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="species_activated_status",
-                        to="sinp_nomenclatures.item",
+                        to="sinp_nomenclatures.nomenclature",
                         verbose_name="Species activated status",
                     ),
                 ),

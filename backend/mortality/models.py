@@ -5,7 +5,7 @@ from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from sinp_nomenclatures.models import Item as Nomenclature
+from sinp_nomenclatures.models import Nomenclature
 
 from cables.models import Infrastructure
 from commons.models import BaseModel
@@ -21,9 +21,7 @@ class Mortality(BaseModel):
 
     author = models.CharField(_("Author"), max_length=100)
     geom = gis_models.PointField(srid=4326)
-    date = models.DateField(
-        _("Mortality observation date"), default=timezone.now
-    )
+    date = models.DateField(_("Mortality observation date"), default=timezone.now)
     species = models.ForeignKey(
         Species,
         on_delete=models.PROTECT,
