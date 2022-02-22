@@ -35,3 +35,37 @@ export const getters = {
     return state.nomenclatures
   },
 }
+
+export const actions = {
+  /**
+   * Store method to gather nomenclatures data in store (nomenclaturesStore)
+   * Create a dictionnary with all Types, and each Type contains an array of Items.
+   *
+   * @param {context} context object set as destructured form { commit }
+   */
+  async getNomenclatures({ commit }) {
+    try {
+      const types = await this.$axios.$get('nomenclature/types') // get Types list
+
+      // For each type, get list of items
+      for (const i in types) {
+        let items = await this.$axios.$get(
+          `nomenclature/type/${types[i].id}/items`
+        )
+        // Filter to keep only Items matching to current Type (request send the whole list)
+        items = items.filter((elem) => elem.type === types[i].id)
+
+        // TODO review sinp_nomanclature in backend => nomenclature/type/${types[i].id}/items` send
+        // the list of all items, whatever the "${types[i].id}" is
+        types[i].items = items
+      }
+      commit('add', types)
+    } catch (e) {
+      $nuxt.error({
+        statusCode: 512,
+        message:
+          "Un problème est survenu pour le chargement des données de paramétrage de l'application",
+      })
+    }
+  },
+}

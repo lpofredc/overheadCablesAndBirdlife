@@ -12,12 +12,5 @@
 export default {
   name: 'IndexPage',
   auth: false,
-  // async fetch() {
-  //   const data = await this.$axios.$get('nomenclature/types') // get FeatureCollection
-  //   console.log(data)
-  //   this.$store.commit('nomenclaturesStore/add', data)
-  //   // needed to load data at start
-  //   this.selectedData = this.infstrDataFeatures
-  // },
 }
 </script>

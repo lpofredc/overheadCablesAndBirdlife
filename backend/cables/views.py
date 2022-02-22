@@ -3,7 +3,10 @@ import logging
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 
-# from .filters import OperationFilter, PoleFilter, SegmentFilter, VisitFilter
+from .filters import (  # , PoleFilter, SegmentFilter, VisitFilter
+    InfrastructureFilter,
+    OperationFilter,
+)
 from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
 from .serializers import (
     ActionPolymorphicSerializer,
@@ -23,7 +26,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
     serializer_class = InfrastructurePolymorphicSerializer
     permission_classes = [DjangoModelPermissions]
     queryset = Infrastructure.objects.all()
-    # filterset_class = PoleFilter
+    filterset_class = InfrastructureFilter
 
 
 class PointViewSet(viewsets.ModelViewSet):
@@ -66,3 +69,4 @@ class OperationViewSet(viewsets.ModelViewSet):
     serializer_class = OperationSerializer
     permission_classes = [DjangoModelPermissions]
     queryset = Operation.objects.all()
+    filterset_class = OperationFilter

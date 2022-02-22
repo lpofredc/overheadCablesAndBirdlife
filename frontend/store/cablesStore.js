@@ -3,6 +3,9 @@ export const state = () => ({
   infstrData: {}, // Infrastructure data
   pointData: {}, // Pole and Pylon data
   lineData: {}, // Cable lines data
+  opData: [],
+  pointOpData: [],
+  LineOpData: [],
 })
 
 export const mutations = {
@@ -20,6 +23,11 @@ export const mutations = {
       (elem) => elem.resourcetype === 'Line'
     )
   },
+  addOperation(state, data) {
+    state.opData = data.all
+    state.pointOpData = data.point
+    state.lineOpData = data.line
+  },
 }
 
 export const getters = {
@@ -36,5 +44,14 @@ export const getters = {
   },
   lineDataFeatures(state) {
     return state.lineData.features
+  },
+  opData(state) {
+    return state.opData
+  },
+  pointOpData(state) {
+    return state.pointOpData
+  },
+  lineOpData(state) {
+    return state.lineOpData
   },
 }

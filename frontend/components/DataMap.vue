@@ -107,7 +107,6 @@ export default {
     // },
     changePointMarker(_feature, latlng) {
       if (feature.geometry.type === 'Point') {
-        console.log('############################################### ')
         return LCircleMarker(latlng, {
           radius: 10,
           fillOpacity: 0.85,

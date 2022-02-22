@@ -3,6 +3,8 @@
     <v-tabs center-active grow color="indigo">
       <v-tab> {{ $t('display.infrastructures') }} </v-tab>
       <v-tab-item> <data-infrastructure-display /></v-tab-item>
+      <v-tab> {{ $t('display.poles-eqmt') }} </v-tab>
+      <v-tab-item> <data-equipment-display /></v-tab-item>
       <v-tab>
         {{ $t('display.sensitive-areas') }}
       </v-tab>
@@ -11,10 +13,6 @@
       </v-tab-item>
       <v-tab> {{ $t('display.mortality-cases') }} </v-tab>
       <v-tab-item> <data-mortality-display /></v-tab-item>
-      <v-tab> {{ $t('display.poles-eqmt') }} </v-tab>
-      <v-tab-item> </v-tab-item>
-      <v-tab> {{ $t('display.segments-eqmt') }} </v-tab>
-      <v-tab-item></v-tab-item>
     </v-tabs>
   </div>
 </template>
