@@ -8,9 +8,6 @@
     "map": "Cartographie",
     "type": "Type"
   },
-  "infra": {
-    "owner": "Propriétaire"
-  },
   "display": {
     "all": "Tout",
     "infrastructures": "Poteaux/Pylônes et Cables",
@@ -21,6 +18,14 @@
     "segments-eqmt": "Equipements Segments",
     "sensitive-areas": "Zones Sensibles"
   },
+  "infrstr": {
+    "owner": "Propriétaire",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "manual-hadling": "Saisir les coordonnées manuellement",
+    "network": "Réseau",
+    "new_pole": "Nouveau Poteau/Pylône"
+  },
   "login": {
     "application": "Application",
     "home_page": "Acceuil",
@@ -29,5 +34,8 @@
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
     "username": "Identifiant"
+  },
+  "error": {
+    "loading-issue": "Une erreur de chargement des paramètres est survenue. Essayer de redémarrer l'application. Si le problème persiste, veuillez contacter votre administrateur"
   }
 }

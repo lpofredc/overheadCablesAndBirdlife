@@ -33,7 +33,7 @@ export default {
           value: 'properties.id',
         },
         { text: this.$t('app.type'), value: 'resourcetype' },
-        { text: this.$t('infra.owner'), value: 'properties.owner.label' },
+        { text: this.$t('infrstr.owner'), value: 'properties.owner.label' },
       ],
     }
   },

@@ -18,8 +18,13 @@
     "segments-eqmt": "Segments Equipements",
     "sensitive-areas": "Sensitive areas"
   },
-  "infra": {
-    "owner": "Owner"
+  "infrstr": {
+    "owner": "Owner",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "manual-hadling": "Manually enter coordinates",
+    "network": "Network",
+    "new_pole": "New Pole/Pylon"
   },
   "login": {
     "application": "Application",
@@ -29,5 +34,8 @@
     "required_username_msg": "Username is required",
     "sign-in": "Sign in",
     "username": "Username"
+  },
+  "error": {
+    "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin"
   }
 }

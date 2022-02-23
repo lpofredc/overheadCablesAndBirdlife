@@ -25,14 +25,29 @@ export const mutations = {
 }
 
 export const getters = {
+  // nomenclatures(state) {
+  //   return state.nomenclatures
+  // },
   /**
-   * Getter for Sensitive Area data as geoJson object
+   * Getter for owner nomenclature items.
    *
    * @param {state} context of this store module
-   * @return {geoJson object} contains Sensitive Area data
+   * @return {geoJson object} returns the list of nomenclature items fro owner
    */
-  nomenclatures(state) {
-    return state.nomenclatures
+  getOwners(state) {
+    try {
+      const owners = state.nomenclatures.find(
+        (elem) => elem.mnemonic === 'owner'
+      )
+      return owners.items
+    } catch (_err) {
+      $nuxt.error({
+        statusCode: errorCodes.get_infrstr_owners.code,
+        message:
+          `Error ${errorCodes.get_infrstr_owners.code}: ` +
+          $nuxt.$t(`error.${errorCodes.get_infrstr_owners.msg}`),
+      })
+    }
   },
 }
 
@@ -43,7 +58,7 @@ export const actions = {
    *
    * @param {context} context object set as destructured form { commit }
    */
-  async getNomenclatures({ commit }) {
+  async loadNomenclatures({ commit }) {
     try {
       const types = await this.$axios.$get('nomenclature/types') // get Types list
 
@@ -60,11 +75,12 @@ export const actions = {
         types[i].items = items
       }
       commit('add', types)
-    } catch (e) {
+    } catch (_err) {
       $nuxt.error({
-        statusCode: 512,
+        statusCode: errorCodes.loading_whole_nomenclatures.code,
         message:
-          "Un problème est survenu pour le chargement des données de paramétrage de l'application",
+          `Error ${errorCodes.loading_whole_nomenclatures.code}: ` +
+          $nuxt.$t(`error.${errorCodes.loading_whole_nomenclatures.msg}`),
       })
     }
   },
