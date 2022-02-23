@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="mortality_data_source",
-                to="sinp_nomenclatures.item",
+                to="sinp_nomenclatures.nomenclature",
                 verbose_name="Mortality data source",
             ),
         ),
