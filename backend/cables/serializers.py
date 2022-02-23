@@ -3,7 +3,9 @@ from rest_framework_gis.serializers import (
     ModelSerializer,
 )
 from rest_polymorphic.serializers import PolymorphicSerializer
-from sinp_nomenclatures.serializers import NomenclatureSerializer
+from sinp_nomenclatures.serializers import (
+    ItemSerializer as NomenclatureSerializer,
+)
 
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
@@ -104,7 +106,9 @@ class DiagnosisSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
-        old_diags = Diagnosis.objects.all().filter(infrastructure=validated_data["infrastructure"])
+        old_diags = Diagnosis.objects.all().filter(
+            infrastructure=validated_data["infrastructure"]
+        )
         for diag in old_diags:
             diag.history = True
             diag.save()
@@ -147,7 +151,9 @@ class OperationSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
-        old_ops = Operation.objects.all().filter(infrastructure=validated_data["infrastructure"])
+        old_ops = Operation.objects.all().filter(
+            infrastructure=validated_data["infrastructure"]
+        )
         for op in old_ops:
             op.history = True
             op.save()
@@ -201,7 +207,9 @@ class PointSerializer(GeoFeatureModelSerializer):
     owner = NomenclatureSerializer(read_only=True)
     geo_area = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
-    actions_infrastructure = ActionPolymorphicSerializer(many=True, read_only=True)
+    actions_infrastructure = ActionPolymorphicSerializer(
+        many=True, read_only=True
+    )
 
     class Meta:
         model = Point
@@ -266,7 +274,9 @@ class LineSerializer(GeoFeatureModelSerializer):
         }
 
 
-class InfrastructurePolymorphicSerializer(PolymorphicSerializer, GeoFeatureModelSerializer):
+class InfrastructurePolymorphicSerializer(
+    PolymorphicSerializer, GeoFeatureModelSerializer
+):
     """Serializer for Infrastructure taking into account polymorphism
 
     Used to serialize all data from infrastructures.
