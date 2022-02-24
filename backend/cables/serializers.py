@@ -106,6 +106,7 @@ class DiagnosisSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
+        # TODO add try/catch and handle exception
         old_diags = Diagnosis.objects.all().filter(
             infrastructure=validated_data["infrastructure"]
         )
@@ -151,6 +152,7 @@ class OperationSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
+        # TODO add try/catch and handle exception
         old_ops = Operation.objects.all().filter(
             infrastructure=validated_data["infrastructure"]
         )

@@ -2,12 +2,22 @@
   <div>
     <l-map
       :class="editMode ? 'change-map' : 'view-map'"
-      :zoom="zoom"
       :center="center"
+      :bounds="bounds"
+      :max-bounds="maxBounds"
       style="height: 90vh; width: 100%"
-      @click="addMarker"
+      @click="recordPosition"
     >
       <l-tile-layer :url="url" :attribution="attribution" />
+      <!-- l-marker Not visible if lat or lng data is null -->
+      <l-marker
+        v-if="newMarker"
+        :lat-lng.sync="newMarker.position"
+        :draggable="true"
+        :max-bounds="maxBounds"
+        :visible="newCoord.lat !== null && newCoord.lng !== null"
+        @dragend="updatePosition"
+      />
       <!-- <l-marker
         v-for="marker in markers"
         :key="marker.id"
@@ -16,12 +26,6 @@
         :lat-lng.sync="marker.position"
         :icon="marker.icon"
       /> -->
-      <l-marker
-        v-if="newMarker"
-        :lat-lng.sync="newMarker.position"
-        :draggable="true"
-        @dragend="updatePosition"
-      />
       <l-geo-json
         v-if="cablesData"
         :geojson="lineStringData"
@@ -63,11 +67,12 @@
       </v-speed-dial>
       <l-icon-default :image-path="path" />
     </l-map>
+    ##{{ newCoord }}##
   </div>
 </template>
 
 <script>
-// import { FeatureCollection } from 'geojson'
+import { latLngBounds } from 'leaflet'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -76,6 +81,14 @@ export default {
 
   data() {
     return {
+      bounds: latLngBounds([
+        [40, -6],
+        [52, 10],
+      ]),
+      maxBounds: latLngBounds([
+        [40, -6],
+        [52, 10],
+      ]),
       newMarker: null,
       zoom: 5,
       path: '/images/',
@@ -138,8 +151,37 @@ export default {
       cablesData: 'cablesStore/infstrDataFeatures',
       pointData: 'cablesStore/pointDataFeatures',
       lineStringData: 'cablesStore/lineDataFeatures',
-      newCoord: 'pointStore/newMarker',
+      newCoord: 'pointStore/newCoord',
+      newLat: 'pointStore/newLat',
     }),
+  },
+  watch: {
+    /**
+     * Watcher for "newCoord" value
+     *
+     * Only activated on "editMode" and if coordinate data are well defined.
+     * Marker position is changed based on new coordinate value.
+     * If Marker does not exist, it is created with new value.
+     * Map is centered on the new point.
+     */
+    newCoord(newVal) {
+      if (this.editMode) {
+        if (newVal && newVal.lat && newVal.lng) {
+          if (this.newMarker) {
+            // if Marker already exists
+            this.newMarker.position = newVal
+          } else {
+            // else create it and set values
+            this.newMarker = {
+              position: newVal,
+              draggable: true,
+            }
+          }
+          // map center on marker
+          this.center = [newVal.lat, newVal.lng]
+        }
+      }
+    },
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
@@ -192,16 +234,25 @@ export default {
     createPoint() {
       this.$router.push('/point')
     },
-    addMarker(event) {
+    /**
+     * Method that records pointer position on the map
+     *
+     * Only activated on "editMode"
+     * The position is recorded in store value "newCoord". A wtacher on newCoord will the create
+     * or move the Marker as needed on the map.
+     */
+    recordPosition(event) {
       if (this.editMode) {
-        this.newMarker = {
-          position: event.latlng,
-          draggable: true,
-          visible: true,
-        }
-        this.$store.commit('pointStore/add', this.newMarker.position)
+        this.$store.commit('pointStore/add', event.latlng)
       }
     },
+    /**
+     * Method that records pointer position when moved on the map (linked to @drag)
+     *
+     * Only activated on "editMode"
+     * The position is recorded in store value "newCoord". A wtacher on newCoord will the create
+     * or move the Marker as needed on the map.
+     */
     updatePosition() {
       if (this.editMode) {
         this.$store.commit('pointStore/add', this.newMarker.position)
