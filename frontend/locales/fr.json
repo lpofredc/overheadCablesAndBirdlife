@@ -19,12 +19,28 @@
     "sensitive-areas": "Zones Sensibles"
   },
   "infrstr": {
-    "owner": "Propriétaire",
+    "advice": "Recommandations",
+    "advice_isol": "A isoler",
+    "advice_disrupt": "Rendre dissuasif",
+    "advice_attract": "Rendre attractif",
+    "attractiveness": "Attractivité",
+    "cancel": "Annuler",
+    "condition": "Etat",
+    "coord": "Coordonnées",
+    "datecreate": "Date de création",
+    "dateformat": "Format de date: DD/MM/YYYY",
+    "dangerousness": "Dangerosité",
+    "description": "Description",
+    "features": "Caractéristiques",
     "latitude": "Latitude",
     "longitude": "Longitude",
     "manual-hadling": "Saisir les coordonnées manuellement",
     "network": "Réseau",
-    "new_pole": "Nouveau Poteau/Pylône"
+    "neutralized": "Neutralisé",
+    "new_pole": "Nouveau Poteau/Pylône",
+    "owner": "Propriétaire",
+    "remark": "Commentaire",
+    "valid": "Créer"
   },
   "login": {
     "application": "Application",
@@ -36,6 +52,7 @@
     "username": "Identifiant"
   },
   "error": {
+    "create-issue": "Une erreur inattendue s'est produite lors du processus de création d'un nouvel élément. Aucun élément n'a été créé. Veuillez essayer de nouveau. Si le problème persiste, veuillez contacter votre administrateur",
     "loading-issue": "Une erreur de chargement des paramètres est survenue. Essayer de redémarrer l'application. Si le problème persiste, veuillez contacter votre administrateur"
   }
 }

@@ -25,14 +25,32 @@ export const mutations = {
 }
 
 export const getters = {
-  // nomenclatures(state) {
-  //   return state.nomenclatures
-  // },
+  /**
+   * Getter for infrastructure condition nomenclature items.
+   *
+   * @param {state} state of this store module
+   * @return {JSON object} returns the list of nomenclature items for infrastucture conditions
+   */
+  getConditions(state) {
+    try {
+      const cond = state.nomenclatures.find(
+        (elem) => elem.mnemonic === 'infrastr_condition'
+      )
+      return cond.items
+    } catch (_err) {
+      $nuxt.error({
+        statusCode: errorCodes.get_infrstr_conditions.code,
+        message:
+          `Error ${errorCodes.get_infrstr_conditions.code}: ` +
+          $nuxt.$t(`error.${errorCodes.get_infrstr_conditions.msg}`),
+      })
+    }
+  },
   /**
    * Getter for owner nomenclature items.
    *
-   * @param {state} context of this store module
-   * @return {geoJson object} returns the list of nomenclature items fro owner
+   * @param {state} state of this store module
+   * @return {JSON object} returns the list of nomenclature items for owners
    */
   getOwners(state) {
     try {
@@ -46,6 +64,48 @@ export const getters = {
         message:
           `Error ${errorCodes.get_infrstr_owners.code}: ` +
           $nuxt.$t(`error.${errorCodes.get_infrstr_owners.msg}`),
+      })
+    }
+  },
+  /**
+   * Getter for pole type nomenclature items.
+   *
+   * @param {state} state of this store module
+   * @return {JSON object} returns the list of nomenclature items for pole types
+   */
+  getPoleTypes(state) {
+    try {
+      const poleTypes = state.nomenclatures.find(
+        (elem) => elem.mnemonic === 'pole_type'
+      )
+      return poleTypes.items
+    } catch (_err) {
+      $nuxt.error({
+        statusCode: errorCodes.get_infrstr_poletypes.code,
+        message:
+          `Error ${errorCodes.get_infrstr_poletypes.code}: ` +
+          $nuxt.$t(`error.${errorCodes.get_infrstr_poletypes.msg}`),
+      })
+    }
+  },
+  /**
+   * Getter for risk level nomenclature items.
+   *
+   * @param {state} state of this store module
+   * @return {JSON object} returns the list of nomenclature items for risk levels
+   */
+  getRiskLevels(state) {
+    try {
+      const poleTypes = state.nomenclatures.find(
+        (elem) => elem.mnemonic === 'risk_level'
+      )
+      return poleTypes.items
+    } catch (_err) {
+      $nuxt.error({
+        statusCode: errorCodes.get_infrstr_poletypes.code,
+        message:
+          `Error ${errorCodes.get_infrstr_risklevels.code}: ` +
+          $nuxt.$t(`error.${errorCodes.get_infrstr_risklevels.msg}`),
       })
     }
   },
@@ -67,6 +127,9 @@ export const actions = {
         let items = await this.$axios.$get(
           `nomenclature/type/${types[i].id}/items`
         )
+        // TODO To be removed
+        // console.log(types[i])
+
         // Filter to keep only Items matching to current Type (request send the whole list)
         items = items.filter((elem) => elem.type === types[i].id)
 

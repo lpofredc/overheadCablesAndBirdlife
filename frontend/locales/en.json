@@ -19,12 +19,28 @@
     "sensitive-areas": "Sensitive areas"
   },
   "infrstr": {
-    "owner": "Owner",
+    "advice": "Advices",
+    "advice_isol": "Isolate",
+    "advice_disrupt": "Make it disruptive",
+    "advice_attract": "Make it attractive",
+    "attractiveness": "Attractiveness",
+    "cancel": "Cancel",
+    "condition": "Condition",
+    "coord": "Coordinates",
+    "datecreate": "Creation date",
+    "dateformat": "Date format DD/MM/YYYY",
+    "dangerousness": "Dangerousness",
+    "description": "Description",
+    "features": "Features",
     "latitude": "Latitude",
     "longitude": "Longitude",
     "manual-hadling": "Manually enter coordinates",
     "network": "Network",
-    "new_pole": "New Pole/Pylon"
+    "neutralized": "Neutralized",
+    "new_pole": "New Pole/Pylon",
+    "owner": "Owner",
+    "remark": "Remarks",
+    "valid": "Create"
   },
   "login": {
     "application": "Application",
@@ -36,6 +52,7 @@
     "username": "Username"
   },
   "error": {
+    "create-issue": "An inadvertant error occured during element creation process.No new element was created. Try it again. If the issue persists, please contact your admin",
     "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin"
   }
 }

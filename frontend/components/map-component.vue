@@ -67,7 +67,6 @@
       </v-speed-dial>
       <l-icon-default :image-path="path" />
     </l-map>
-    ##{{ newCoord }}##
   </div>
 </template>
 
