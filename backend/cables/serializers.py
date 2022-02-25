@@ -35,7 +35,7 @@ class DiagnosisSerializer(ModelSerializer):
 
     # Allow to display nested data
     condition = NomenclatureSerializer(read_only=True)
-    pole_type = NomenclatureSerializer(read_only=True)
+    pole_type = NomenclatureSerializer(many=True, read_only=True)
     pole_attractivity = NomenclatureSerializer(read_only=True)
     pole_dangerousness = NomenclatureSerializer(read_only=True)
     sgmt_build_integr_risk = NomenclatureSerializer(read_only=True)

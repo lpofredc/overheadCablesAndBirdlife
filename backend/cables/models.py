@@ -143,16 +143,15 @@ class Diagnosis(Action):
         default=False,
     )
     dissuasion_advice = models.BooleanField(
-        _("Dissuasion"),
+        _("Disruption"),
         default=False,
     )
     attraction_advice = models.BooleanField(
         _("Attraction"),
         default=False,
     )
-    pole_type = models.ForeignKey(
+    pole_type = models.ManyToManyField(
         Nomenclature,
-        on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "pole_type"},
         related_name="visit_pole_type",
         verbose_name=_("Type of pole"),
