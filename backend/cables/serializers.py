@@ -1,3 +1,6 @@
+import logging
+
+from rest_framework.exceptions import APIException
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer,
     ModelSerializer,
@@ -10,6 +13,7 @@ from sinp_nomenclatures.serializers import (
 from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
+from sensitive_area.models import SensitiveArea
 from sensitive_area.serializers import SensitiveAreaSerializer
 
 from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
@@ -106,14 +110,30 @@ class DiagnosisSerializer(ModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
+        """Overriden create method for Diagnosis
+
+        This method was overidden to implement a customized behaviour specific to application structure.
+        New Diagnosis related to an Infrastructure (Point or Line) is created with field "history=False". That means it is current state of diagnosis for the Infrastructure.
+        In case of new Diagnosis on same Infrastruture, the new one is created with "history=False" as current one. Older ones (should be exactly 1) with "history=False" then become "history=True" due to this method.
+        Exception is raised if there is not exactly 1 Diagnosis with "history=False"
+        """
+
     def create(self, validated_data):
-        # TODO add try/catch and handle exception
         old_diags = Diagnosis.objects.all().filter(
             infrastructure=validated_data["infrastructure"]
         )
         for diag in old_diags:
             diag.history = True
             diag.save()
+
+        # check there is exactly 1 'CURRENT' Diagnosis for the Infrastructure
+        current = Diagnosis.objects.all().filter(
+            infrastructure=validated_data["infrastructure"], history=False
+        )
+        if len(current) != 1:
+            logging.error("Diagnosis traceability issue")
+            raise APIException("Diagnosis traceability issue")
+
         return Diagnosis.objects.create(**validated_data)
 
 
@@ -152,14 +172,30 @@ class OperationSerializer(ModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
+        """Overriden create method for Operation
+
+        This method was overidden to implement a customized behaviour specific to application structure.
+        New Operation related to an Infrastructure (Point or Line) is created with field "history=False". That means it is current state of operations for the Infrastructure.
+        In case of new Operation on same Infrastruture, the new one is created with "history=False" as current one. Older ones (should be only 1) with "history=False" then become "history=True" due to this method.
+        Exception is raised if there is not exactly 1 Operation with "history=False"
+        """
+
     def create(self, validated_data):
-        # TODO add try/catch and handle exception
         old_ops = Operation.objects.all().filter(
             infrastructure=validated_data["infrastructure"]
         )
         for op in old_ops:
             op.history = True
             op.save()
+
+        # check there is exactly 1 'CURRENT' Operation for the Infrastructure
+        current = Operation.objects.all().filter(
+            infrastructure=validated_data["infrastructure"], history=False
+        )
+        if len(current) != 1:
+            logging.error("Operation traceability issue")
+            raise APIException("Operation traceability issue")
+
         return Operation.objects.create(**validated_data)
 
 
@@ -237,8 +273,7 @@ class PointSerializer(GeoFeatureModelSerializer):
 
         """ Overidden method to create Point
 
-        At Point creation, method search all GeoArea that contain new Point coordinates, and set
-        this GeoArea id list to Point field geo_area (Infrastructure.geo_area)
+        At Point creation, method search all GeoArea and all SensitiveArea that contain new Point coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Point field sensitive_area (Infrastructure.sensitive_area)
         """
 
     def create(self, validated_data):
@@ -246,12 +281,12 @@ class PointSerializer(GeoFeatureModelSerializer):
         point = Point.objects.create(**validated_data)
         # get lists of GeoArea and Sensitive_Area containing Point location
         geoareas = GeoArea.objects.all().filter(geom__contains=point.geom)
-        sensitiveareas = GeoArea.objects.all().filter(
+        sensitiveareas = SensitiveArea.objects.all().filter(
             geom__contains=point.geom
         )
         # set the lists to point.geo_area and save it
         point.geo_area.set(geoareas)
-        point.geo_area.set(sensitiveareas)
+        point.sensitive_area.set(sensitiveareas)
         point.save()
         return point
 
