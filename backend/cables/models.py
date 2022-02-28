@@ -59,6 +59,17 @@ class Infrastructure(BaseModel, PolymorphicModel):
         help_text=_("Associated Sensitivity Areas"),
     )
 
+    # def save(self, *args, **kwargs):
+    #     geoareas = GeoArea.objects.all().filter(geom__intersects=self.geom)
+
+    #     self.geo_area.set(1)
+    #     for geoarea in geoareas:
+    #         print(geoarea.id)
+    #         self.geo_area.set(geoarea.id)
+    #     # # sensitiveareas = SensitiveArea.objects.all().filter(geom__intersects=self.geom)
+    #     # # self.sensitive_area
+    #     super(Infrastructure, self).save(*args, **kwargs)
+
 
 class Point(Infrastructure):
     """Point model inheriting from InfrastructureModel

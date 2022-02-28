@@ -7,6 +7,7 @@ from sinp_nomenclatures.serializers import (
     ItemSerializer as NomenclatureSerializer,
 )
 
+from geo_area.models import GeoArea
 from geo_area.serializers import GeoAreaSerializer
 from media.serializers import MediaSerializer
 from sensitive_area.serializers import SensitiveAreaSerializer
@@ -207,7 +208,6 @@ class PointSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
     owner = NomenclatureSerializer(read_only=True)
-    geo_area = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     actions_infrastructure = ActionPolymorphicSerializer(
         many=True, read_only=True
@@ -222,7 +222,6 @@ class PointSerializer(GeoFeatureModelSerializer):
             "owner",
             "owner_id",
             "geo_area",
-            "geo_area_id",
             "sensitive_area",
             "sensitive_area_id",
             "actions_infrastructure",
@@ -230,12 +229,31 @@ class PointSerializer(GeoFeatureModelSerializer):
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
             "owner_id": {"source": "owner", "write_only": True},
-            "geo_area_id": {"source": "geo_area", "write_only": True},
             "sensitive_area_id": {
                 "source": "sensitive_area",
                 "write_only": True,
             },
         }
+
+        """ Overidden method to create Point
+
+        At Point creation, method search all GeoArea that contain new Point coordinates, and set
+        this GeoArea id list to Point field geo_area (Infrastructure.geo_area)
+        """
+
+    def create(self, validated_data):
+        # create Point object with given coordinates
+        point = Point.objects.create(**validated_data)
+        # get lists of GeoArea and Sensitive_Area containing Point location
+        geoareas = GeoArea.objects.all().filter(geom__contains=point.geom)
+        sensitiveareas = GeoArea.objects.all().filter(
+            geom__contains=point.geom
+        )
+        # set the lists to point.geo_area and save it
+        point.geo_area.set(geoareas)
+        point.geo_area.set(sensitiveareas)
+        point.save()
+        return point
 
 
 class LineSerializer(GeoFeatureModelSerializer):
