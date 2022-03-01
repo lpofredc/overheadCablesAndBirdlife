@@ -1,12 +1,8 @@
 from django.test import TestCase
-
-# from django.utils.timezone import datetime
 from rest_framework.test import APIClient
 
 from cables.models import Point
 from commons.tests.tests_commons import createTestUser, logTestUser
-
-# from sinp_nomenclatures.models import Item, Type
 
 
 class PointAnonymousAuthenticationTestCase(TestCase):
@@ -16,7 +12,8 @@ class PointAnonymousAuthenticationTestCase(TestCase):
     """
 
     # fixture includes:
-    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
+    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2
+    # media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
     fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
@@ -128,9 +125,54 @@ class PointUnauthorizedAuthenticationTestCase(TestCase):
         self.assertEquals(resp.status_code, 403)
 
 
-###############################################################################################
+class PointAuthorizedAuthenticationTestCase(TestCase):
+    """Class to test authentication/permission scheme for Pole and unauthorized user."""
 
-# def test_all_with_authorized_user(self):
+    # fixture includes:
+    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2
+    # media
+    # (pictures), 2 mortality cases
+    # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
+    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
+
+    def setUp(self):
+        self.anonymous_client = APIClient()
+        # create authentified user
+        self.user = createTestUser("user", "password")
+        self.authentified_client = logTestUser("user", "password")
+
+    def test_get_points(self):
+        # owners = Item.objects.all().filter(type__mnemonic="owner")
+        # first_owner_id = owners[0].id
+        # print(first_owner_id)
+
+        resp = self.authentified_client.get("/api/v1/cables/points/")
+        self.assertEquals(resp.status_code, 200)
+
+        # get id of first Pole
+        pole_id = Point.objects.all()[0].id
+        # get json data from this Pole
+        resp = self.authentified_client.get(
+            f"/api/v1/cables/points/{pole_id}/"
+        )
+        self.assertEquals(resp.status_code, 200)
+
+    # # change owner value from these data to make put request thereafter
+    # data["properties"]["owner"] = owne/manage.py test --pattern="tests_*.py"
+    # )
+    # self.assertEquals(resp.status_code, 200)
+    # # change again the owner with patch request
+    # resp = self.authorized_client.patch(
+    #     f"/api/cables/points/edit/{first_id}/", data={"owner": owner_pk[0]}
+    # )
+    # self.assertEquals(resp.status_code, 200)
+    # # test get method on a detail Pole (through edit ViewSet)
+    # resp = self.authorized_client.get(
+    #     f"/api/cables/points/edit/{first_id}/"
+    # )
+    # self.assertEquals(resp.status_code, 200)
+
+
 #     # create owners (nomenclature items) needed to create points
 #     type = Type.objects.create(
 #         code="code",
@@ -189,27 +231,6 @@ class PointUnauthorizedAuthenticationTestCase(TestCase):
 #         )
 #         self.assertEquals(resp.status_code, 201)
 
-#     # get id of first Pole with owner=owner_pk[0]
-#     first_id = Pole.objects.filter(owner=owner_pk[0])[0].id
-#     # get json data from this Pole
-#     resp = self.authorized_client.get(
-#         f"/api/cables/points/edit/{first_id}/"
-#     )
-#     data = resp.json()
-#     # change owner value from these data to make put request thereafter
-#     data["properties"]["owner"] = owne/manage.py test --pattern="tests_*.py"
-#     )
-#     self.assertEquals(resp.status_code, 200)
-#     # change again the owner with patch request
-#     resp = self.authorized_client.patch(
-#         f"/api/cables/points/edit/{first_id}/", data={"owner": owner_pk[0]}
-#     )
-#     self.assertEquals(resp.status_code, 200)
-#     # test get method on a detail Pole (through edit ViewSet)
-#     resp = self.authorized_client.get(
-#         f"/api/cables/points/edit/{first_id}/"
-#     )
-#     self.assertEquals(resp.status_code, 200)
 
 #     # test get method on a list Pole (through edit ViewSet)
 #     resp = self.authorized_client.get("/api/cables/points/edit/")

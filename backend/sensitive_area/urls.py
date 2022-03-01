@@ -8,7 +8,7 @@ app_name = "sensitive_area"
 urlpatterns = [
     path(
         "",
-        SensitiveAreaViewSet.as_view({"get": "list"}),
+        SensitiveAreaViewSet.as_view({"get": "list", "post": "create"}),
         name="sensitivearea-list",
     ),
     path(

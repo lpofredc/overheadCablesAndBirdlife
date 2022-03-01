@@ -297,9 +297,9 @@ class PointSerializer(GeoFeatureModelSerializer):
         # create Point object with given coordinates
         point = Point.objects.create(**validated_data)
         # get lists of GeoArea and Sensitive_Area containing Point location
-        geoareas = GeoArea.objects.all().filter(geom__contains=point.geom)
+        geoareas = GeoArea.objects.all().filter(geom__intersects=point.geom)
         sensitiveareas = SensitiveArea.objects.all().filter(
-            geom__contains=point.geom
+            geom__intersects=point.geom
         )
         # set the lists to point.geo_area and save it
         point.geo_area.set(geoareas)
