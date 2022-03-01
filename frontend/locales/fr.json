@@ -18,7 +18,8 @@
     "segments-eqmt": "Equipements Segments",
     "sensitive-areas": "Zones Sensibles"
   },
-  "infrstr": {
+  "point": {
+    "administrative": "Informations Administratives",
     "advice": "Recommandations",
     "advice_isol": "A isoler",
     "advice_disrupt": "Rendre dissuasif",
@@ -54,5 +55,10 @@
   "error": {
     "create-issue": "Une erreur inattendue s'est produite lors du processus de création d'un nouvel élément. Aucun élément n'a été créé. Veuillez essayer de nouveau. Si le problème persiste, veuillez contacter votre administrateur",
     "loading-issue": "Une erreur de chargement des paramètres est survenue. Essayer de redémarrer l'application. Si le problème persiste, veuillez contacter votre administrateur"
+  },
+  "valid": {
+    "range": "Intervalle acceptable pour cette valeur: ",
+    "required": "Champ requis",
+    "required_or_not_valid": "Champ non complété ou type de donnée érroné"
   }
 }

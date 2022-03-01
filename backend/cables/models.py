@@ -59,17 +59,6 @@ class Infrastructure(BaseModel, PolymorphicModel):
         help_text=_("Associated Sensitivity Areas"),
     )
 
-    # def save(self, *args, **kwargs):
-    #     geoareas = GeoArea.objects.all().filter(geom__intersects=self.geom)
-
-    #     self.geo_area.set(1)
-    #     for geoarea in geoareas:
-    #         print(geoarea.id)
-    #         self.geo_area.set(geoarea.id)
-    #     # # sensitiveareas = SensitiveArea.objects.all().filter(geom__intersects=self.geom)
-    #     # # self.sensitive_area
-    #     super(Infrastructure, self).save(*args, **kwargs)
-
 
 class Point(Infrastructure):
     """Point model inheriting from InfrastructureModel
@@ -127,10 +116,10 @@ class Action(BaseModel, PolymorphicModel):
         help_text=_("Media attached with this visit"),
     )
     # Field usefull for child (Diagnosis or Operation) creation
-    # If Diagnosis or Operation already exists for the infrastructure, the new item received False and # old ones receive True.
-    history = models.BooleanField(
-        _("History"),
-        default=False,
+    # If Diagnosis or Operation already exists for the infrastructure, the new item received True # as last record, and old ones receive False.
+    last = models.BooleanField(
+        _("Last record"),
+        default=True,
     )
 
 
@@ -144,6 +133,7 @@ class Diagnosis(Action):
     condition = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        null=True,
         limit_choices_to={"type__mnemonic": "infrastr_condition"},
         related_name="pole_condition",
         verbose_name=_("Pole condition"),
@@ -161,8 +151,10 @@ class Diagnosis(Action):
         _("Attraction"),
         default=False,
     )
+    # TODO change visit to diagnosis in related_name
     pole_type = models.ManyToManyField(
         Nomenclature,
+        blank=True,
         limit_choices_to={"type__mnemonic": "pole_type"},
         related_name="visit_pole_type",
         verbose_name=_("Type of pole"),
@@ -172,7 +164,7 @@ class Diagnosis(Action):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
-        # null=True,
+        null=True,
         related_name="pole_attractivity",
         verbose_name=_("Attractivity level of risk"),
         help_text=_("Attractivity level of risk"),
@@ -181,7 +173,7 @@ class Diagnosis(Action):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
-        # null=True,
+        null=True,
         related_name="pole_dangerousness",
         verbose_name=_("dangerousness level of risk"),
         help_text=_("dangerousness level of risk"),
@@ -189,6 +181,7 @@ class Diagnosis(Action):
     sgmt_build_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_building_integration_risk",
         verbose_name=_("Building integration level of risk"),
@@ -197,6 +190,7 @@ class Diagnosis(Action):
     sgmt_moving_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_moving_risk",
         verbose_name=_("moving level of risk"),
@@ -205,6 +199,7 @@ class Diagnosis(Action):
     sgmt_topo_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_topological_integration_risk",
         verbose_name=_("topological level of risk"),
@@ -213,6 +208,7 @@ class Diagnosis(Action):
     sgmt_veget_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_vegetation_risk",
         verbose_name=_("vegetation level of risk"),

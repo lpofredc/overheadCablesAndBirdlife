@@ -18,7 +18,8 @@
     "segments-eqmt": "Segments Equipements",
     "sensitive-areas": "Sensitive areas"
   },
-  "infrstr": {
+  "point": {
+    "administrative": "Administrative Information",
     "advice": "Advices",
     "advice_isol": "Isolate",
     "advice_disrupt": "Make it disruptive",
@@ -54,5 +55,10 @@
   "error": {
     "create-issue": "An inadvertant error occured during element creation process.No new element was created. Try it again. If the issue persists, please contact your admin",
     "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin"
+  },
+  "valid": {
+    "range": "Value awaited in range: ",
+    "required": "Required field",
+    "required_or_not_valid": "field not filled in or data type not valid"
   }
 }

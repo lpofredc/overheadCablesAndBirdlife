@@ -78,6 +78,7 @@ class DiagnosisSerializer(ModelSerializer):
             "sgmt_veget_integr_risk_id",
             "media",
             "media_id",
+            "last",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -113,9 +114,9 @@ class DiagnosisSerializer(ModelSerializer):
         """Overriden create method for Diagnosis
 
         This method was overidden to implement a customized behaviour specific to application structure.
-        New Diagnosis related to an Infrastructure (Point or Line) is created with field "history=False". That means it is current state of diagnosis for the Infrastructure.
-        In case of new Diagnosis on same Infrastruture, the new one is created with "history=False" as current one. Older ones (should be exactly 1) with "history=False" then become "history=True" due to this method.
-        Exception is raised if there is not exactly 1 Diagnosis with "history=False"
+        New Diagnosis related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
+        In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
+        Exception is raised if there is not exactly 1 Diagnosis with "last=True"
         """
 
     def create(self, validated_data):
@@ -123,18 +124,36 @@ class DiagnosisSerializer(ModelSerializer):
             infrastructure=validated_data["infrastructure"]
         )
         for diag in old_diags:
-            diag.history = True
+            diag.last = False
             diag.save()
+        # gather data for ManyToMany fields (and removing related data from validated_data)
+        poleType_data = validated_data.pop("pole_type")
+        media_data = validated_data.pop("media")
+        # create Diagnosis
 
-        # check there is exactly 1 'CURRENT' Diagnosis for the Infrastructure
-        current = Diagnosis.objects.all().filter(
-            infrastructure=validated_data["infrastructure"], history=False
+        newDiag = Diagnosis.objects.create(**validated_data)
+
+        checkLast = Diagnosis.objects.all().filter(
+            infrastructure=validated_data["infrastructure"], last=True
         )
-        if len(current) != 1:
-            logging.error("Diagnosis traceability issue")
-            raise APIException("Diagnosis traceability issue")
+        if len(checkLast) != 1:
+            msg = "Diagnosis traceability issue"
+            logging.error(msg)
+            raise APIException(msg)
 
-        return Diagnosis.objects.create(**validated_data)
+        try:
+            # set data to ManyToMany fields od newDiag
+            newDiag.pole_type.set(poleType_data)
+            newDiag.media.set(media_data)
+
+        except Exception:
+            if newDiag is not None:
+                newDiag.delete()
+            msg = "Issue with Diagnosis configuration. No Diagnosis created."
+            logging.error(msg)
+            raise APIException(msg)
+
+        return newDiag  # return new Diagnostic
 
 
 class OperationSerializer(ModelSerializer):
@@ -175,28 +194,26 @@ class OperationSerializer(ModelSerializer):
         """Overriden create method for Operation
 
         This method was overidden to implement a customized behaviour specific to application structure.
-        New Operation related to an Infrastructure (Point or Line) is created with field "history=False". That means it is current state of operations for the Infrastructure.
-        In case of new Operation on same Infrastruture, the new one is created with "history=False" as current one. Older ones (should be only 1) with "history=False" then become "history=True" due to this method.
-        Exception is raised if there is not exactly 1 Operation with "history=False"
+        New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of operations for the Infrastructure.
+        In case of new Operation on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be only 1) then become "last=False" due to this method.
+        Exception is raised if there is not exactly 1 Operation with "last=True"
         """
 
-    def create(self, validated_data):
-        old_ops = Operation.objects.all().filter(
-            infrastructure=validated_data["infrastructure"]
-        )
-        for op in old_ops:
-            op.history = True
-            op.save()
+    # def create(self, validated_data):
+    #     old_ops = Operation.objects.all().filter(infrastructure=validated_data["infrastructure"])
+    #     for op in old_ops:
+    #         op.last = False
+    #         op.save()
 
-        # check there is exactly 1 'CURRENT' Operation for the Infrastructure
-        current = Operation.objects.all().filter(
-            infrastructure=validated_data["infrastructure"], history=False
-        )
-        if len(current) != 1:
-            logging.error("Operation traceability issue")
-            raise APIException("Operation traceability issue")
+    #     # check there is exactly 1 'CURRENT' Operation for the Infrastructure
+    #     current = Operation.objects.all().filter(
+    #         infrastructure=validated_data["infrastructure"], last=True
+    #     )
+    #     if len(current) != 1:
+    #         logging.error("Operation traceability issue")
+    #         raise APIException("Operation traceability issue")
 
-        return Operation.objects.create(**validated_data)
+    #     return Operation.objects.create(**validated_data)
 
 
 class InfrastructureSerializer(GeoFeatureModelSerializer):
@@ -244,6 +261,7 @@ class PointSerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
     owner = NomenclatureSerializer(read_only=True)
+    geo_area = GeoAreaSerializer(many=True, read_only=True)
     sensitive_area = SensitiveAreaSerializer(many=True, read_only=True)
     actions_infrastructure = ActionPolymorphicSerializer(
         many=True, read_only=True
@@ -258,17 +276,16 @@ class PointSerializer(GeoFeatureModelSerializer):
             "owner",
             "owner_id",
             "geo_area",
+            # "geo_area_id",
             "sensitive_area",
-            "sensitive_area_id",
+            # "sensitive_area_id",
             "actions_infrastructure",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
             "owner_id": {"source": "owner", "write_only": True},
-            "sensitive_area_id": {
-                "source": "sensitive_area",
-                "write_only": True,
-            },
+            # "geo_area_id": {"source": "geo_area", "write_only": True},
+            # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }
 
         """ Overidden method to create Point
@@ -313,19 +330,16 @@ class LineSerializer(GeoFeatureModelSerializer):
             "owner",
             "owner_id",
             "geo_area",
-            "geo_area_id",
+            # "geo_area_id",
             "sensitive_area",
-            "sensitive_area_id",
+            # "sensitive_area_id",
             "actions_infrastructure",
         ]
         # Allow to handle create/update/partial_updcreateate with nested data
         extra_kwargs = {
             "owner_id": {"source": "owner", "write_only": True},
-            "geo_area_id": {"source": "geo_area", "write_only": True},
-            "sensitive_area_id": {
-                "source": "sensitive_area",
-                "write_only": True,
-            },
+            # "geo_area_id": {"source": "geo_area", "write_only": True},
+            # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }
 
 
