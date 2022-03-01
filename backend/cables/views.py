@@ -3,7 +3,7 @@ import logging
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 
-from .filters import (  # , PoleFilter, SegmentFilter, VisitFilter
+from .filters import (  # , PoleFilter, SegmentFilter, DiagnosisFilter
     InfrastructureFilter,
     OperationFilter,
 )

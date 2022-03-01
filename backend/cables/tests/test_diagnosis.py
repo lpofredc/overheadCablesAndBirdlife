@@ -10,7 +10,7 @@ from commons.tests.tests_commons import createTestUser, logTestUser
 
 
 class DiagnosiAnonymousAuthenticationTestCase(TestCase):
-    """Class to test authentication/permission scheme for Visit and anonymous user.
+    """Class to test authentication/permission scheme for Diagnosis and anonymous user.
 
     Include tests for user trying to log-in with wrong password
     """
@@ -26,7 +26,7 @@ class DiagnosiAnonymousAuthenticationTestCase(TestCase):
         # create user trying to log-in with wrong password
         self.user = createTestUser("user", "password")
         self.unauthentified_client = logTestUser("user", "wrong-password")
-        # get pk from the first visit
+        # get pk from the first diagnosis
         self.pk = Diagnosis.objects.all()[0].id
 
     def test_get_list_with_anonymous_user(self):
@@ -83,7 +83,7 @@ class DiagnosiAnonymousAuthenticationTestCase(TestCase):
 
 
 class DiagnosisUnauthorizedAuthenticationTestCase(TestCase):
-    """Class to test authentication/permission scheme for Visit and unauthorized user."""
+    """Class to test authentication/permission scheme for Diagnosis and unauthorized user."""
 
     # fixture includes:
     # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
@@ -94,7 +94,7 @@ class DiagnosisUnauthorizedAuthenticationTestCase(TestCase):
     def setUp(self):
         self.user = createTestUser("user", "password")
         self.unauthorized_client = logTestUser("user", "password")
-        # get pk from the first visit
+        # get pk from the first diagnosis
         self.pk = Diagnosis.objects.all()[0].id
 
     # no restriction for read only by default with Django

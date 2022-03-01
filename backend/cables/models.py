@@ -88,7 +88,7 @@ class Action(BaseModel, PolymorphicModel):
     """Common shared Action model inheriting from BaseModel
 
     This model define generic information relative to an action on an infrastructure such as diagnosis or operation.
-    Model defined as PolymorphicModel: all specific actions classes (e.g. Visit, Operation) will inherit from this class.
+    Model defined as PolymorphicModel: all specific actions classes (e.g. Diagnosis, Operation) will inherit from this class.
     uuid is a unique identifier (not primary key). It can be used as data identifier in case of
     data gathered from various origin (e.g. populating data from various DB)
     """
@@ -111,9 +111,9 @@ class Action(BaseModel, PolymorphicModel):
     media = models.ManyToManyField(
         Media,
         blank=True,
-        related_name="visit_media",
-        verbose_name=_("Media attached with this visit"),
-        help_text=_("Media attached with this visit"),
+        related_name="diagnosis_media",
+        verbose_name=_("Media attached with this diagnosis"),
+        help_text=_("Media attached with this diagnosis"),
     )
     # Field usefull for child (Diagnosis or Operation) creation
     # If Diagnosis or Operation already exists for the infrastructure, the new item received True # as last record, and old ones receive False.
@@ -151,12 +151,12 @@ class Diagnosis(Action):
         _("Attraction"),
         default=False,
     )
-    # TODO change visit to diagnosis in related_name
+    # TODO change diagnosis to diagnosis in related_name
     pole_type = models.ManyToManyField(
         Nomenclature,
         blank=True,
         limit_choices_to={"type__mnemonic": "pole_type"},
-        related_name="visit_pole_type",
+        related_name="diagnosis_pole_type",
         verbose_name=_("Type of pole"),
         help_text=_("Type of pole"),
     )

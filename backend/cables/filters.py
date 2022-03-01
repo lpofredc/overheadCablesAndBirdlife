@@ -60,18 +60,18 @@ class BaseModelFilter(filters.FilterSet):
 #     Allowed filters:
 #     - by infrastructure id => pole_id or segment_id
 #     - by type of infrastructure => is_pole = True/False or is_segment = True/False
-#     - by visit_date => date (exact match), from_date (date_gte), to_date (date_lte)
-#     - by year of visit_date => year (exact match), from_year (date_gte), to_year (date_lte)
+#     - by diagnosis_date => date (exact match), from_date (date_gte), to_date (date_lte)
+#     - by year of diagnosis_date => year (exact match), from_year (date_gte), to_year (date_lte)
 #     - by condition id => condition_id
 #     - by pole typeid => pole_type_id
 #     """
 
-#     date = filters.DateFilter(field_name="visit_date", lookup_expr="date")
-#     from_date = filters.DateFilter(field_name="visit_date", lookup_expr="date__gte")
-#     to_date = filters.DateFilter(field_name="visit_date", lookup_expr="date__lte")
-#     year = filters.NumberFilter(field_name="visit_date", lookup_expr="year")
-#     from_year = filters.NumberFilter(field_name="visit_date", lookup_expr="year__gte")
-#     to_year = filters.NumberFilter(field_name="visit_date", lookup_expr="year__lte")
+#     date = filters.DateFilter(field_name="diagnosis_date", lookup_expr="date")
+#     from_date = filters.DateFilter(field_name="diagnosis_date", lookup_expr="date__gte")
+#     to_date = filters.DateFilter(field_name="diagnosis_date", lookup_expr="date__lte")
+#     year = filters.NumberFilter(field_name="diagnosis_date", lookup_expr="year")
+#     from_year = filters.NumberFilter(field_name="diagnosis_date", lookup_expr="year__gte")
+#     to_year = filters.NumberFilter(field_name="diagnosis_date", lookup_expr="year__lte")
 #     condition_id = filters.NumberFilter(field_name="condition__id")
 #     pole_type_id = filters.NumberFilter(field_name="pole_type__id")
 
@@ -87,7 +87,7 @@ class OperationFilter(BaseModelFilter):
     Allowed filters:
     - by infrastructure id => pole_id or segment_id
     - by type of infrastructure => is_pole = True/False or is_segment = True/False
-    - by visit_date => visit_date (exact match), from_visit_date (date_gte), to_visit_date (date_lte)
+    - by diagnosis_date => diagnosis_date (exact match), from_diagnosis_date (date_gte), to_diagnosis_date (date_lte)
     - by year of operation_date => year (exact match), from_year (date_gte), to_year (date_lte)
     - by condition id => condition_id
     - by pole typeid => pole_type_id
