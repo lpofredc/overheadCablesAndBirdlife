@@ -116,7 +116,7 @@ class DiagnosisSerializer(ModelSerializer):
         This method was overidden to implement a customized behaviour specific to application structure.
         New Diagnosis related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
         In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
-        Exception is raised if there is not exactly 1 Diagnosis with "last=True"
+        APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures with attachment of ManyToMany fields data, Diagnostic is deleted (if it was created) and an APIException is raised.
         """
 
     def create(self, validated_data):
@@ -290,21 +290,34 @@ class PointSerializer(GeoFeatureModelSerializer):
 
         """ Overidden method to create Point
 
-        At Point creation, method search all GeoArea and all SensitiveArea that contain new Point coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Point field sensitive_area (Infrastructure.sensitive_area)
+        At Point creation, method search all GeoArea and all SensitiveArea that contain new Point coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Point field sensitive_area (Infrastructure.sensitive_area).
+        If issue occures for attachment with sensitive/geo areas, the Point is deleted (if it was created) and an APIException is raised.
         """
 
     def create(self, validated_data):
         # create Point object with given coordinates
         point = Point.objects.create(**validated_data)
-        # get lists of GeoArea and Sensitive_Area containing Point location
-        geoareas = GeoArea.objects.all().filter(geom__intersects=point.geom)
-        sensitiveareas = SensitiveArea.objects.all().filter(
-            geom__intersects=point.geom
-        )
-        # set the lists to point.geo_area and save it
-        point.geo_area.set(geoareas)
-        point.sensitive_area.set(sensitiveareas)
-        point.save()
+
+        try:
+            # get lists of GeoArea and Sensitive_Area containing Point location
+            geoareas = GeoArea.objects.all().filter(
+                geom__intersects=point.geom
+            )
+            sensitiveareas = SensitiveArea.objects.all().filter(
+                geom__intersects=point.geom
+            )
+            # set the lists to point.geo_area and save it
+            point.geo_area.set(geoareas)
+            point.sensitive_area.set(sensitiveareas)
+            point.save()
+
+        except Exception:
+            if point is not None:
+                point.delete()
+            msg = "Issue with attachment from new point to sensitive/geo areas. No Point created."
+            logging.error(msg)
+            raise APIException(msg)
+
         return point
 
 
