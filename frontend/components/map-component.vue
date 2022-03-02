@@ -9,22 +9,25 @@
       @click="recordPosition"
     >
       <l-tile-layer :url="url" :attribution="attribution" />
-      <!-- l-marker Not visible if lat or lng data is null -->
+      <!-- l-marker Not visible if lat or lng data is null, and if not in mode="point" -->
       <l-marker
-        v-if="newMarker"
+        v-if="mode === 'point' && newMarker"
         :lat-lng.sync="newMarker.position"
         :draggable="true"
         :max-bounds="maxBounds"
-        :visible="newCoord.lat !== null && newCoord.lng !== null"
+        :visible="newPointCoord.lat !== null && newPointCoord.lng !== null"
         @dragend="updatePosition"
       />
       <!-- <l-marker
-        v-for="marker in markers"
-        :key="marker.id"
-        :visible="marker.visible"
-        :draggable="marker.draggable"
-        :lat-lng.sync="marker.position"
-        :icon="marker.icon"
+        v-for="item in [
+          [45, 0],
+          [46, 1],
+        ]"
+        :key="item"
+        :lat-lng="item"
+        :draggable="true"
+        :max-bounds="maxBounds"
+        @dragend="updatePosition"
       /> -->
       <l-geo-json
         v-if="cablesData"
@@ -55,10 +58,10 @@
         <v-btn fab dark small color="orange">
           <v-icon>mdi-shape-polygon-plus</v-icon>
         </v-btn>
-        <v-btn fab dark small color="green" @click.stop="createPoint">
+        <v-btn fab dark small to="/point" color="green">
           <v-icon>mdi-transmission-tower</v-icon>
         </v-btn>
-        <v-btn fab dark small color="indigo">
+        <v-btn fab dark small to="/line" color="indigo">
           <v-icon>mdi-cable-data</v-icon>
         </v-btn>
         <v-btn fab dark small color="red">
@@ -76,10 +79,14 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'DataMap',
-  props: { editMode: Boolean },
+  props: { editMode: Boolean, mode: { type: String, default: null } },
 
   data() {
     return {
+      // creation markers
+      newMarker: null,
+      newLineMarkers: [[45, 0]],
+      // Map parameters
       bounds: latLngBounds([
         [40, -6],
         [52, 10],
@@ -88,7 +95,6 @@ export default {
         [40, -6],
         [52, 10],
       ]),
-      newMarker: null,
       zoom: 5,
       path: '/images/',
       center: [47.41322, -1.219482],
@@ -150,21 +156,21 @@ export default {
       cablesData: 'cablesStore/infstrDataFeatures',
       pointData: 'cablesStore/pointDataFeatures',
       lineStringData: 'cablesStore/lineDataFeatures',
-      newCoord: 'pointStore/newCoord',
-      newLat: 'pointStore/newLat',
+      newPointCoord: 'pointStore/newPointCoord',
     }),
   },
   watch: {
     /**
-     * Watcher for "newCoord" value
+     * Watcher for "newPointCoord" value
      *
-     * Only activated on "editMode" and if coordinate data are well defined.
+     * Only activated on "editMode=true" with "mode='point'" and if coordinate data are well
+     * defined.
      * Marker position is changed based on new coordinate value.
      * If Marker does not exist, it is created with new value.
      * Map is centered on the new point.
      */
-    newCoord(newVal) {
-      if (this.editMode) {
+    newPointCoord(newVal) {
+      if (this.editMode && this.mode === 'point') {
         if (newVal && newVal.lat && newVal.lng) {
           if (this.newMarker) {
             // if Marker already exists
@@ -181,6 +187,33 @@ export default {
         }
       }
     },
+    /**
+     * Watcher for "newLineCoord" value
+     *
+     * Only activated on "editMode=true" with "mode='line'" and if coordinate data are well
+     * defined.
+     * Marker position is changed based on new coordinate value.
+     * If Marker does not exist, it is created with new value.
+     * Map is centered on the new point.
+     */
+    // newLineCoord(/* newVal */) {
+    //   if (this.editMode && this.mode === 'line') {
+    //     // if (newVal && newVal.lat && newVal.lng) {
+    //     //   if (this.newMarker) {
+    //     //     // if Marker already exists
+    //     //     this.newMarker.position = newVal
+    //     //   } else {
+    //     //     // else create it and set values
+    //     //     this.newMarker = {
+    //     //       position: newVal,
+    //     //       draggable: true,
+    //     //     }
+    //     //   }
+    //     //   // map center on marker
+    //     //   this.center = [newVal.lat, newVal.lng]
+    //     // }
+    //   }
+    // },
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
@@ -230,15 +263,12 @@ export default {
         }
       }
     },
-    createPoint() {
-      this.$router.push('/point')
-    },
     /**
      * Method that records pointer position on the map
      *
      * Only activated on "editMode"
-     * The position is recorded in store value "newCoord". A wtacher on newCoord will the create
-     * or move the Marker as needed on the map.
+     * The position is recorded in store value "newPointCoord". A wtacher on newPointCoord will
+     * create or move the Marker as needed on the map.
      */
     recordPosition(event) {
       if (this.editMode) {
@@ -249,7 +279,7 @@ export default {
      * Method that records pointer position when moved on the map (linked to @drag)
      *
      * Only activated on "editMode"
-     * The position is recorded in store value "newCoord". A wtacher on newCoord will the create
+     * The position is recorded in store value "newPointCoord". A wtacher on newPointCoord will the create
      * or move the Marker as needed on the map.
      */
     updatePosition() {

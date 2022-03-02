@@ -43,6 +43,9 @@
     "remark": "Commentaire",
     "valid": "Créer"
   },
+  "line": {
+    "new_segment": "Nouveau Tronçon"
+  },
   "login": {
     "application": "Application",
     "home_page": "Acceuil",

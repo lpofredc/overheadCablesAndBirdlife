@@ -1,19 +1,23 @@
 /** Nuxt Point module: pointStore to handle creation of new Point */
 export const state = () => ({
-  newLat: null,
-  newLng: null,
-  newCoord: null,
+  newLat: { type: Number, default: null },
+  newLng: { type: Number, default: null },
+  newPointCoord: {
+    lat: { type: Number, default: null },
+    lng: { type: Number, default: null },
+    default: null,
+  },
 })
 
 export const mutations = {
   /**
-   * Mutation: apply newCoord value change to state of current store module
+   * Mutation: apply newPointCoord value change to state of current store module
    *
    * @param {state} state of this store module
    * @param {JSON object} contains object with latitude and longitude data
    */
   add(state, data) {
-    state.newCoord = data
+    state.newPointCoord = data
   },
   // USELESS FOR NOW
   // /**
@@ -38,16 +42,16 @@ export const mutations = {
 
 export const getters = {
   /**
-   * Getter for newCoord state values
+   * Getter for newPointCoord state values
    *
    * @param {state} state of this store module
    * @return {JSON object} object with latitude and longitude data
    */
-  newCoord(state) {
-    return state.newCoord
+  newPointCoord(state) {
+    return state.newPointCoord
   },
   /**
-   * Getter for newCoord state values
+   * Getter for newPointCoord state values
    *
    * @param {state} state of this store module
    * @return {Number} latitude coordinate
@@ -56,7 +60,7 @@ export const getters = {
     return state.newLat
   },
   /**
-   * Getter for newCoord state values
+   * Getter for newPointCoord state values
    *
    * @param {state} state of this store module
    * @return {Number} longitude coordinate

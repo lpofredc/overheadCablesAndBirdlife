@@ -2,7 +2,7 @@
 <template>
   <v-card>
     <v-app>
-      <v-app-bar clipped-left app
+      <v-app-bar clipped-left app dark color="light-blue darken-4"
         ><v-app-bar-nav-icon @click.stop="miniVariant = !miniVariant" />
         <v-toolbar-title v-text="app_name" />
         <v-spacer></v-spacer>

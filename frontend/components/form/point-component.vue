@@ -1,179 +1,181 @@
 <template>
-  <v-form ref="form" v-model="formValid" class="text-center">
-    <h1>{{ $t('point.new_pole') }}</h1>
-    <v-container>
-      <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.coord') }}</legend>
-        <v-text-field
-          ref="lat"
-          v-model="lat"
-          :label="$t('point.latitude')"
-          :disabled="!manualChange"
-          type="number"
-          :rules="[rules.requiredOrNotValid, rules.latRange]"
-          required
-          hide-spin-buttons
-          class="mx-5"
-        />
-        <v-text-field
-          ref="lng"
-          v-model="lng"
-          :label="$t('point.longitude')"
-          :disabled="!manualChange"
-          type="number"
-          :rules="[rules.requiredOrNotValid, rules.lngRange]"
-          required
-          hide-spin-buttons
-          class="mx-5"
-        />
-        <v-checkbox
-          v-model="manualChange"
-          dense
-          :label="$t('point.manual-hadling')"
-          class="mx-5"
-        ></v-checkbox></fieldset
-    ></v-container>
-    <v-container
-      ><fieldset class="mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.administrative') }}</legend>
-        <v-row class="px-4 py-5">
-          <v-spacer></v-spacer>
-          <v-select
-            v-model="owner"
-            :items="networkOwners"
-            item-text="label"
-            item-value="id"
-            :rules="[rules.required]"
-            :label="$t('point.network')"
+  <div style="height: 90vh" class="overflow-auto">
+    <v-form ref="form" v-model="formValid" class="text-center">
+      <h1>{{ $t('point.new_pole') }}</h1>
+      <v-container>
+        <fieldset class="d-flex justify-space-around flex-wrap mx-2">
+          <legend class="mx-3 px-1">{{ $t('point.coord') }}</legend>
+          <v-text-field
+            ref="lat"
+            v-model="lat"
+            :label="$t('point.latitude')"
+            :disabled="!manualChange"
+            type="number"
+            :rules="[rules.requiredOrNotValid, rules.latRange]"
             required
+            hide-spin-buttons
             class="mx-5"
-          >
-          </v-select>
-          <v-spacer></v-spacer
-          ><v-menu
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-          >
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                v-model="createDate"
-                :label="$t('point.datecreate')"
-                :hint="$t('point.dateformat')"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="createDate" no-title></v-date-picker>
-          </v-menu>
-          <v-spacer></v-spacer
-        ></v-row></fieldset
-    ></v-container>
-    <v-container>
-      <fieldset class="mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.description') }}</legend>
-        <v-row class="px-4 py-5">
-          <v-combobox
-            v-model="poleDesc"
-            :items="poleTypes"
-            item-text="label"
-            item-value="id"
-            :rules="[rules.required]"
-            hide-selected
-            label="Search for an option"
-            multiple
-            small-chips
-            deletable-chips
+          />
+          <v-text-field
+            ref="lng"
+            v-model="lng"
+            :label="$t('point.longitude')"
+            :disabled="!manualChange"
+            type="number"
+            :rules="[rules.requiredOrNotValid, rules.lngRange]"
+            required
+            hide-spin-buttons
             class="mx-5"
-          ></v-combobox
-        ></v-row>
-        <v-row class="px-4 py-5">
+          />
+          <v-checkbox
+            v-model="manualChange"
+            dense
+            :label="$t('point.manual-hadling')"
+            class="mx-5"
+          ></v-checkbox></fieldset
+      ></v-container>
+      <v-container
+        ><fieldset class="mx-2">
+          <legend class="mx-3 px-1">{{ $t('point.administrative') }}</legend>
+          <v-row class="px-4 py-5">
+            <v-spacer></v-spacer>
+            <v-select
+              v-model="owner"
+              :items="networkOwners"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('point.network')"
+              required
+              class="mx-5"
+            >
+            </v-select>
+            <v-spacer></v-spacer
+            ><v-menu
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="auto"
+            >
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  v-model="createDate"
+                  :label="$t('point.datecreate')"
+                  :hint="$t('point.dateformat')"
+                  persistent-hint
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="createDate" no-title></v-date-picker>
+            </v-menu>
+            <v-spacer></v-spacer
+          ></v-row></fieldset
+      ></v-container>
+      <v-container>
+        <fieldset class="mx-2">
+          <legend class="mx-3 px-1">{{ $t('point.description') }}</legend>
+          <v-row class="px-4 py-5">
+            <v-combobox
+              v-model="poleDesc"
+              :items="poleTypes"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              hide-selected
+              label="Search for an option"
+              multiple
+              small-chips
+              deletable-chips
+              class="mx-5"
+            ></v-combobox
+          ></v-row>
+          <v-row class="px-4 py-5">
+            <v-spacer></v-spacer>
+            <v-select
+              v-model="poleCondition"
+              :items="conditions"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('point.condition')"
+              class="mx-5"
+            ></v-select>
+
+            <v-spacer></v-spacer>
+            <v-checkbox
+              v-model="neutralized"
+              :label="$t('point.neutralized')"
+              dense
+              class="mx-5"
+            ></v-checkbox>
+            <v-spacer></v-spacer
+          ></v-row>
+          <v-row class="px-4 py-5">
+            <v-textarea
+              v-model="remark"
+              clearable
+              clear-icon="mdi-close-circle"
+              :label="$t('point.remark')"
+              class="mx-5"
+            ></v-textarea
+          ></v-row></fieldset
+      ></v-container>
+      <v-container>
+        <fieldset class="d-flex justify-space-around flex-wrap mx-2">
+          <legend class="mx-3 px-1">{{ $t('point.advice') }}</legend>
+          <v-checkbox
+            v-model="isolAdv"
+            :label="$t('point.advice_isol')"
+            dense
+          ></v-checkbox>
+          <v-checkbox
+            v-model="dissuadAdv"
+            :label="$t('point.advice_disrupt')"
+            dense
+          ></v-checkbox>
+          <v-checkbox
+            v-model="attractAdv"
+            :label="$t('point.advice_attract')"
+            dense
+          ></v-checkbox></fieldset
+      ></v-container>
+      <v-container>
+        <fieldset class="d-flex justify-space-around flex-wrap mx-2">
+          <legend class="mx-3 px-1">{{ $t('point.features') }}</legend>
           <v-spacer></v-spacer>
           <v-select
-            v-model="poleCondition"
-            :items="conditions"
+            v-model="attractiveness"
+            :items="riskLevels"
             item-text="label"
             item-value="id"
             :rules="[rules.required]"
-            :label="$t('point.condition')"
+            :label="$t('point.attractiveness')"
             class="mx-5"
-          ></v-select>
-
-          <v-spacer></v-spacer>
-          <v-checkbox
-            v-model="neutralized"
-            :label="$t('point.neutralized')"
-            dense
+          ></v-select
+          ><v-spacer></v-spacer>
+          <v-select
+            v-model="dangerousness"
+            :items="riskLevels"
+            item-text="label"
+            item-value="id"
+            :rules="[rules.required]"
+            :label="$t('point.dangerousness')"
             class="mx-5"
-          ></v-checkbox>
-          <v-spacer></v-spacer
-        ></v-row>
-        <v-row class="px-4 py-5">
-          <v-textarea
-            v-model="remark"
-            clearable
-            clear-icon="mdi-close-circle"
-            :label="$t('point.remark')"
-            class="mx-5"
-          ></v-textarea
-        ></v-row></fieldset
-    ></v-container>
-    <v-container>
-      <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.advice') }}</legend>
-        <v-checkbox
-          v-model="isolAdv"
-          :label="$t('point.advice_isol')"
-          dense
-        ></v-checkbox>
-        <v-checkbox
-          v-model="dissuadAdv"
-          :label="$t('point.advice_disrupt')"
-          dense
-        ></v-checkbox>
-        <v-checkbox
-          v-model="attractAdv"
-          :label="$t('point.advice_attract')"
-          dense
-        ></v-checkbox></fieldset
-    ></v-container>
-    <v-container>
-      <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.features') }}</legend>
-        <v-spacer></v-spacer>
-        <v-select
-          v-model="attractiveness"
-          :items="riskLevels"
-          item-text="label"
-          item-value="id"
-          :rules="[rules.required]"
-          :label="$t('point.attractiveness')"
-          class="mx-5"
-        ></v-select
-        ><v-spacer></v-spacer>
-        <v-select
-          v-model="dangerousness"
-          :items="riskLevels"
-          item-text="label"
-          item-value="id"
-          :rules="[rules.required]"
-          :label="$t('point.dangerousness')"
-          class="mx-5"
-        ></v-select
-        ><v-spacer></v-spacer></fieldset
-    ></v-container>
-    <v-container>
-      <v-row class="justify-space-around">
-        <v-btn @click.stop="back">{{ $t('point.cancel') }}</v-btn>
-        <v-btn @click.stop="submit">{{ $t('point.valid') }}</v-btn></v-row
-      ></v-container
-    >
-  </v-form>
+          ></v-select
+          ><v-spacer></v-spacer></fieldset
+      ></v-container>
+      <v-container>
+        <v-row class="justify-space-around">
+          <v-btn @click.stop="back">{{ $t('point.cancel') }}</v-btn>
+          <v-btn @click.stop="submit">{{ $t('point.valid') }}</v-btn></v-row
+        ></v-container
+      >
+    </v-form>
+  </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -222,7 +224,10 @@ export default {
       // on change in v-text-field, value is set to store.
       set(newVal) {
         if (this.$refs.lat.validate()) {
-          this.$store.commit('pointStore/add', { lat: newVal, lng: this.lng })
+          this.$store.commit('pointStore/add', {
+            lat: Number(newVal),
+            lng: this.lng,
+          })
         } else {
           this.$store.commit('pointStore/add', { lat: null, lng: this.lng })
         }
@@ -241,14 +246,17 @@ export default {
       // on change in v-text-field, value is set to store.
       set(newVal) {
         if (this.$refs.lng.validate()) {
-          this.$store.commit('pointStore/add', { lat: this.lat, lng: newVal })
+          this.$store.commit('pointStore/add', {
+            lat: this.lat,
+            lng: Number(newVal),
+          })
         } else
           this.$store.commit('pointStore/add', { lat: this.lat, lng: null })
       },
     },
     // Get values from store
     ...mapGetters({
-      newPoint: 'pointStore/newCoord',
+      newPoint: 'pointStore/newPointCoord',
       conditions: 'nomenclaturesStore/getConditions',
       networkOwners: 'nomenclaturesStore/getOwners',
       poleTypes: 'nomenclaturesStore/getPoleTypes',
@@ -256,7 +264,7 @@ export default {
     }),
   },
   methods: {
-    // get back if cancel Point creation. "newCoord" reinitialized withlat and lng set to null.
+    // get back if cancel Point creation. "newPointCoord" reinitialized withlat and lng set to null.
     back() {
       this.$store.commit('pointStore/add', { lat: null, lng: null })
       this.$router.back()

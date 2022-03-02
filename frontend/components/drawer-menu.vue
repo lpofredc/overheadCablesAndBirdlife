@@ -18,7 +18,7 @@
         <v-list-item-title>{{ $t('login.sign-in') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    <v-list-item to="main">
+    <v-list-item to="view">
       <v-list-item-icon>
         <v-icon>mdi-map-search</v-icon>
       </v-list-item-icon>

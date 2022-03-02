@@ -43,6 +43,9 @@
     "remark": "Remarks",
     "valid": "Create"
   },
+  "line": {
+    "new_segment": "New Segment"
+  },
   "login": {
     "application": "Application",
     "home_page": "Home Page",

@@ -69,7 +69,7 @@ class Point(Infrastructure):
     geom = gis_models.PointField(srid=4326)
 
     def __str__(self):
-        return f"Pole {self.id} - [{self.owner.label}]"
+        return f"Point {self.id} - [{self.owner.label}]"
 
 
 class Line(Infrastructure):
