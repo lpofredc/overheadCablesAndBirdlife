@@ -5,7 +5,7 @@ from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from sinp_nomenclatures.models import Item as Nomenclature
+from sinp_nomenclatures.models import Nomenclature
 
 from cables.models import Infrastructure
 from commons.models import BaseModel

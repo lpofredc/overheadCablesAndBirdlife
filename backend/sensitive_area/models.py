@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from commons.models import BaseModel
 
-# from sinp_nomenclatures.models import Item as Nomenclature
+# from sinp_nomenclatures.models import  Nomenclature
 
 
 class SensitiveArea(BaseModel):

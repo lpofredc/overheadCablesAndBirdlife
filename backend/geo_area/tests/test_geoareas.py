@@ -3,7 +3,7 @@ from django.test import TestCase
 
 # from django.utils.timezone import datetime
 from rest_framework.test import APIClient
-from sinp_nomenclatures.models import Item  # , Type# import json
+from sinp_nomenclatures.models import Nomenclature  # , Type# import json
 
 from commons.tests.tests_commons import createTestUser, logTestUser
 from geo_area.models import GeoArea
@@ -125,7 +125,9 @@ class GeoAreaAuthorizedAuthenticationTestCase(TestCase):
     def test_get_geo_areas(self):
         # get id of a geoarea type in nomanclature (the first one)
         ga_type = (
-            Item.objects.all().filter(type__mnemonic="geoarea_type")[0].id
+            Nomenclature.objects.all()
+            .filter(type__mnemonic="geoarea_type")[0]
+            .id
         )
         # create 2 GeoArea (no request as post method was not implemented: not to be created by
         # users but directly from DB)

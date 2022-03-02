@@ -5,7 +5,7 @@
 from django.contrib.gis.db import models as gis_models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from sinp_nomenclatures.models import Item as Nomenclature
+from sinp_nomenclatures.models import Nomenclature
 
 """These application models are using nomenclature Items 'cf. sinp_nomenclatures' module
 

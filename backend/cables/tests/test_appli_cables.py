@@ -1,7 +1,7 @@
 from django.contrib.gis.geos import Polygon
 from django.test import TestCase
 from rest_framework.test import APIClient
-from sinp_nomenclatures.models import Item
+from sinp_nomenclatures.models import Nomenclature
 
 from commons.tests.tests_commons import createTestUser, logTestUser
 from geo_area.models import GeoArea
@@ -52,7 +52,9 @@ class CreateDiagnosticTestCase(TestCase):
         # CREATE 2 GEO_AREA
         # get id of a geoarea type in nomanclature (the first one)
         ga_type = (
-            Item.objects.all().filter(type__mnemonic="geoarea_type")[0].id
+            Nomenclature.objects.all()
+            .filter(type__mnemonic="geoarea_type")[0]
+            .id
         )
         # create 2 GeoArea (no request as post method was not implemented: not to be created by
         # users but directly from DB)

@@ -84,15 +84,15 @@ export default {
             method: 'post',
           },
           refresh: { url: 'auth/jwt/refresh', method: 'post' },
-          logout: false, //  we don't have an endpoint for our logout in our API and we just remove the token from localstorage
+          logout: false, //  there is no endpoint for logout in API. Just remove the token from localstorage
           user: {
             url: 'auth/users/me',
             method: 'get',
             property: false,
           },
-          redirectUri: '/login',
-          logoutRedirectUri: '/login',
         },
+        redirectUri: '/login',
+        logoutRedirectUri: '/login',
         cookie: {
           options: {
             sameSite: 'Strict',

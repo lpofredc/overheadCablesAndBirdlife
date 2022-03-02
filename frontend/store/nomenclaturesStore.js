@@ -57,7 +57,7 @@ export const getters = {
       const owners = state.nomenclatures.find(
         (elem) => elem.mnemonic === 'owner'
       )
-      return owners.items
+      return owners.item_nomenclature
     } catch (_err) {
       $nuxt.error({
         statusCode: errorCodes.get_infrstr_owners.code,
@@ -78,7 +78,7 @@ export const getters = {
       const poleTypes = state.nomenclatures.find(
         (elem) => elem.mnemonic === 'pole_type'
       )
-      return poleTypes.items
+      return poleTypes.item_nomenclature
     } catch (_err) {
       $nuxt.error({
         statusCode: errorCodes.get_infrstr_poletypes.code,
@@ -99,7 +99,7 @@ export const getters = {
       const poleTypes = state.nomenclatures.find(
         (elem) => elem.mnemonic === 'risk_level'
       )
-      return poleTypes.items
+      return poleTypes.item_nomenclature
     } catch (_err) {
       $nuxt.error({
         statusCode: errorCodes.get_infrstr_poletypes.code,
@@ -120,23 +120,21 @@ export const actions = {
    */
   async loadNomenclatures({ commit }) {
     try {
-      const types = await this.$axios.$get('nomenclature/types') // get Types list
+      const types = await this.$axios.$get('nomenclature/types/') // get Types list
 
-      // For each type, get list of items
-      for (const i in types) {
-        let items = await this.$axios.$get(
-          `nomenclature/type/${types[i].id}/items`
-        )
-        // TODO To be removed
-        // console.log(types[i])
+      // // For each type, get list of items
+      // for (const i in types) {
+      //   let items = await this.$axios.$get(`nomenclature/types/${types[i].id}/`)
+      //   // TODO To be removed
+      //   // console.log(types[i])
 
-        // Filter to keep only Items matching to current Type (request send the whole list)
-        items = items.filter((elem) => elem.type === types[i].id)
+      //   // Filter to keep only Items matching to current Type (request send the whole list)
+      //   items = items.filter((elem) => elem.type === types[i].id)
 
-        // TODO review sinp_nomanclature in backend => nomenclature/type/${types[i].id}/items` send
-        // the list of all items, whatever the "${types[i].id}" is
-        types[i].items = items
-      }
+      //   // TODO review sinp_nomanclature in backend => nomenclature/type/${types[i].id}/items` send
+      //   // the list of all items, whatever the "${types[i].id}" is
+      //   types[i].items = items
+      // }
       commit('add', types)
     } catch (_err) {
       $nuxt.error({

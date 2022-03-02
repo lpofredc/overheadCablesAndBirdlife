@@ -10,9 +10,7 @@
           {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
         </div>
         <v-btn v-if="$auth.loggedIn" icon class="mr -2" @click.stop="logout">
-          <v-icon large :color="$auth.loggedIn ? 'red' : 'success'"
-            >mdi-logout</v-icon
-          >
+          <v-icon large>mdi-logout</v-icon>
         </v-btn>
       </v-app-bar>
       <v-navigation-drawer :mini-variant="miniVariant" clipped app>
@@ -39,7 +37,6 @@ export default {
      */
     logout() {
       this.$auth.logout()
-      this.$store.$router.push('/')
     },
   },
 }

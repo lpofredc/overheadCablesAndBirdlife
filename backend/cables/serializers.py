@@ -7,7 +7,7 @@ from rest_framework_gis.serializers import (
 )
 from rest_polymorphic.serializers import PolymorphicSerializer
 from sinp_nomenclatures.serializers import (
-    ItemSerializer as NomenclatureSerializer,
+    NomenclatureSerializer as NomenclatureSerializer,
 )
 
 from geo_area.models import GeoArea
