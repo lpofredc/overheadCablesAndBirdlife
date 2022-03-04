@@ -1,11 +1,10 @@
 <template>
-  <div>
+  <div style="height: calc(100vh - 76px); width: 100%">
     <l-map
       :class="editMode ? 'change-map' : 'view-map'"
       :center="center"
       :bounds="bounds"
       :max-bounds="maxBounds"
-      style="height: 90vh; width: 100%"
       @click="recordPosition"
     >
       <l-tile-layer :url="url" :attribution="attribution" />

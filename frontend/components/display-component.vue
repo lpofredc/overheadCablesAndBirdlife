@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 90vh" class="overflow-auto">
+  <div class="overflow-auto">
     <v-tabs center-active grow color="indigo">
       <v-tab> {{ $t('display.infrastructures') }} </v-tab>
       <v-tab-item> <data-infrastructure-display /></v-tab-item>

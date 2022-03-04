@@ -60,6 +60,11 @@ export default {
   },
 
   auth: {
+    redirect: {
+      login: '/',
+      logout: '/',
+      home: '/',
+    },
     strategies: {
       local: {
         scheme: 'refresh',
@@ -91,8 +96,6 @@ export default {
             property: false,
           },
         },
-        redirectUri: '/login',
-        logoutRedirectUri: '/login',
         cookie: {
           options: {
             sameSite: 'Strict',

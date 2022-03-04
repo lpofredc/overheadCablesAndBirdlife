@@ -1,8 +1,6 @@
 <template>
   <div>
-    <v-card>
-      <NuxtLink to="login">Connexion</NuxtLink>
-    </v-card>
+    <v-card>Texte d'acceil et logo </v-card>
   </div>
 </template>
 

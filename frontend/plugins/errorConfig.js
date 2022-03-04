@@ -2,7 +2,7 @@
  * This file contains the errorcode configuration for the app.
  *
  * code: it is error code determined for this app.
- * Values start at 601 to avoid confusion with HTTP statusCodes.
+ * Values start at 701 to avoid confusion with HTTP statusCodes.
  * Error capture in nuxt do not contains "statusError" property, only "message" property
  * This "message" property is not provided to user.
  *
@@ -10,34 +10,39 @@
  * (internationalization). Refer in '~/locales/*'.
  */
 errorCodes = {
+  // refer login-component
+  login: {
+    code: 601,
+    msg: 'login-issue',
+  },
   // refer loadNomenclatures in nomenclatureStore
   loading_whole_nomenclatures: {
-    code: 601,
+    code: 701,
     msg: 'loading-issue',
   },
   // refer getConditions in nomenclatureStore
   get_infrstr_conditions: {
-    code: 602,
+    code: 702,
     msg: 'loading-issue',
   },
   // refer getOwners in nomenclatureStore
   get_infrstr_owners: {
-    code: 603,
+    code: 703,
     msg: 'loading-issue',
   },
   // refer getPoleTypes in nomenclatureStore
   get_infrstr_poletypes: {
-    code: 604,
+    code: 704,
     msg: 'loading-issue',
   },
   // refer getPoleTypes in nomenclatureStore
   get_infrstr_risklevels: {
-    code: 605,
+    code: 705,
     msg: 'loading-issue',
   },
   // refer submit in point-component
   create_pole: {
-    code: 701,
+    code: 801,
     msg: 'create-issue',
   },
 }

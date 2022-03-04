@@ -56,6 +56,7 @@
     "username": "Username"
   },
   "error": {
+    "login-issue": "An issue occured with login process.Please try again. If the issue persists, contact your admin",
     "create-issue": "An inadvertant error occured during element creation process.No new element was created. Try it again. If the issue persists, please contact your admin",
     "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin"
   },

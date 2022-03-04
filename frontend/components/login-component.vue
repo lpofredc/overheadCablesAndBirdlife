@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: 'LoginPage',
+  name: 'LoginComponent',
   auth: false,
   data() {
     return {
@@ -69,10 +69,11 @@ export default {
         })
         this.$router.push('/view')
       } catch (err) {
-        // TODO review/adjust statusCode and Message
         $nuxt.error({
-          statusCode: 512,
-          message: 'Un problème de connexion est survenu',
+          statusCode: errorCodes.login.code,
+          message:
+            `Error ${errorCodes.login.code}: ` +
+            $nuxt.$t(`error.${errorCodes.login.msg}`),
         })
       }
     },
