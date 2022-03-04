@@ -17,6 +17,7 @@
     ><v-main>
       <Nuxt />
     </v-main>
+    <error-snackbar />
   </v-app>
 </template>
 

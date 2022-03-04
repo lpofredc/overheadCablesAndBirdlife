@@ -60,21 +60,34 @@ export default {
     reset() {
       this.$refs.form.reset()
     },
-
+    /**
+     * Login method based on form data.
+     * Managed by auth module that requests login to the backend API.
+     */
     async userLogin() {
       try {
-        this.$refs.form.validate()
-        await this.$auth.loginWith('local', {
-          data: this.login,
-        })
-        this.$router.push('/view')
+        // check theform is validated
+        if (this.$refs.form.validate()) {
+          await this.$auth.loginWith('local', {
+            data: this.login,
+          })
+          this.$router.push('/view') // if OK, redirect to "/view"
+        }
       } catch (err) {
-        $nuxt.error({
-          statusCode: errorCodes.login.code,
-          message:
-            `Error ${errorCodes.login.code}: ` +
-            $nuxt.$t(`error.${errorCodes.login.msg}`),
-        })
+        const error = {}
+        // if nuxt error message contains substring '401'
+        if (err.toString().includes('401')) {
+          error.code = errorCodes.authentication.code
+          error.msg = $nuxt.$t(`error.${errorCodes.authentication.msg}`)
+        } else {
+          // for other login errors
+          error.code = errorCodes.login.code
+          error.msg = $nuxt.$t(`error.${errorCodes.login.msg}`)
+        }
+        // set error message to errorStore
+        this.$store.commit('errorStore/setError', error)
+        // trigger display of error message in snackbar
+        this.$store.commit('errorStore/toggle')
       }
     },
   },

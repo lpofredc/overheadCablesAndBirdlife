@@ -10,6 +10,11 @@
  * (internationalization). Refer in '~/locales/*'.
  */
 errorCodes = {
+  // refer login-component (ID/Password error)
+  authentication: {
+    code: 401,
+    msg: 'id-pwd-issue',
+  },
   // refer login-component
   login: {
     code: 601,
