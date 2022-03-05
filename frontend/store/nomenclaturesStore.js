@@ -121,28 +121,23 @@ export const actions = {
   async loadNomenclatures({ commit }) {
     try {
       const types = await this.$axios.$get('nomenclature/types/') // get Types list
-
-      // // For each type, get list of items
-      // for (const i in types) {
-      //   let items = await this.$axios.$get(`nomenclature/types/${types[i].id}/`)
-      //   // TODO To be removed
-      //   // console.log(types[i])
-
-      //   // Filter to keep only Items matching to current Type (request send the whole list)
-      //   items = items.filter((elem) => elem.type === types[i].id)
-
-      //   // TODO review sinp_nomanclature in backend => nomenclature/type/${types[i].id}/items` send
-      //   // the list of all items, whatever the "${types[i].id}" is
-      //   types[i].items = items
-      // }
       commit('add', types)
-    } catch (_err) {
-      $nuxt.error({
-        statusCode: errorCodes.loading_whole_nomenclatures.code,
-        message:
-          `Error ${errorCodes.loading_whole_nomenclatures.code}: ` +
-          $nuxt.$t(`error.${errorCodes.loading_whole_nomenclatures.msg}`),
-      })
+    } catch (err) {
+      const error = {}
+      // if nuxt error message contains substring '404'
+      if (err.toString().includes('404')) {
+        error.code = errorCodes.nomenclature_not_found.code
+        error.msg = $nuxt.$t(`error.${errorCodes.nomenclature_not_found.msg}`)
+      } else {
+        error.code = errorCodes.loading_whole_nomenclatures.code
+        error.msg = $nuxt.$t(
+          `error.${errorCodes.loading_whole_nomenclatures.msg}`
+        )
+      }
+      // set error message to errorStore and trigger message disply through "err" watcher in
+      // error-snackbar component
+      this.$store.commit('errorStore/setError', error)
+      $nuxt.$auth.logout()
     }
   },
 }

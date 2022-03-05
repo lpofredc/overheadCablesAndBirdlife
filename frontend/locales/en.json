@@ -59,7 +59,8 @@
     "id-pwd-issue": "Error of username or password",
     "login-issue": "An issue occured with login process.Please try again. If the issue persists, contact your admin",
     "create-issue": "An inadvertant error occured during element creation process.No new element was created. Try it again. If the issue persists, please contact your admin",
-    "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin"
+    "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin",
+    "nomenclature_not_found_resource": "Server Data loading issue. You were disconnected"
   },
   "valid": {
     "range": "Value awaited in range: ",

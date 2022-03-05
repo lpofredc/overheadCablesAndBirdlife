@@ -1,34 +1,29 @@
 /** Nuxt Store module: errorStore module use to handle error message dispaly in snackbar */
 export const state = () => ({
-  // boolean value that toggle to trigger display of error message. Value has no role. Only the
-  // value change trigger the action capture in watcher.
-  isError: { type: Boolean, default: false },
-  // Error message content
+  // Error message content: The error message is set to "err". this listened by watcher that
+  // triggers the display of message in snackbar (refer error-snackbar component)
   err: {
     code: { type: Number, default: null },
     msg: { type: String, default: null },
   },
 })
 
+/**
+ * mutations are used to change state value from errorStore
+ */
 export const mutations = {
-  toggle(state) {
-    state.isError = !state.isError
-  },
   setError(state, data) {
     state.err = data
   },
 }
 
 /**
- * Getter for isError level nomenclature items.
+ * Getter for state value "err" level nomenclature items.
  *
  * @param {state} state of this store module
- * @return {JSON object} returns the list of nomenclature items for risk levels
+ * @return {JSON object} returns the "err" object
  */
 export const getters = {
-  isError(state) {
-    return state.isError
-  },
   err(state) {
     return state.err
   },

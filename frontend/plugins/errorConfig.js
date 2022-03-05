@@ -21,28 +21,33 @@ errorCodes = {
     msg: 'login-issue',
   },
   // refer loadNomenclatures in nomenclatureStore
-  loading_whole_nomenclatures: {
+  nomenclature_not_found: {
     code: 701,
+    msg: 'nomenclature_not_found_resource',
+  },
+  // refer loadNomenclatures in nomenclatureStore
+  loading_whole_nomenclatures: {
+    code: 702,
     msg: 'loading-issue',
   },
   // refer getConditions in nomenclatureStore
   get_infrstr_conditions: {
-    code: 702,
+    code: 703,
     msg: 'loading-issue',
   },
   // refer getOwners in nomenclatureStore
   get_infrstr_owners: {
-    code: 703,
-    msg: 'loading-issue',
-  },
-  // refer getPoleTypes in nomenclatureStore
-  get_infrstr_poletypes: {
     code: 704,
     msg: 'loading-issue',
   },
   // refer getPoleTypes in nomenclatureStore
-  get_infrstr_risklevels: {
+  get_infrstr_poletypes: {
     code: 705,
+    msg: 'loading-issue',
+  },
+  // refer getPoleTypes in nomenclatureStore
+  get_infrstr_risklevels: {
+    code: 706,
     msg: 'loading-issue',
   },
   // refer submit in point-component

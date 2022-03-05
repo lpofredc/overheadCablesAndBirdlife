@@ -3,7 +3,9 @@
     ERR-{{ err.code }}: {{ err.msg }}
 
     <template #action="{ attrs }">
-      <v-btn color="pink" text v-bind="attrs" @click="close"> Close </v-btn>
+      <v-btn color="pink" text v-bind="attrs" @click="display = !display">
+        Close
+      </v-btn>
     </template>
   </v-snackbar>
 </template>
@@ -17,28 +19,19 @@ export default {
     }
   },
   computed: {
+    /**
+     * Getter for "err" (error Object) from errorStore
+     */
     ...mapGetters({
-      isError: 'errorStore/isError',
       err: 'errorStore/err',
     }),
   },
   watch: {
     /**
-     * Watcher: when value change (whatever true/false), that trigger display of error message
-     * in snackbar by setting "diplay=true".
+     * Watcher: when value changes, that triggers display of the error message in snackbar.
      */
-    isError() {
+    err() {
       this.display = true
-    },
-  },
-  methods: {
-    /**
-     * Method to close the snacbar by setting "diplay=false" and reset message content.
-     * If user do not click closing button, snackbar will closed itself after a while.
-     */
-    close() {
-      this.display = false
-      this.$store.commit('errorStore/setError', { code: null, msg: null })
     },
   },
 }
