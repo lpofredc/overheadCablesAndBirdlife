@@ -84,7 +84,7 @@ export default {
           error.code = errorCodes.login.code
           error.msg = $nuxt.$t(`error.${errorCodes.login.msg}`)
         }
-        // set error message to errorStore and trigger message disply through "err" watcher in
+        // set error message to errorStore and triggers message displyy through "err" watcher in
         // error-snackbar component
         this.$store.commit('errorStore/setError', error)
       }

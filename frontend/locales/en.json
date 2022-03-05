@@ -57,9 +57,13 @@
   },
   "error": {
     "id-pwd-issue": "Error of username or password",
-    "login-issue": "An issue occured with login process.Please try again. If the issue persists, contact your admin",
-    "create-issue": "An inadvertant error occured during element creation process.No new element was created. Try it again. If the issue persists, please contact your admin",
-    "loading-issue": "An application parameter loading issue occured. Try to start again the app. If the issue persists, please contact your admin",
+    "login-issue": "An issue occured with login process.Please try again",
+    "create-issue": "An inadvertant error occured during element creation process. No new element was created. Please try it again",
+    "loading-issue": "A not identified application parameter loading issue occured. You were disconnected",
+    "loading-conditions-issue": "Issue with loading \"Infrastructure Condition\" options occured. You were disconnected",
+    "loading-ownerss-issue": "Issue with loading \"Owner\" options occured. You were disconnected",
+    "loading-poletypes-issue": "Issue with loading \"PoleType\" options occured. You were disconnected",
+    "loading-risklevels-issue": "Issue with loading \"Risk Level\" options occured. You were disconnected",
     "nomenclature_not_found_resource": "Server Data loading issue. You were disconnected"
   },
   "valid": {

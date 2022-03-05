@@ -33,22 +33,22 @@ errorCodes = {
   // refer getConditions in nomenclatureStore
   get_infrstr_conditions: {
     code: 703,
-    msg: 'loading-issue',
+    msg: 'loading-conditions-issue',
   },
   // refer getOwners in nomenclatureStore
   get_infrstr_owners: {
     code: 704,
-    msg: 'loading-issue',
+    msg: 'loading-owners-issue',
   },
   // refer getPoleTypes in nomenclatureStore
   get_infrstr_poletypes: {
     code: 705,
-    msg: 'loading-issue',
+    msg: 'loading-poletypes-issue',
   },
   // refer getPoleTypes in nomenclatureStore
   get_infrstr_risklevels: {
     code: 706,
-    msg: 'loading-issue',
+    msg: 'loading-risklevels-issue',
   },
   // refer submit in point-component
   create_pole: {
