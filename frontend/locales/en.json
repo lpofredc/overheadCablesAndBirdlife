@@ -1,0 +1,74 @@
+{
+  "app": {
+    "appname": "Overhead Cables & BirdLife",
+    "cancel": "Cancel",
+    "data": "Data",
+    "disconnected": "Logged out",
+    "id": "Id",
+    "map": "Map",
+    "type": "Type"
+  },
+  "display": {
+    "all": "All",
+    "infrastructures": "Poles/Pylons and Cables",
+    "mortality-cases": "Mortality cases",
+    "poles": "Poles/Pylons",
+    "poles-eqmt": "Poles Equipements",
+    "segments": "Segments",
+    "segments-eqmt": "Segments Equipements",
+    "sensitive-areas": "Sensitive areas"
+  },
+  "point": {
+    "administrative": "Administrative Information",
+    "advice": "Advices",
+    "advice_isol": "Isolate",
+    "advice_disrupt": "Make it disruptive",
+    "advice_attract": "Make it attractive",
+    "attractiveness": "Attractiveness",
+    "cancel": "Cancel",
+    "condition": "Condition",
+    "coord": "Coordinates",
+    "datecreate": "Creation date",
+    "dateformat": "Date format DD/MM/YYYY",
+    "dangerousness": "Dangerousness",
+    "description": "Description",
+    "features": "Features",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "manual-hadling": "Manually enter coordinates",
+    "network": "Network",
+    "neutralized": "Neutralized",
+    "new_pole": "New Pole/Pylon",
+    "owner": "Owner",
+    "remark": "Remarks",
+    "valid": "Create"
+  },
+  "line": {
+    "new_segment": "New Segment"
+  },
+  "login": {
+    "application": "Application",
+    "home_page": "Home Page",
+    "password": "Password",
+    "required_pwd_msg": "Username is required",
+    "required_username_msg": "Username is required",
+    "sign-in": "Sign in",
+    "username": "Username"
+  },
+  "error": {
+    "id-pwd-issue": "Error of username or password",
+    "login-issue": "An issue occured with login process.Please try again",
+    "create-issue": "An inadvertant error occured during element creation process. No new element was created. Please try it again",
+    "loading-issue": "A not identified application parameter loading issue occured. You were disconnected",
+    "loading-conditions-issue": "Issue with loading \"Infrastructure Condition\" options occured. You were disconnected",
+    "loading-ownerss-issue": "Issue with loading \"Owner\" options occured. You were disconnected",
+    "loading-poletypes-issue": "Issue with loading \"PoleType\" options occured. You were disconnected",
+    "loading-risklevels-issue": "Issue with loading \"Risk Level\" options occured. You were disconnected",
+    "nomenclature_not_found_resource": "Server Data loading issue. You were disconnected"
+  },
+  "valid": {
+    "range": "Value awaited in range: ",
+    "required": "Required field",
+    "required_or_not_valid": "field not filled in or data type not valid"
+  }
+}

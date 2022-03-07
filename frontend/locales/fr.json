@@ -1,0 +1,74 @@
+{
+  "app": {
+    "appname": "Overhead Cables & BirdLife",
+    "cancel": "Annuler",
+    "data": "Données",
+    "disconnected": "Hors connection",
+    "id": "Identifiant",
+    "map": "Cartographie",
+    "type": "Type"
+  },
+  "display": {
+    "all": "Tout",
+    "infrastructures": "Poteaux/Pylônes et Cables",
+    "mortality-cases": "Cas de mortalité",
+    "poles": "Poteaux/Pylônes",
+    "poles-eqmt": "Equipements Poteaux/Pylônes",
+    "segments": "Segments",
+    "segments-eqmt": "Equipements Segments",
+    "sensitive-areas": "Zones Sensibles"
+  },
+  "point": {
+    "administrative": "Informations Administratives",
+    "advice": "Recommandations",
+    "advice_isol": "A isoler",
+    "advice_disrupt": "Rendre dissuasif",
+    "advice_attract": "Rendre attractif",
+    "attractiveness": "Attractivité",
+    "cancel": "Annuler",
+    "condition": "Etat",
+    "coord": "Coordonnées",
+    "datecreate": "Date de création",
+    "dateformat": "Format de date: DD/MM/YYYY",
+    "dangerousness": "Dangerosité",
+    "description": "Description",
+    "features": "Caractéristiques",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "manual-hadling": "Saisir les coordonnées manuellement",
+    "network": "Réseau",
+    "neutralized": "Neutralisé",
+    "new_pole": "Nouveau Poteau/Pylône",
+    "owner": "Propriétaire",
+    "remark": "Commentaire",
+    "valid": "Créer"
+  },
+  "line": {
+    "new_segment": "Nouveau Tronçon"
+  },
+  "login": {
+    "application": "Application",
+    "home_page": "Acceuil",
+    "password": "Password",
+    "required_pwd_msg": "Le mot de passe est requis",
+    "required_username_msg": "Le nom d'utilisateur est requis",
+    "sign-in": "Se connecter",
+    "username": "Identifiant"
+  },
+  "error": {
+    "id-pwd-issue": "Erreur de nom d'utilisateur ou de mot de passe",
+    "login-issue": "Un problème de connexion est survenu. Veuillez tenter de vous connecter de nouveau",
+    "create-issue": "Une erreur inattendue s'est produite lors du processus de création d'un nouvel élément. Aucun élément n'a été créé",
+    "loading-issue": "Une erreur non identifiée durant le chargement des paramètres est survenue. Vous avez été déconnecté",
+    "loading-conditions-issue": "un problème de chargement des options \"Etat des Infrastructures\" est survenu. Vous avez été déconnecté",
+    "loading-owners-issue": "un problème de chargement des options \"Propriétaire\" est survenu. Vous avez été déconnecté",
+    "loading-poletypes-issue": "un problème de chargement des options \"type de Poteaux\" est survenu. Vous avez été déconnecté",
+    "loading-risklevels-issue": "un problème de chargement des options \"Niveau de Risque\" est survenu. Vous avez été déconnecté",
+    "nomenclature_not_found_resource": "Problème Serveur de chargement des données. vous avez été déconnecté"
+  },
+  "valid": {
+    "range": "Intervalle acceptable pour cette valeur: ",
+    "required": "Champ requis",
+    "required_or_not_valid": "Champ non complété ou type de donnée érroné"
+  }
+}
