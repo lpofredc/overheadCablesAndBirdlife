@@ -15,7 +15,7 @@ python manage.py migrate
 python manage.py loaddata ./commons/fixtures/*.xml
 
 echo "************** Create backend superuser ******************"
-echo $SU_USERNAME
+
 script="
 from django.contrib.auth import get_user_model
 
@@ -34,7 +34,7 @@ if User.objects.filter(is_superuser=True).count()==0:
 else:
     print('One or more Superuser already exists, creation skipped.')
 "
-echo "$script"
+
 printf "$script" | python manage.py shell
 
 if [ "$DEBUG" = "True" ]; then
