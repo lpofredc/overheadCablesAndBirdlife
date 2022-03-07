@@ -1,5 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
+// const development = process.env.NODE_ENV !== 'production'
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -56,7 +58,16 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'http://localhost:8000/api/v1/',
+    // baseURL: development ? 'http://localhost:8000/api/v1/' : '/api/v1/',
+    prefix: '/api/v1/',
+    proxy: true,
+  },
+
+  // proxy: {
+  //   '/api/v1': process.env.API_URL || 'http://localhost:8000/api/v1',
+  // },
+  proxy: {
+    '/api/v1/': process.env.API_URL || 'http://localhost:8000',
   },
 
   auth: {
@@ -159,3 +170,4 @@ export default {
     },
   },
 }
+console.log(this)

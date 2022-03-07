@@ -96,6 +96,9 @@ class OperationFilter(BaseModelFilter):
     type = filters.NumberFilter(
         field_name="infrastructure__polymorphic_ctype_id"
     )
+    type_model = filters.CharFilter(
+        field_name="infrastructure__polymorphic_ctype__model"
+    )
     # is_segment = filters.BooleanFilter(field_name="pole__id", lookup_expr="isnull")
     # date = filters.DateFilter(field_name="operation_date", lookup_expr="date")
     # from_date = filters.DateFilter(field_name="operation_date", lookup_expr="date__gte")
@@ -107,7 +110,7 @@ class OperationFilter(BaseModelFilter):
 
     class Meta:
         model = Operation
-        fields = ["type"]
+        fields = ["type", "type_model"]
 
 
 class InfrastructureFilter(BaseModelFilter):

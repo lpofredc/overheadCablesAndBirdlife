@@ -5,9 +5,9 @@
     <v-radio-group v-model="display" row dense @change="source">
       <v-row justify="space-around">
         <v-radio :label="$t('display.all')" value="both"></v-radio>
-        <v-radio :label="$t('display.eqmt_poles ')" value="poles"></v-radio>
+        <v-radio :label="$t('display.poles-eqmt')" value="poles"></v-radio>
         <v-radio
-          :label="$t('display.eqmt_segments')"
+          :label="$t('display.segments-eqmt')"
           value="segments"
         ></v-radio></v-row
     ></v-radio-group>
@@ -42,8 +42,12 @@ export default {
     }
   },
   async fetch() {
-    const pointOpData = await this.$axios.$get('cables/operations/?type=14')
-    const lineOpData = await this.$axios.$get('cables/operations/?type=13')
+    const pointOpData = await this.$axios.$get(
+      'cables/operations/?type_model=point'
+    )
+    const lineOpData = await this.$axios.$get(
+      'cables/operations/?type_model=line'
+    )
     const opData = await this.$axios.$get('cables/operations')
     this.$store.commit('cablesStore/addOperation', {
       all: opData,
