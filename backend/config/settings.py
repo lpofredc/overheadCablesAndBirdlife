@@ -28,7 +28,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv())
 # DEFAULT_C
 
 
@@ -99,11 +99,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": config("DBNAME", default="cables"),
-        "USER": config("DBUSER"),
-        "PASSWORD": config("DBPASSWORD"),
-        "HOST": config("DBHOST", default="localhost"),
-        "PORT": config("DBPORT", default="5432", cast=int),
+        "NAME": config("POSTGRES_DB", default="cables"),
+        "USER": config("POSTGRES_USER"),
+        "PASSWORD": config("POSTGRES_PASSWORD"),
+        "HOST": config("POSTGRES_HOST", default="localhost"),
+        "PORT": config("POSTGRES_PORT", default="5432", cast=int),
     }
 }
 
@@ -111,9 +111,7 @@ DATABASES = {
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3000",
 # ]
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv()
-)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv())
 print(CORS_ALLOWED_ORIGINS)
 
 # Password validation
@@ -164,9 +162,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
@@ -189,7 +185,7 @@ DJOSER = {
 MEDIA_UPLOAD = config("MEDIA_UPLOAD", default="uploads/")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 LOGGING = {
     "version": 1,
