@@ -5,7 +5,7 @@ export const state = () => ({
   lineData: {}, // Cable lines data
   opData: [],
   pointOpData: [],
-  LineOpData: [],
+  lineOpData: [],
 })
 
 export const mutations = {

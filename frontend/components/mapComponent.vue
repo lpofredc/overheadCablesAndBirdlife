@@ -266,7 +266,7 @@ export default {
      * Method that records pointer position on the map
      *
      * Only activated on "editMode"
-     * The position is recorded in store value "newPointCoord". A wtacher on newPointCoord will
+     * The position is recorded in store value "newPointCoord". A watcher on newPointCoord will
      * create or move the Marker as needed on the map.
      */
     recordPosition(event) {
@@ -278,7 +278,7 @@ export default {
      * Method that records pointer position when moved on the map (linked to @drag)
      *
      * Only activated on "editMode"
-     * The position is recorded in store value "newPointCoord". A wtacher on newPointCoord will the create
+     * The position is recorded in store value "newPointCoord". A watcher on newPointCoord will the create
      * or move the Marker as needed on the map.
      */
     updatePosition() {

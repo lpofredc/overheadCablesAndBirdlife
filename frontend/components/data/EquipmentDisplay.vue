@@ -1,7 +1,6 @@
 
 <template>
   <div>
-    coucou
     <v-radio-group v-model="display" row dense @change="source">
       <v-row justify="space-around">
         <v-radio :label="$t('display.all')" value="both"></v-radio>
@@ -37,7 +36,6 @@ export default {
           sortable: true,
           value: 'id',
         },
-        // { text: 'TMP', value: 'eqmt_type.label' },
       ],
     }
   },
@@ -60,7 +58,7 @@ export default {
   computed: mapGetters({
     opData: 'cablesStore/opData',
     pointOpData: 'cablesStore/pointOpData',
-    LineOpData: 'cablesStore/LineOpData',
+    lineOpData: 'cablesStore/lineOpData',
   }),
   methods: {
     source(choice) {

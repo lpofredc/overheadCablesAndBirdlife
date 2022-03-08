@@ -2,6 +2,7 @@
   <div style="height: 90vh" class="overflow-auto">
     <v-form ref="form" v-model="formValid" class="text-center">
       <h1>{{ $t('point.new_pole') }}</h1>
+      <!-- Filedset COORDINATES -->
       <v-container>
         <fieldset class="d-flex justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">{{ $t('point.coord') }}</legend>
@@ -14,7 +15,7 @@
             :rules="[rules.requiredOrNotValid, rules.latRange]"
             required
             hide-spin-buttons
-            class="mx-5"
+            class="shrink mx-5"
           />
           <v-text-field
             ref="lng"
@@ -25,20 +26,21 @@
             :rules="[rules.requiredOrNotValid, rules.lngRange]"
             required
             hide-spin-buttons
-            class="mx-5"
+            class="shrink mx-5"
           />
           <v-checkbox
             v-model="manualChange"
             dense
             :label="$t('point.manual-hadling')"
             class="mx-5"
-          ></v-checkbox></fieldset
-      ></v-container>
-      <v-container
-        ><fieldset class="mx-2">
+          ></v-checkbox>
+        </fieldset>
+      </v-container>
+      <!-- Filedset ADMINISTRATIVE -->
+      <v-container>
+        <fieldset class="justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">{{ $t('point.administrative') }}</legend>
           <v-row class="px-4 py-5">
-            <v-spacer></v-spacer>
             <v-select
               v-model="owner"
               :items="networkOwners"
@@ -47,16 +49,14 @@
               :rules="[rules.required]"
               :label="$t('point.network')"
               required
-              class="mx-5"
+              class="shrink mx-5"
             >
             </v-select>
-            <v-spacer></v-spacer
-            ><v-menu
+            <v-menu
               :close-on-content-click="false"
               transition="scale-transition"
               offset-y
-              max-width="290px"
-              min-width="auto"
+              class="shrink mx-5"
             >
               <template #activator="{ on, attrs }">
                 <v-text-field
@@ -72,13 +72,13 @@
               </template>
               <v-date-picker v-model="createDate" no-title></v-date-picker>
             </v-menu>
-            <v-spacer></v-spacer
-          ></v-row></fieldset
+          </v-row></fieldset
       ></v-container>
+      <!-- Filedset DESCRIPTION -->
       <v-container>
-        <fieldset class="mx-2">
+        <fieldset class="justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">{{ $t('point.description') }}</legend>
-          <v-row class="px-4 py-5">
+          <v-row class="justify-space-around flex-wrap mx-2">
             <v-combobox
               v-model="poleDesc"
               :items="poleTypes"
@@ -90,31 +90,26 @@
               multiple
               small-chips
               deletable-chips
-              class="mx-5"
-            ></v-combobox
-          ></v-row>
-          <v-row class="px-4 py-5">
-            <v-spacer></v-spacer>
-            <v-select
+              class="shrink mx-5"
+            ></v-combobox> </v-row
+          ><v-row class="justify-space-around flex-wrap mx-2"
+            ><v-select
               v-model="poleCondition"
               :items="conditions"
               item-text="label"
               item-value="id"
               :rules="[rules.required]"
               :label="$t('point.condition')"
-              class="mx-5"
+              class="shrink mx-5"
             ></v-select>
-
-            <v-spacer></v-spacer>
             <v-checkbox
               v-model="neutralized"
               :label="$t('point.neutralized')"
               dense
               class="mx-5"
             ></v-checkbox>
-            <v-spacer></v-spacer
-          ></v-row>
-          <v-row class="px-4 py-5">
+          </v-row>
+          <v-row class="px-4 pb-4">
             <v-textarea
               v-model="remark"
               clearable
@@ -122,8 +117,9 @@
               :label="$t('point.remark')"
               class="mx-5"
             ></v-textarea
-          ></v-row></fieldset
-      ></v-container>
+          ></v-row>
+        </fieldset>
+      </v-container>
       <v-container>
         <fieldset class="d-flex justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">{{ $t('point.advice') }}</legend>
@@ -146,7 +142,6 @@
       <v-container>
         <fieldset class="d-flex justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">{{ $t('point.features') }}</legend>
-          <v-spacer></v-spacer>
           <v-select
             v-model="attractiveness"
             :items="riskLevels"
@@ -154,9 +149,8 @@
             item-value="id"
             :rules="[rules.required]"
             :label="$t('point.attractiveness')"
-            class="mx-5"
-          ></v-select
-          ><v-spacer></v-spacer>
+            class="shrink mx-5"
+          ></v-select>
           <v-select
             v-model="dangerousness"
             :items="riskLevels"
@@ -164,9 +158,8 @@
             item-value="id"
             :rules="[rules.required]"
             :label="$t('point.dangerousness')"
-            class="mx-5"
-          ></v-select
-          ><v-spacer></v-spacer></fieldset
+            class="shrink mx-5"
+          ></v-select></fieldset
       ></v-container>
       <v-container>
         <v-row class="justify-space-around">
