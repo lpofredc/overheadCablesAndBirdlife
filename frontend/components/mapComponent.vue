@@ -1,22 +1,24 @@
 <template>
   <div style="height: calc(100vh - 76px); width: 100%">
     <l-map
+      ref="map"
       :class="editMode ? 'change-map' : 'view-map'"
       :center="center"
       :bounds="bounds"
       :max-bounds="maxBounds"
       @click="recordPosition"
     >
+      <test-component :map="map" :geo-json="{}" />
       <l-tile-layer :url="url" :attribution="attribution" />
       <!-- l-marker Not visible if lat or lng data is null, and if not in mode="point" -->
-      <l-marker
+      <!-- <l-marker
         v-if="mode === 'point' && newMarker"
         :lat-lng.sync="newMarker.position"
         :draggable="true"
         :max-bounds="maxBounds"
         :visible="newPointCoord.lat !== null && newPointCoord.lng !== null"
         @dragend="updatePosition"
-      />
+      /> -->
       <!-- <l-marker
         v-for="item in [
           [45, 0],
@@ -28,7 +30,7 @@
         :max-bounds="maxBounds"
         @dragend="updatePosition"
       /> -->
-      <l-geo-json
+      <!-- <l-geo-json
         v-if="cablesData"
         :geojson="lineStringData"
         :options-style="styleData"
@@ -67,7 +69,7 @@
           <v-icon>mdi-coffin</v-icon>
         </v-btn>
       </v-speed-dial>
-      <l-icon-default :image-path="path" />
+      <l-icon-default :image-path="path" /> -->
     </l-map>
   </div>
 </template>
@@ -75,6 +77,8 @@
 <script>
 import { latLngBounds } from 'leaflet'
 import { mapGetters } from 'vuex'
+import '@geoman-io/leaflet-geoman-free'
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
 
 export default {
   name: 'DataMap',
@@ -82,6 +86,7 @@ export default {
 
   data() {
     return {
+      map: {},
       // creation markers
       newMarker: null,
       newLineMarkers: [[45, 0]],
@@ -213,6 +218,11 @@ export default {
     //     // }
     //   }
     // },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.map = this.$refs.map.mapObject
+    })
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object

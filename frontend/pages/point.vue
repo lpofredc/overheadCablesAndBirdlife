@@ -2,7 +2,7 @@
   <div>
     <v-row v-if="$vuetify.breakpoint.lgAndUp"
       ><v-col width="50%">
-        <map-component :edit-mode="true" mode="point" /></v-col
+        <map-component :edit-mode="true" mode="point" /> </v-col
       ><v-col><form-point-component /></v-col
     ></v-row>
     <v-tabs
