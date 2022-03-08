@@ -2,11 +2,10 @@
 
 echo "Waiting for postgres..."
 
-until pg_isready -h $DBHOST -p $DBPORT; do
-    echo "Awaiting Database container on ${DBHOST}:${DBPORT}"
+until pg_isready -h ${POSTGRES_HOST:-db} -p ${POSTGRES_PORT:-5432}; do
+    echo "Awaiting Database container on  ${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}"
     sleep 1
 done
-
 
 echo "PostgreSQL started"
 
@@ -15,7 +14,7 @@ python manage.py migrate
 # python manage.py collectstatic --no-input --clear
 python manage.py loaddata ./commons/fixtures/*.xml
 
-echo "************** Create OCABL SU ******************"
+echo "************** Create backend superuser ******************"
 
 script="
 from django.contrib.auth import get_user_model
@@ -27,7 +26,7 @@ email = '$SU_EMAIL';
 User = get_user_model()
 
 if User.objects.filter(is_superuser=True).count()==0:
-    superuser=Profile.objects.create_user(username, email, password);
+    superuser=User.objects.create_user(username, email, password);
     superuser.is_superuser=True;
     superuser.is_staff=True;
     superuser.save();
@@ -35,12 +34,12 @@ if User.objects.filter(is_superuser=True).count()==0:
 else:
     print('One or more Superuser already exists, creation skipped.')
 "
+
 printf "$script" | python manage.py shell
 
-if [ "$DEBUG" = "True" ]
-then
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+if [ "$DEBUG" = "True" ]; then
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     python -m manage runserver
 else
-    gunicorn -b 127.0.0.1:8000 config.wsgi
+    gunicorn -b 0.0.0.0:8000 config.wsgi
 fi

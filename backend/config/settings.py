@@ -26,9 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv()
+)
 # DEFAULT_C
 
 
@@ -99,11 +101,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": config("DBNAME", default="cables"),
-        "USER": config("DBUSER"),
-        "PASSWORD": config("DBPASSWORD"),
-        "HOST": config("DBHOST", default="localhost"),
-        "PORT": config("DBPORT", default="5432", cast=int),
+        "NAME": config("POSTGRES_DB", default="cables"),
+        "USER": config("POSTGRES_USER"),
+        "PASSWORD": config("POSTGRES_PASSWORD"),
+        "HOST": config("POSTGRES_HOST", default="localhost"),
+        "PORT": config("POSTGRES_PORT", default="5432", cast=int),
     }
 }
 
@@ -186,9 +188,6 @@ DJOSER = {
 
 # APPLICATION SPECIFICS
 MEDIA_UPLOAD = config("MEDIA_UPLOAD", default="uploads/")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
 
 LOGGING = {
     "version": 1,

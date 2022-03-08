@@ -1,5 +1,13 @@
-# from django.urls import path
+from django.urls import path
 
-# app_name = "new_module"
+from .views import PingView
 
-# urlpatterns = []
+app_name = "commons"
+
+urlpatterns = [
+    path(
+        "ping",
+        PingView.as_view(),
+        name="ping",
+    ),
+]
