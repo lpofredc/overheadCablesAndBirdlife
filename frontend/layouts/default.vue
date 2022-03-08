@@ -8,11 +8,16 @@
       <div>
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
-      <v-btn v-if="$auth.loggedIn" icon class="mr -2" @click.stop="logout">
+      <v-btn v-if="$auth.loggedIn" icon class="mr-2" @click.stop="logout">
         <v-icon large>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-navigation-drawer :mini-variant="miniVariant" clipped app>
+    <v-navigation-drawer
+      :mini-variant="miniVariant"
+      clipped
+      mobile-breakpoint="0"
+      app
+    >
       <drawer-menu /></v-navigation-drawer
     ><v-main>
       <Nuxt />

@@ -38,8 +38,7 @@ else:
 printf "$script" | python manage.py shell
 
 if [ "$DEBUG" = "True" ]; then
-    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-    python -m manage runserver
+    python -m manage runserver 0.0.0.0:8000
 else
     gunicorn -b 0.0.0.0:8000 config.wsgi
 fi
