@@ -40,6 +40,7 @@
     "neutralized": "Neutralisé",
     "new_pole": "Nouveau Poteau/Pylône",
     "owner": "Propriétaire",
+    "pictures": "Images",
     "remark": "Commentaire",
     "valid": "Créer"
   },
@@ -54,6 +55,9 @@
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
     "username": "Identifiant"
+  },
+  "picture": {
+    "add_file": "Ajouter des Images"
   },
   "error": {
     "id-pwd-issue": "Erreur de nom d'utilisateur ou de mot de passe",

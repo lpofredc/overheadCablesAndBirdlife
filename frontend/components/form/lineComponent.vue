@@ -170,8 +170,8 @@
     ></v-container>
     <v-container>
       <v-row class="justify-space-around">
-        <v-btn @click.stop="back">{{ $t('point.cancel') }}</v-btn>
-        <v-btn @click.stop="submit">{{ $t('point.valid') }}</v-btn></v-row
+        <v-btn @click="back">{{ $t('point.cancel') }}</v-btn>
+        <v-btn @click="submit">{{ $t('point.valid') }}</v-btn></v-row
       ></v-container
     > -->
     </v-form>

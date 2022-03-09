@@ -162,9 +162,17 @@
           ></v-select></fieldset
       ></v-container>
       <v-container>
+        <fieldset class="d-flex justify-space-around flex-wrap mx-2">
+          <legend class="mx-3 px-1">
+            {{ $t('point.pictures') }}
+          </legend>
+          <utils-picture-component />
+        </fieldset>
+      </v-container>
+      <v-container>
         <v-row class="justify-space-around">
-          <v-btn @click.stop="back">{{ $t('point.cancel') }}</v-btn>
-          <v-btn @click.stop="submit">{{ $t('point.valid') }}</v-btn></v-row
+          <v-btn @click="back">{{ $t('point.cancel') }}</v-btn>
+          <v-btn @click="submit">{{ $t('point.valid') }}</v-btn></v-row
         ></v-container
       >
     </v-form>
@@ -183,7 +191,9 @@ export default {
       newLng: null,
       attractAdv: false,
       attractiveness: 8, // null,
-      createDate: '2022-02-25', // null,
+      createDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
       dangerousness: 8, // null,
       dissuadAdv: false,
       isolAdv: false,

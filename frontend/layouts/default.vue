@@ -2,13 +2,13 @@
 <template>
   <v-app>
     <v-app-bar clipped-left app dark color="light-blue darken-4"
-      ><v-app-bar-nav-icon @click.stop="miniVariant = !miniVariant" />
+      ><v-app-bar-nav-icon @click="miniVariant = !miniVariant" />
       <v-toolbar-title v-text="app_name" />
       <v-spacer></v-spacer>
       <div>
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
-      <v-btn v-if="$auth.loggedIn" icon class="mr-2" @click.stop="logout">
+      <v-btn v-if="$auth.loggedIn" icon class="mr-2" @click="logout">
         <v-icon large>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>

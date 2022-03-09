@@ -40,6 +40,7 @@
     "neutralized": "Neutralized",
     "new_pole": "New Pole/Pylon",
     "owner": "Owner",
+    "pictures": "Pictures",
     "remark": "Remarks",
     "valid": "Create"
   },
@@ -54,6 +55,9 @@
     "required_username_msg": "Username is required",
     "sign-in": "Sign in",
     "username": "Username"
+  },
+  "picture": {
+    "add_file": "Add Pictures"
   },
   "error": {
     "id-pwd-issue": "Error of username or password",
