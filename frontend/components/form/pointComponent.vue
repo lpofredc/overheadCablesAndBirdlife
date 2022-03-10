@@ -203,9 +203,6 @@ export default {
       },
     }
   },
-  mounted(){
-    console.log(this.riskLevels)
-  },
   computed: {
     /**
      * Getter and Setter for "lat" value.
