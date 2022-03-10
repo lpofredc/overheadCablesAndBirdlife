@@ -2,7 +2,7 @@
   <div style="height: calc(100vh - 76px); width: 100%">
     <!-- <p>{{pointData[0]}}</p>
       <p>{{lineStringData}}</p> -->
-    {{ newPoint }}
+    <!-- {{ newPoint }} -->
     <!-- <l-map
       ref="map"
       :class="editMode ? 'change-map' : 'view-map'"
@@ -41,13 +41,13 @@
         :max-bounds="maxBounds"
         @dragend="updatePosition"
       /> -->
-      <l-geo-json
+      <!-- <l-geo-json
         v-if="newPoint.geometry"
         name="newPoint"
         :geojson="newPoint"
         :options-style="styleData"
         :options="GeojsonOptions"
-      />
+      /> -->
       <!-- <l-geo-json
         v-if="cablesData"
         name="lineStringData"
@@ -108,11 +108,11 @@ export default {
       map: null,
       // creation markers
       newMarker: null,
-      newPoint: {
-        type: 'Feature',
-        properties: null,
-        geometry: null,
-      },
+      // newPoint: {
+      //   type: 'Feature',
+      //   properties: null,
+      //   geometry: null,
+      // },
       // newPoint: {
       //   type: 'Feature',
       //   properties: { id: 1, test: 'test' },
@@ -224,30 +224,39 @@ export default {
      * If Marker does not exist, it is created with new value.
      * Map is centered on the new point.
      */
+    // ##################### Works if initial point created with map control ########
     newPointCoord(newVal) {
       if (this.editMode && this.mode === 'point') {
-        if (newVal && newVal.lat && newVal.lng) {
-          // const newLatlng = new L.LatLng(newVal.lat, newVal.lng)
-          // this.newMarker.setLatLng(newLatlng)
-          if (this.newPoint.geometry) {
-            // if Marker already exists
-            this.newPoint.geometry.coordinates = [newVal.lng, newVal.lat]
-            // const newLatlng = new L.LatLng(newVal.lat, newVal.lng)
-            // this.newMarker.setLatLng(newLatlng)
+        if (this.newMarker) {
+          if (newVal && newVal.lat && newVal.lng) {
+            this.newMarker.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
           } else {
-            // else create it and set values
-            this.newPoint.geometry = {
-              type: 'Point',
-              coordinates: [newVal.lng, newVal.lat],
-            }
-            // const newLatlng = new L.LatLng(newVal.lat, newVal.lng)
-            // this.newMarker.setLatLng(newLatlng)
-            // map center on marker
-            this.center = [newVal.lat, newVal.lng]
+            // In fact, set the marker to point [0, 0]
+            this.newMarker.setLatLng(new L.LatLng(null, null))
           }
         }
       }
     },
+    // #########################################################################################
+    // newPointCoord(newVal) {
+    //       if (this.editMode && this.mode === 'point') {
+    //         if (this.newMarker) {
+    //           if (newVal && newVal.lat && newVal.lng) {
+    //             this.newMarker.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
+    //           } else {
+    //             this.newMarker.setLatLng(new L.LatLng(null, null))
+    //           }
+    //         } else {
+    //           this.newMarker = L.geoJSON({
+    //             type: 'Feature',
+    //             geometry: {
+    //               type: 'Point',
+    //               coordinates: [45, 0],
+    //             },
+    //           }).addTo(this.map)
+    //         }
+    //       }
+    //     },
     //   /**
     //    * Watcher for "newLineCoord" value
     //    *
@@ -372,8 +381,9 @@ export default {
           fillColor: 'red',
           fillOpacity: 0.4,
         })
+        // Action on Point/Line creation
         this.map.on('pm:create', (e) => {
-          // this.newMarker = e.layer
+          this.newMarker = e.layer
           this.map.pm.disableDraw()
           this.map.pm.addControls({
             drawMarker: false,
@@ -384,10 +394,11 @@ export default {
             lng: e.layer.toGeoJSON().geometry.coordinates[0],
             lat: e.layer.toGeoJSON().geometry.coordinates[1],
           })
-          this.newPoint = e.layer.toGeoJSON()
+          // this.newPoint = e.layer.toGeoJSON()
 
+          // Action on Point/Line change by dragging
           e.layer.on('pm:dragend', (e) => {
-            this.newPoint = e.layer.toGeoJSON()
+            // this.newPoint = e.layer.toGeoJSON()
             this.$store.commit(
               'pointStore/add',
 
@@ -398,8 +409,9 @@ export default {
             )
           })
 
+          // Action on Point/Line change on delete
           e.layer.on('pm:remove', (_e) => {
-            this.newPoint.geometry = null
+            // this.newPoint.geometry = null
             this.$store.commit('pointStore/add', { lat: null, lng: null })
             this.map.pm.addControls({
               drawMarker: true,
