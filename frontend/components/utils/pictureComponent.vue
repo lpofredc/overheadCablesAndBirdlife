@@ -41,7 +41,7 @@
               ><template #activator="{ on, attrs }">
                 <v-text-field
                   v-model="pictDate"
-                  :label="$t('point.datecreate')"
+                  :label="$t('forms.datecreate')"
                   persistent-hint
                   prepend-icon="mdi-calendar"
                   readonly

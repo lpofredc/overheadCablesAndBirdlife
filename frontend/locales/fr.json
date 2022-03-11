@@ -18,8 +18,13 @@
     "segments-eqmt": "Equipements Segments",
     "sensitive-areas": "Zones Sensibles"
   },
+  "forms": {
+    "coordinates": "Coordonnées",
+    "datecreate": "Date de création",
+    "general": "Informations Générales",
+    "risk_assessment": "Evaluation des Risques"
+  },
   "point": {
-    "administrative": "Informations Administratives",
     "advice": "Recommandations",
     "advice_isol": "A isoler",
     "advice_disrupt": "Rendre dissuasif",
@@ -28,10 +33,7 @@
     "cancel": "Annuler",
     "condition": "Etat",
     "coord": "Coordonnées",
-    "datecreate": "Date de création",
-    "dateformat": "Format de date: DD/MM/YYYY",
     "dangerousness": "Dangerosité",
-    "description": "Description",
     "features": "Caractéristiques",
     "latitude": "Latitude",
     "longitude": "Longitude",
@@ -41,11 +43,17 @@
     "new_pole": "Nouveau Poteau/Pylône",
     "owner": "Propriétaire",
     "pictures": "Images",
+    "poleType": "Type Poteau/Pylône",
     "remark": "Commentaire",
     "valid": "Créer"
   },
   "line": {
-    "new_segment": "Nouveau Tronçon"
+    "buildIntegRisk": "Risque Intégration Bâti",
+    "create_line": "Vous devez créer un tronçon sur la carte",
+    "movingRisk": "Risque Déplacement",
+    "new_segment": "Nouveau Tronçon",
+    "topoIntegRisk": "Risque Intégration Topologique",
+    "vegetIntegRisk": "Risque Intégration Vegetation"
   },
   "login": {
     "application": "Application",
@@ -71,6 +79,7 @@
     "nomenclature_not_found_resource": "Problème Serveur de chargement des données. vous avez été déconnecté"
   },
   "valid": {
+    "length": "Longueur maximale autorisée: ",
     "range": "Intervalle acceptable pour cette valeur: ",
     "required": "Champ requis",
     "required_or_not_valid": "Champ non complété ou type de donnée érroné"

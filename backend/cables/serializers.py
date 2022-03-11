@@ -126,10 +126,14 @@ class DiagnosisSerializer(ModelSerializer):
         for diag in old_diags:
             diag.last = False
             diag.save()
-        # gather data for ManyToMany fields (and removing related data from validated_data)
-        poleType_data = validated_data.pop("pole_type")
-        media_data = validated_data.pop("media")
-        # create Diagnosis
+            # gather data for ManyToMany fields (and removing related data from validated_data)
+        poleType_data = None
+        media_data = None
+        if "pole_type" in validated_data:
+            poleType_data = validated_data.pop("pole_type")
+        if "media" in validated_data:
+            media_data = validated_data.pop("media")
+            # create Diagnosis
 
         newDiag = Diagnosis.objects.create(**validated_data)
 
@@ -143,8 +147,10 @@ class DiagnosisSerializer(ModelSerializer):
 
         try:
             # set data to ManyToMany fields od newDiag
-            newDiag.pole_type.set(poleType_data)
-            newDiag.media.set(media_data)
+            if poleType_data is not None:
+                newDiag.pole_type.set(poleType_data)
+            if media_data is not None:
+                newDiag.media.set(media_data)
 
         except Exception:
             if newDiag is not None:

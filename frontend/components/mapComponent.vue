@@ -21,6 +21,14 @@
       @ready="onMapReady()"
     >
       <l-tile-layer :url="url" :attribution="attribution" />
+      <!-- Display of existing Pole layer-->
+      <l-geo-json
+        v-if="pointData"
+        name="pointData"
+        :geojson="pointData"
+        :options-style="styleData"
+        :options="GeojsonOptions"
+      />
       <!-- l-marker Not visible if lat or lng data is null, and if not in mode="point" -->
       <!-- <l-marker
         v-if="mode === 'point' && newMarker"
@@ -48,20 +56,13 @@
         :options-style="styleData"
         :options="GeojsonOptions"
       /> -->
-      <!-- <l-geo-json
+      <l-geo-json
         v-if="cablesData"
         name="lineStringData"
         :geojson="lineStringData"
         :options-style="styleData"
         :options="GeojsonOptions"
       />
-      <l-geo-json
-        v-if="cablesData"
-        name="pointData"
-        :geojson="pointData"
-        :options-style="styleData"
-        :options="GeojsonOptions"
-      /> -->
       <v-speed-dial
         class="fab mb-5"
         absolute
@@ -465,4 +466,3 @@ export default {
   cursor: crosshair;
 }
 </style>
- console.log(e.layer)

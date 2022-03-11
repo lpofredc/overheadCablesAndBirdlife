@@ -151,7 +151,6 @@ class Diagnosis(Action):
         _("Attraction"),
         default=False,
     )
-    # TODO change diagnosis to diagnosis in related_name
     pole_type = models.ManyToManyField(
         Nomenclature,
         blank=True,

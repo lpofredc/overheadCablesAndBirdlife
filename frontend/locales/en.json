@@ -18,8 +18,13 @@
     "segments-eqmt": "Segments Equipements",
     "sensitive-areas": "Sensitive areas"
   },
+  "forms": {
+    "coordinates": "Coordinates",
+    "datecreate": "Creation date",
+    "general": "General Information",
+    "risk_assessment": "Risks Assessment"
+  },
   "point": {
-    "administrative": "Administrative Information",
     "advice": "Advices",
     "advice_isol": "Isolate",
     "advice_disrupt": "Make it disruptive",
@@ -27,11 +32,7 @@
     "attractiveness": "Attractiveness",
     "cancel": "Cancel",
     "condition": "Condition",
-    "coord": "Coordinates",
-    "datecreate": "Creation date",
-    "dateformat": "Date format DD/MM/YYYY",
     "dangerousness": "Dangerousness",
-    "description": "Description",
     "features": "Features",
     "latitude": "Latitude",
     "longitude": "Longitude",
@@ -41,11 +42,17 @@
     "new_pole": "New Pole/Pylon",
     "owner": "Owner",
     "pictures": "Pictures",
+    "poleType": "Pole/Pylone Type",
     "remark": "Remarks",
     "valid": "Create"
   },
   "line": {
-    "new_segment": "New Segment"
+    "buildIntegRisk": "Building Integration Risk",
+    "create_line": "Please start by creating segment on the map",
+    "movingRisk": "Moving Related Risk",
+    "new_segment": "New Segment",
+    "topoIntegRisk": "Topologic Integration Risk",
+    "vegetIntegRisk": "Vegetation Integration Risk"
   },
   "login": {
     "application": "Application",
@@ -71,6 +78,7 @@
     "nomenclature_not_found_resource": "Server Data loading issue. You were disconnected"
   },
   "valid": {
+    "length": "Max length authorized: ",
     "range": "Value awaited in range: ",
     "required": "Required field",
     "required_or_not_valid": "field not filled in or data type not valid"

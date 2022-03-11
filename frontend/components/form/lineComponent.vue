@@ -2,178 +2,158 @@
   <div style="height: 90vh" class="overflow-auto">
     <v-form ref="form" v-model="formValid" class="text-center">
       <h1>{{ $t('line.new_segment') }}</h1>
-      <!-- <v-container>
-      <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.coord') }}</legend>
-        <v-text-field
-          ref="lat"
-          v-model="lat"
-          :label="$t('point.latitude')"
-          :disabled="!manualChange"
-          type="number"
-          :rules="[rules.requiredOrNotValid, rules.latRange]"
-          required
-          hide-spin-buttons
-          class="mx-5"
-        />
-        <v-text-field
-          ref="lng"
-          v-model="lng"
-          :label="$t('point.longitude')"
-          :disabled="!manualChange"
-          type="number"
-          :rules="[rules.requiredOrNotValid, rules.lngRange]"
-          required
-          hide-spin-buttons
-          class="mx-5"
-        />
-        <v-checkbox
-          v-model="manualChange"
-          dense
-          :label="$t('point.manual-hadling')"
-          class="mx-5"
-        ></v-checkbox></fieldset
-    ></v-container>
-    <v-container
-      ><fieldset class="mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.administrative') }}</legend>
-        <v-row class="px-4 py-5">
-          <v-spacer></v-spacer>
-          <v-select
-            v-model="owner"
-            :items="networkOwners"
-            item-text="label"
-            item-value="id"
-            :rules="[rules.required]"
-            :label="$t('point.network')"
-            required
-            class="mx-5"
+      <v-container>
+        <!-- Filedset COORDINATES -->
+        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
+          <legend class="mx-3 px-1">{{ $t('forms.coordinates') }}</legend>
+          <v-container
+            v-if="newLineCoord.length === 0"
+            class="text-h6 blue--text text--darken-4"
           >
-          </v-select>
-          <v-spacer></v-spacer
-          ><v-menu
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
+            {{ $t('line.create_line') }}
+          </v-container>
+          <v-container
+            v-for="(pt, index) in newLineCoord"
+            :key="index"
+            class="d-flex justify-space-around flex-wrap"
           >
-            <template #activator="{ on, attrs }">
-              <v-text-field
-                v-model="createDate"
-                :label="$t('point.datecreate')"
-                :hint="$t('point.dateformat')"
-                persistent-hint
-                prepend-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="createDate" no-title></v-date-picker>
-          </v-menu>
-          <v-spacer></v-spacer
-        ></v-row></fieldset
-    ></v-container>
-    <v-container>
-      <fieldset class="mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.description') }}</legend>
-        <v-row class="px-4 py-5">
-          <v-combobox
-            v-model="poleDesc"
-            :items="poleTypes"
-            item-text="label"
-            item-value="id"
-            :rules="[rules.required]"
-            hide-selected
-            label="Search for an option"
-            multiple
-            small-chips
-            deletable-chips
-            class="mx-5"
-          ></v-combobox
-        ></v-row>
-        <v-row class="px-4 py-5">
-          <v-spacer></v-spacer>
-          <v-select
-            v-model="poleCondition"
-            :items="conditions"
-            item-text="label"
-            item-value="id"
-            :rules="[rules.required]"
-            :label="$t('point.condition')"
-            class="mx-5"
-          ></v-select>
-
-          <v-spacer></v-spacer>
-          <v-checkbox
-            v-model="neutralized"
-            :label="$t('point.neutralized')"
+            <v-text-field
+              v-model="pt[1]"
+              :label="$t('point.latitude')"
+              type="number"
+              :rules="[rules.requiredOrNotValid, rules.latRange]"
+              required
+              hide-spin-buttons
+              class="shrink mx-5" />
+            <v-text-field
+              v-model="pt[0]"
+              :label="$t('point.longitude')"
+              type="number"
+              :rules="[rules.requiredOrNotValid, rules.lngRange]"
+              required
+              hide-spin-buttons
+              class="shrink mx-5"
+          /></v-container>
+          <!-- <v-checkbox
+            v-model="manualChange"
             dense
+            :label="$t('point.manual-hadling')"
             class="mx-5"
-          ></v-checkbox>
-          <v-spacer></v-spacer
-        ></v-row>
-        <v-row class="px-4 py-5">
-          <v-textarea
+          ></v-checkbox> -->
+        </fieldset>
+        <!-- Filedset GENERAL INFORMATION -->
+        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
+          <legend class="mx-3 px-1">{{ $t('forms.general') }}</legend>
+          <v-container
+            class="
+              d-flex
+              justify-space-around
+              flex-sm-row flex-column
+              align-center
+              flex-wrap
+              mx-2
+            "
+          >
+            <v-select
+              v-model="owner"
+              :items="networkOwners"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('point.network')"
+              required
+              class="shrink mx-10 my-4"
+            >
+            </v-select>
+            <v-menu
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="auto"
+            >
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  v-model="createDate"
+                  :label="$t('forms.datecreate')"
+                  persistent-hint
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  class="shrink mx-10 my-4"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="createDate" no-title></v-date-picker>
+            </v-menu>
+            <v-checkbox
+              v-model="neutralized"
+              :label="$t('point.neutralized')"
+              dense
+              class="shrink mx-10 my-4"
+            ></v-checkbox></v-container
+          ><v-textarea
             v-model="remark"
             clearable
             clear-icon="mdi-close-circle"
             :label="$t('point.remark')"
-            class="mx-5"
-          ></v-textarea
-        ></v-row></fieldset
-    ></v-container>
-    <v-container>
-      <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.advice') }}</legend>
-        <v-checkbox
-          v-model="isolAdv"
-          :label="$t('point.advice_isol')"
-          dense
-        ></v-checkbox>
-        <v-checkbox
-          v-model="dissuadAdv"
-          :label="$t('point.advice_disrupt')"
-          dense
-        ></v-checkbox>
-        <v-checkbox
-          v-model="attractAdv"
-          :label="$t('point.advice_attract')"
-          dense
-        ></v-checkbox></fieldset
-    ></v-container>
-    <v-container>
-      <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-        <legend class="mx-3 px-1">{{ $t('point.features') }}</legend>
-        <v-spacer></v-spacer>
-        <v-select
-          v-model="attractiveness"
-          :items="riskLevels"
-          item-text="label"
-          item-value="id"
-          :rules="[rules.required]"
-          :label="$t('point.attractiveness')"
-          class="mx-5"
-        ></v-select
-        ><v-spacer></v-spacer>
-        <v-select
-          v-model="dangerousness"
-          :items="riskLevels"
-          item-text="label"
-          item-value="id"
-          :rules="[rules.required]"
-          :label="$t('point.dangerousness')"
-          class="mx-5"
-        ></v-select
-        ><v-spacer></v-spacer></fieldset
-    ></v-container>
-    <v-container>
-      <v-row class="justify-space-around">
-        <v-btn @click="back">{{ $t('point.cancel') }}</v-btn>
-        <v-btn @click="submit">{{ $t('point.valid') }}</v-btn></v-row
-      ></v-container
-    > -->
+            :rules="[rules.textLength]"
+            rows="2"
+            counter="300"
+            class="ma-2 px-5"
+          ></v-textarea>
+        </fieldset>
+        <!-- Filedset GENERAL INFORMATION -->
+        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
+          <legend class="mx-3 px-1">{{ $t('forms.risk_assessment') }}</legend>
+          <v-container class="d-flex justify-space-around flex-wrap py-0">
+            <v-select
+              v-model="buildIntegRisk"
+              :items="riskLevels"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('line.buildIntegRisk')"
+              class="shrink mx-5 mt-2"
+            ></v-select>
+            <v-select
+              v-model="movingRisk"
+              :items="riskLevels"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('line.movingRisk')"
+              class="shrink mx-5 mt-2"
+            ></v-select
+          ></v-container>
+          <v-container class="d-flex justify-space-around flex-wrap py-0">
+            <v-select
+              v-model="topoIntegRisk"
+              :items="riskLevels"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('line.topoIntegRisk')"
+              class="shrink mx-5 mt-2"
+            ></v-select>
+            <v-select
+              v-model="vegetIntegRisk"
+              :items="riskLevels"
+              item-text="label"
+              item-value="id"
+              :rules="[rules.required]"
+              :label="$t('line.vegetIntegRisk')"
+              class="shrink mx-5 mt-2"
+            ></v-select
+          ></v-container>
+        </fieldset>
+      </v-container>
+      <v-container>
+        <v-row class="justify-space-around mb-2">
+          <v-btn @click="back">{{ $t('point.cancel') }}</v-btn>
+          <v-btn @click="submit">{{ $t('point.valid') }}</v-btn></v-row
+        ></v-container
+      >
     </v-form>
   </div>
 </template>
@@ -183,22 +163,26 @@ export default {
   name: 'PointComponent',
   data() {
     return {
-      formValid: true,
-      manualChange: false,
+      // ####################
       // form values
-      newLat: null,
-      newLng: null,
-      attractAdv: false,
-      attractiveness: 8, // null,
-      createDate: '2022-02-25', // null,
-      dangerousness: 8, // null,
-      dissuadAdv: false,
-      isolAdv: false,
+      formValid: true,
+      // newLineCoord: [],
       neutralized: false,
-      owner: 1, // null,
-      poleCondition: 6, // null,
-      poleDesc: null,
+      newLineCoord: [
+        [1, 45],
+        [1, 46],
+      ],
+      // manualChange: false,
+      buildIntegRisk: null,
+      movingRisk: null,
+      createDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      owner: null,
       remark: null,
+      topoIntegRisk: null,
+      vegetIntegRisk: null,
+      // rules for form validation
       rules: {
         required: (v) => !!v || this.$t('valid.required'),
         requiredOrNotValid: (v) =>
@@ -207,113 +191,65 @@ export default {
           (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
         lngRange: (v) =>
           (v >= -20 && v <= 20) || `${this.$t('valid.range')}-20 : 20`,
+        textLength: (v) =>
+          (v || '').length <= 300 || `${this.$t('valid.length')}: 300`,
       },
     }
   },
   computed: {
-    /**
-     * Getter and Setter for "lat" value.
-     * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
-     */
-    lat: {
-      get() {
-        return this.newPoint ? this.newPoint.lat : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        if (this.$refs.lat.validate()) {
-          this.$store.commit('pointStore/add', {
-            lat: Number(newVal),
-            lng: this.lng,
-          })
-        } else {
-          this.$store.commit('pointStore/add', { lat: null, lng: this.lng })
-        }
-      },
-    },
-    /**
-     * Getter and Setter for "lng" value.
-     * This longitude value is bind v-text-field "lng", and linked with longitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
-     */
-    lng: {
-      get() {
-        return this.newPoint ? this.newPoint.lng : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        if (this.$refs.lng.validate()) {
-          this.$store.commit('pointStore/add', {
-            lat: this.lat,
-            lng: Number(newVal),
-          })
-        } else
-          this.$store.commit('pointStore/add', { lat: this.lat, lng: null })
-      },
-    },
     // Get values from store
     ...mapGetters({
-      newPoint: 'pointStore/newPointCoord',
-      conditions: 'nomenclaturesStore/getConditions',
+      // newLine: 'pointStore/newLineCoord',
       networkOwners: 'nomenclaturesStore/getOwners',
-      poleTypes: 'nomenclaturesStore/getPoleTypes',
       riskLevels: 'nomenclaturesStore/getRiskLevels',
     }),
   },
   methods: {
-    // get back if cancel Point creation. "newPointCoord" reinitialized withlat and lng set to null.
+    // get back if cancel Line creation. "newLineCoord" reinitialized with at []
     back() {
-      this.$store.commit('pointStore/add', { lat: null, lng: null })
+      // this.$store.commit('pointStore/add', { lat: null, lng: null })
       this.$router.back()
     },
     async submit() {
       if (this.$refs.form.validate()) {
-        // try {
-        // create Point
-        const ptData = {}
-        ptData.geom = {
-          type: 'Point',
-          coordinates: [this.lng, this.lat],
+        // // try {
+        // create Line
+        const lineData = {}
+        lineData.geom = {
+          type: 'LineString',
+          coordinates: this.newLineCoord,
         }
-        ptData.owner_id = this.owner
-        const newPoint = await this.$axios.$post('cables/points/', ptData)
-        // If no newPoint, Exception is thrown to be capture by catch section below
-        if (!newPoint) {
+        lineData.owner_id = this.owner
+        const newLine = await this.$axios.$post('cables/lines/', lineData)
+        // If no newLine, Exception is thrown to be capture by catch section below
+        if (!newLine) {
           throw new Exception()
         }
         // Create Diagnosis
         const diagData = {}
-        diagData.infrastructure = newPoint.properties.id
+        diagData.infrastructure = newLine.properties.id
         diagData.date = this.createDate
         diagData.remark = this.remark
         diagData.neutralized = this.neutralized
-        diagData.condition_id = this.poleCondition
-        diagData.isolation_advice = this.isolAdv
-        diagData.dissuasion_advice = this.dissuadAdv
-        diagData.attraction_advice = this.attractAdv
-        diagData.pole_type_id = []
-        this.poleDesc.forEach((el) => diagData.pole_type_id.push(el.id))
-        diagData.pole_attractivity_id = this.attractiveness
-        diagData.pole_dangerousness_id = this.dangerousness
         diagData.media_id = []
-
+        diagData.buildIntegRisk = this.buildIntegRisk
+        diagData.movingRisk = this.movingRisk
+        diagData.topoIntegRisk = this.topoIntegRisk
+        diagData.vegetIntegRisk = this.vegetIntegRisk
         const newDiag = await this.$axios.$post('cables/diagnosis/', diagData)
         // If no newDiag, Exception is thrown to be capture by catch section below
         if (!newDiag) {
           throw new Exception()
         }
-        this.$router.push('/view')
-        // } catch (_err) {
-        //   $nuxt.error({
-        //     statusCode: errorCodes.create_pole.code,
-        //     message:
-        //       `Error ${errorCodes.create_pole.code}: ` +
-        //       $nuxt.$t(`error.${errorCodes.create_pole.msg}`),
-        //   })
-        // }
+        // this.$router.push('/view')
+        // // } catch (_err) {
+        // //   $nuxt.error({
+        // //     statusCode: errorCodes.create_pole.code,
+        // //     message:
+        // //       `Error ${errorCodes.create_pole.code}: ` +
+        // //       $nuxt.$t(`error.${errorCodes.create_pole.msg}`),
+        // //   })
+        // // }
       }
     },
   },
@@ -329,5 +265,19 @@ export default {
 
 .v-btn {
   width: 80px;
+}
+
+.v-text-field,
+.v-select,
+.v-checkbox {
+  width: 200px;
+}
+
+.v-textarea {
+  min-width: 500px;
+}
+
+.v-chip {
+  margin: 2px;
 }
 </style>
