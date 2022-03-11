@@ -1,8 +1,10 @@
 <template>
   <div>
-    <v-row v-if="$vuetify.breakpoint.lgAndUp"
-      ><v-col width="50%"><map-component :edit-mode="false" /></v-col
-      ><v-col><display-component /></v-col
+    <v-row v-if="$vuetify.breakpoint.lgAndUp">
+      
+      <!-- <v-col width="50%"></v-col> -->
+      <v-col width="50%"><map-component :edit-mode="false" /></v-col>
+      <v-col><display-component /></v-col
     ></v-row>
 
     <v-tabs
