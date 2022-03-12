@@ -1,11 +1,10 @@
 from django.test import TestCase
-
-# from django.utils.timezone import datetime
 from rest_framework.test import APIClient
 from sinp_nomenclatures.models import Nomenclature
 
 from cables.models import Diagnosis, Line, Point
 from commons.tests.tests_commons import createTestUser, logTestUser
+from media.models import Media
 
 
 class DiagnosiAnonymousAuthenticationTestCase(TestCase):
@@ -152,7 +151,10 @@ class CreatePointDiagnosisTestCase(TestCase):
     # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["commons/tests/fixtures/test_nomenclatures.xml"]
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_media.xml",
+    ]
 
     def setUp(self):
         # create client with authentified user
@@ -160,8 +162,8 @@ class CreatePointDiagnosisTestCase(TestCase):
             "user", "password", "add_point", "add_diagnosis"
         )
         self.authentified_client = logTestUser("user", "password")
-        # create new Point
 
+        # Gather data from DB to create Diagnosis
         owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
         self.infCond = Nomenclature.objects.filter(
             type__mnemonic="infrastr_condition"
@@ -169,6 +171,18 @@ class CreatePointDiagnosisTestCase(TestCase):
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
+        self.poleTypeList = Nomenclature.objects.filter(
+            type__mnemonic="pole_type"
+        )
+        self.poletypeIdList = [
+            poleType.id for poleType in self.poleTypeList
+        ]  # Gather list of pole type Id
+        self.mediaList = Media.objects.all()
+        self.mediaIdList = [
+            media.id for media in self.mediaList
+        ]  # Gather list of media Id
+
+        # create new Point
         data = {
             "owner_id": owner_id,
             "geom": {"type": "Point", "coordinates": [0.5, 0.5]},
@@ -188,6 +202,7 @@ class CreatePointDiagnosisTestCase(TestCase):
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
             "sgmt_topo_integr_risk": self.risk_id,
+            "sgmt_veget_integr_risk": self.risk_id,
         }
         resp = self.authentified_client.post(
             "/api/v1/cables/diagnosis/", data, format="json"
@@ -197,7 +212,82 @@ class CreatePointDiagnosisTestCase(TestCase):
         diag = resp.json()
         self.assertTrue(diag["last"])
 
-    def test_create_third_Diag_and_2_first_with_last_TRUE___should_not_occur___(
+    def test_create_2_Diags_with_last_TRUE_for_newer_FALSE_for_older(self):
+        point_id = Point.objects.all()[0].id  # get Point id
+        # create Diagnosis
+        data = {
+            "infrastructure": point_id,
+            "date": "2022-01-01",
+            "neutralized": False,
+            "sgmt_build_integr_risk": self.risk_id,
+            "sgmt_moving_risk": self.risk_id,
+            "sgmt_topo_integr_risk": self.risk_id,
+            "sgmt_veget_integr_risk": self.risk_id,
+        }
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for created Diagnosis
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+        # created new Diagnosis on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Diagnosis
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Diagnosis.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_2_Diags_containing_PoleTypes_and_Media_with_last_TRUE_for_newer_FALSE_for_older(
+        self,
+    ):
+        point_id = Point.objects.all()[0].id  # get Point id
+        # create Diagnosis
+        data = {
+            "infrastructure": point_id,
+            "date": "2022-01-01",
+            "neutralized": False,
+            "sgmt_build_integr_risk": self.risk_id,
+            "sgmt_moving_risk": self.risk_id,
+            "sgmt_topo_integr_risk": self.risk_id,
+            "sgmt_veget_integr_risk": self.risk_id,
+            "pole_type_id": self.poletypeIdList,
+            "media_id": self.mediaIdList,
+        }
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for created Diagnosis
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+        # Gather id of pole type list from created diagnosis and compare to self.poletypeIdList
+        poleType_check = [poleType["id"] for poleType in first["pole_type"]]
+        self.assertListEqual(self.poletypeIdList, poleType_check)
+        # Gather id of media list from created diagnosis and compare to self.mediaIdList
+        media_check = [media["id"] for media in first["media"]]
+        self.assertListEqual(self.mediaIdList, media_check)
+        # self.assertEquals(self.poleTypeList[0].label, first["pole_type"][0].label)
+        # created new Diagnosis on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Diagnosis
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Diagnosis.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_third_Diag_and_2_first_with_last_TRUE___should_not_occure___(
         self,
     ):
         point_id = Point.objects.all()[0].id  # get Point id
@@ -255,7 +345,10 @@ class CreateLineDiagnosisTestCase(TestCase):
     # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["commons/tests/fixtures/test_nomenclatures.xml"]
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_media.xml",
+    ]
 
     def setUp(self):
         # create client with authentified user
@@ -263,11 +356,17 @@ class CreateLineDiagnosisTestCase(TestCase):
             "user", "password", "add_line", "add_diagnosis"
         )
         self.authentified_client = logTestUser("user", "password")
-        # create new Point
+
+        # Gather data from DB to create Diagnosis
         owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
         self.risk_id = Nomenclature.objects.filter(
             type__mnemonic="risk_level"
         )[0].id
+        # Gather list of pole type Id
+        self.mediaList = Media.objects.all()
+        self.mediaIdList = [
+            media.id for media in list(self.mediaList)
+        ]  # Gather list of media Id
         data = {
             "owner_id": owner_id,
             "geom": {"type": "LineString", "coordinates": [[2, 6], [2, 4]]},
@@ -298,6 +397,78 @@ class CreateLineDiagnosisTestCase(TestCase):
         # check value
         diag = resp.json()
         self.assertTrue(diag["last"])
+
+    def test_create_2_Diags_with_last_TRUE_for_newer_FALSE_for_older(self):
+        line_id = Line.objects.all()[0].id  # get Line id
+        # create Diagnosis
+        data = {
+            "infrastructure": line_id,
+            "date": "2022-01-01",
+            "neutralized": False,
+            "sgmt_build_integr_risk": self.risk_id,
+            "sgmt_moving_risk": self.risk_id,
+            "sgmt_topo_integr_risk": self.risk_id,
+            "sgmt_veget_integr_risk": self.risk_id,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for created Diagnosis
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+        # created new Diagnosis on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Diagnosis
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Diagnosis.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_2_Diags_containing_Media_with_last_TRUE_for_newer_FALSE_for_older(
+        self,
+    ):
+        line_id = Line.objects.all()[0].id  # get Point id
+        # create Diagnosis
+        data = {
+            "infrastructure": line_id,
+            "date": "2022-01-01",
+            "neutralized": False,
+            "sgmt_build_integr_risk": self.risk_id,
+            "sgmt_moving_risk": self.risk_id,
+            "sgmt_topo_integr_risk": self.risk_id,
+            "sgmt_veget_integr_risk": self.risk_id,
+            "media_id": self.mediaIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for created Diagnosis
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+        # Gather id of media list from created diagnosis and compare to self.mediaIdList
+        media_check = [media["id"] for media in first["media"]]
+        self.assertListEqual(self.mediaIdList, media_check)
+        # created new Diagnosis on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/diagnosis/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Diagnosis
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Diagnosis.objects.get(id=first_id)
+        self.assertFalse(first.last)
 
     def test_create_third_Diag_and_2_first_with_last_TRUE___should_not_occur___(
         self,
