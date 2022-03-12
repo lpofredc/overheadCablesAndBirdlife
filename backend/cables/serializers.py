@@ -197,13 +197,13 @@ class OperationSerializer(ModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
-        """Overriden create method for Operation
+        # """Overriden create method for Operation
 
-        This method was overidden to implement a customized behaviour specific to application structure.
-        New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of operations for the Infrastructure.
-        In case of new Operation on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be only 1) then become "last=False" due to this method.
-        Exception is raised if there is not exactly 1 Operation with "last=True"
-        """
+        # This method was overidden to implement a customized behaviour specific to application structure.
+        # New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of operations for the Infrastructure.
+        # In case of new Operation on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be only 1) then become "last=False" due to this method.
+        # Exception is raised if there is not exactly 1 Operation with "last=True"
+        # """
 
     # def create(self, validated_data):
     #     old_ops = Operation.objects.all().filter(infrastructure=validated_data["infrastructure"])

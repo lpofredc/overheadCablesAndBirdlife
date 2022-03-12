@@ -1,14 +1,14 @@
 from django.contrib.gis.geos import Polygon
 from django.test import TestCase
-from rest_framework.test import APIClient
 from sinp_nomenclatures.models import Nomenclature
 
 from commons.tests.tests_commons import createTestUser, logTestUser
 from geo_area.models import GeoArea
 
 
-class CreateDiagnosticTestCase(TestCase):
-    """Class to test creation of SensitiveArea, Point
+class CreatePointAndLineTestCase(TestCase):
+    """Class to test creation Point and Line.
+    This test case mainly focuses on automatic attachment of GeoAreas and SensitiveAreas that are geographically correlated with the infrastructures (Point/Line)
 
     Require creation and consultation of various elements
     """
@@ -17,7 +17,6 @@ class CreateDiagnosticTestCase(TestCase):
     fixtures = ["commons/tests/fixtures/test_nomenclatures.xml"]
 
     def setUp(self):
-        self.anonymous_client = APIClient()
         # create client with authentified user
         self.user = createTestUser(
             "user", "password", "add_sensitivearea", "add_point", "add_line"
@@ -72,10 +71,9 @@ class CreateDiagnosticTestCase(TestCase):
         )
         ga.save()
 
+    def test_create_and_get_point_inside_2SA_and_2GA(self):
         # TEST POINT
         # Create 4 Points:
-
-    def test_create_and_get_point_inside_2SA_and_2GA(self):
         # - one inside both SensitiveArea and both GeoArea
         data = {
             "owner_id": 1,
@@ -178,10 +176,9 @@ class CreateDiagnosticTestCase(TestCase):
         points = resp.json()
         self.assertEquals(len(points["features"]), nb)
 
+    def test_create_and_get_line_inside_2SA_and_2GA(self):
         # TEST LINE
         # Create 4 Lines:
-
-    def test_create_and_get_line_inside_2SA_and_2GA(self):
         # - one entirely inside both SensitiveArea and both GeoArea
         data = {
             "owner_id": 1,
