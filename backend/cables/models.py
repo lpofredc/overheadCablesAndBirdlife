@@ -163,6 +163,7 @@ class Diagnosis(Action):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
+        blank=True,
         null=True,
         related_name="pole_attractivity",
         verbose_name=_("Attractivity level of risk"),
@@ -172,6 +173,7 @@ class Diagnosis(Action):
         Nomenclature,
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "risk_level"},
+        blank=True,
         null=True,
         related_name="pole_dangerousness",
         verbose_name=_("dangerousness level of risk"),
@@ -180,6 +182,7 @@ class Diagnosis(Action):
     sgmt_build_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        blank=True,
         null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_building_integration_risk",
@@ -189,6 +192,7 @@ class Diagnosis(Action):
     sgmt_moving_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        blank=True,
         null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_moving_risk",
@@ -198,6 +202,7 @@ class Diagnosis(Action):
     sgmt_topo_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        blank=True,
         null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_topological_integration_risk",
@@ -207,6 +212,7 @@ class Diagnosis(Action):
     sgmt_veget_integr_risk = models.ForeignKey(
         Nomenclature,
         on_delete=models.PROTECT,
+        blank=True,
         null=True,
         limit_choices_to={"type__mnemonic": "risk_level"},
         related_name="segment_vegetation_risk",
@@ -234,16 +240,13 @@ class Operation(Action):
         # TODO to be removed
         null=True,
     )
-    eqmt_type = models.ForeignKey(
+    eqmt_type = models.ManyToManyField(
         Nomenclature,
-        on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "equipment_type"},
         related_name="operation_pole_eqmt_type",
         verbose_name=_("Type of equipment"),
         help_text=_("Type of equipment"),
-        # TODO to be removed
-        null=True,
     )
-    pole_nb_equipments = models.PositiveIntegerField(
-        _("Number of equipments"), default=1
-    )
+    # pole_nb_equipments = models.PositiveIntegerField(
+    #     _("Number of equipments"), default=1
+    # )

@@ -62,7 +62,7 @@ class ActionUnauthorizedAuthenticationTestCase(TestCase):
     def setUp(self):
         self.user = createTestUser("user", "password")
         self.unauthorized_client = logTestUser("user", "password")
-        # get pk from the first nnfrastructure
+        # get pk from the first infrastructure
         self.pk = Action.objects.all()[0].id
 
     # no restriction for read only by default with Django

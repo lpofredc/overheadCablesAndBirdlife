@@ -170,7 +170,7 @@ class OperationSerializer(ModelSerializer):
 
     # Allow to display nested data
     operation_type = NomenclatureSerializer(read_only=True)
-    eqmt_type = NomenclatureSerializer(read_only=True)
+    eqmt_type = NomenclatureSerializer(many=True, read_only=True)
     media = MediaSerializer(many=True, read_only=True)
 
     class Meta:
