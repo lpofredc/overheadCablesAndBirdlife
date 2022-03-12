@@ -197,29 +197,57 @@ class OperationSerializer(ModelSerializer):
             "media_id": {"source": "media", "write_only": True},
         }
 
-        # """Overriden create method for Operation
+        """Overriden create method for Operation
 
-        # This method was overidden to implement a customized behaviour specific to application structure.
-        # New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of operations for the Infrastructure.
-        # In case of new Operation on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be only 1) then become "last=False" due to this method.
-        # Exception is raised if there is not exactly 1 Operation with "last=True"
-        # """
+        This method was overidden to implement a customized behaviour specific to application structure.
+        New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
+        In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
+        APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures with attachment of ManyToMany fields data, Diagnostic is deleted (if it was created) and an APIException is raised.
+        """
 
-    # def create(self, validated_data):
-    #     old_ops = Operation.objects.all().filter(infrastructure=validated_data["infrastructure"])
-    #     for op in old_ops:
-    #         op.last = False
-    #         op.save()
+    def create(self, validated_data):
+        old_ops = Diagnosis.objects.all().filter(
+            infrastructure=validated_data["infrastructure"]
+        )
 
-    #     # check there is exactly 1 'CURRENT' Operation for the Infrastructure
-    #     current = Operation.objects.all().filter(
-    #         infrastructure=validated_data["infrastructure"], last=True
-    #     )
-    #     if len(current) != 1:
-    #         logging.error("Operation traceability issue")
-    #         raise APIException("Operation traceability issue")
+        for op in old_ops:
+            op.last = False
+            op.save()
+        # gather data for ManyToMany fields (and removing related data from validated_data)
+        eqmtType_data = None
+        media_data = None
+        if "eqmt_type" in validated_data:
+            eqmtType_data = validated_data.pop("eqmt_type")
+        if "media" in validated_data:
+            media_data = validated_data.pop("media")
 
-    #     return Operation.objects.create(**validated_data)
+        # create Operation
+        newOp = Operation.objects.create(**validated_data)
+
+        checkLast = Operation.objects.all().filter(
+            infrastructure=validated_data["infrastructure"], last=True
+        )
+
+        if len(checkLast) != 1:
+            msg = "Operation traceability issue"
+            logging.error(msg)
+            raise APIException(msg)
+
+        try:
+            # set data to ManyToMany fields od newDiag
+            if eqmtType_data is not None:
+                newOp.eqmt_type.set(eqmtType_data)
+            if media_data is not None:
+                newOp.media.set(media_data)
+
+        except Exception:
+            if newOp is not None:
+                newOp.delete()
+            msg = "Issue with Diagnosis configuration. No Diagnosis created."
+            logging.error(msg)
+            raise APIException(msg)
+
+        return newOp  # return new Operation
 
 
 class InfrastructureSerializer(GeoFeatureModelSerializer):
