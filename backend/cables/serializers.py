@@ -296,7 +296,7 @@ class PointSerializer(GeoFeatureModelSerializer):
 
         """ Overidden method to create Point
 
-        At Point creation, method search all GeoArea and all SensitiveArea that contain new Point coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Point field sensitive_area (Infrastructure.sensitive_area).
+        At Point creation, method search all GeoArea and all SensitiveArea that intersects with new Point coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Point field sensitive_area (Infrastructure.sensitive_area).
         If issue occures for attachment with sensitive/geo areas, the Point is deleted (if it was created) and an APIException is raised.
         """
 
@@ -305,7 +305,7 @@ class PointSerializer(GeoFeatureModelSerializer):
         point = Point.objects.create(**validated_data)
 
         try:
-            # get lists of GeoArea and Sensitive_Area containing Point location
+            # get lists of GeoArea and Sensitive_Area that intersect with Point location
             geoareas = GeoArea.objects.all().filter(
                 geom__intersects=point.geom
             )
@@ -360,6 +360,36 @@ class LineSerializer(GeoFeatureModelSerializer):
             # "geo_area_id": {"source": "geo_area", "write_only": True},
             # "sensitive_area_id": {"source": "sensitive_area", "write_only": True},
         }
+
+        """ Overidden method to create Line
+
+        At Line creation, method search all GeoArea and all SensitiveArea that intersects with new Line coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Line field sensitive_area (Infrastructure.sensitive_area).
+        If issue occures for attachment with sensitive/geo areas, the Line is deleted (if it was created) and an APIException is raised.
+        """
+
+    def create(self, validated_data):
+        # create Line object with given coordinates
+        line = Line.objects.create(**validated_data)
+
+        try:
+            # get lists of GeoArea and Sensitive_Area that intersect with Line location
+            geoareas = GeoArea.objects.all().filter(geom__intersects=line.geom)
+            sensitiveareas = SensitiveArea.objects.all().filter(
+                geom__intersects=line.geom
+            )
+            # set the lists to line.geo_area and save it
+            line.geo_area.set(geoareas)
+            line.sensitive_area.set(sensitiveareas)
+            line.save()
+
+        except Exception:
+            if line is not None:
+                line.delete()
+            msg = "Issue with attachment from new Line to sensitive/geo areas. No Line created."
+            logging.error(msg)
+            raise APIException(msg)
+
+        return line
 
 
 class InfrastructurePolymorphicSerializer(

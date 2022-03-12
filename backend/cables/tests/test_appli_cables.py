@@ -20,11 +20,10 @@ class CreateDiagnosticTestCase(TestCase):
         self.anonymous_client = APIClient()
         # create client with authentified user
         self.user = createTestUser(
-            "user", "password", "add_sensitivearea", "add_point"
+            "user", "password", "add_sensitivearea", "add_point", "add_line"
         )
         self.authentified_client = logTestUser("user", "password")
 
-    def test_create_and_get_point(self):
         # CREATE 2 SENSITIVE_AREA
         data = {
             "name": "Zone Sensible 1",
@@ -34,7 +33,7 @@ class CreateDiagnosticTestCase(TestCase):
                 "coordinates": [[[0, 5], [0, -5], [5, -5], [5, 5], [0, 5]]],
             },
         }
-        resp = self.authentified_client.post(
+        self.authentified_client.post(
             "/api/v1/sensitive-areas/", data, format="json"
         )
         data = {
@@ -45,7 +44,7 @@ class CreateDiagnosticTestCase(TestCase):
                 "coordinates": [[[-1, 1], [-1, -1], [1, -1], [1, 1], [-1, 1]]],
             },
         }
-        resp = self.authentified_client.post(
+        self.authentified_client.post(
             "/api/v1/sensitive-areas/", data, format="json"
         )
 
@@ -75,6 +74,8 @@ class CreateDiagnosticTestCase(TestCase):
 
         # TEST POINT
         # Create 4 Points:
+
+    def test_create_and_get_point_inside_2SA_and_2GA(self):
         # - one inside both SensitiveArea and both GeoArea
         data = {
             "owner_id": 1,
@@ -95,6 +96,7 @@ class CreateDiagnosticTestCase(TestCase):
         )
         self.assertEquals(len(point["properties"]["geo_area"]["features"]), 2)
 
+    def test_create_and_get_point_inside_1SA_and_2GA(self):
         # - one outside one SensitiveArea and inside both GeoArea
         data = {
             "owner_id": 1,
@@ -115,6 +117,7 @@ class CreateDiagnosticTestCase(TestCase):
         )
         self.assertEquals(len(point["properties"]["geo_area"]["features"]), 2)
 
+    def test_create_and_get_point_outside_all_SA_and_GA(self):
         # - one outside both SensitiveArea and both GeoArea
         data = {
             "owner_id": 1,
@@ -135,6 +138,7 @@ class CreateDiagnosticTestCase(TestCase):
         )
         self.assertEquals(len(point["properties"]["geo_area"]["features"]), 0)
 
+    def test_create_and_get_point_at_limit_of_1SA_and_1GA(self):
         # same test with values at the limit:
         # => inside one SensitiveArea and one GeoArea
         data = {
@@ -156,8 +160,173 @@ class CreateDiagnosticTestCase(TestCase):
         )
         self.assertEquals(len(point["properties"]["geo_area"]["features"]), 1)
 
-        # test get list
+    def test_create_and_get_point_list(self):
+        # test get list: create several points (nb)
+        data = {
+            "owner_id": 1,
+            "geom": {"type": "Point", "coordinates": [5, 5]},
+        }
+        nb = 4
+        for i in range(0, nb):
+            resp = self.authentified_client.post(
+                "/api/v1/cables/points/", data, format="json"
+            )
+            self.assertEquals(resp.status_code, 201)
+
         resp = self.authentified_client.get("/api/v1/cables/points/")
         self.assertEquals(resp.status_code, 200)
         points = resp.json()
-        self.assertEquals(len(points["features"]), 4)
+        self.assertEquals(len(points["features"]), nb)
+
+        # TEST LINE
+        # Create 4 Lines:
+
+    def test_create_and_get_line_inside_2SA_and_2GA(self):
+        # - one entirely inside both SensitiveArea and both GeoArea
+        data = {
+            "owner_id": 1,
+            "geom": {
+                "type": "LineString",
+                "coordinates": [[-0.5, -0.5], [0.5, 0.5]],
+            },
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/lines/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+
+        # method get tested: get one specific Line
+        lines = resp.json()
+
+        id = lines["properties"]["id"]
+
+        resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
+        self.assertEquals(resp.status_code, 200)
+        line = resp.json()
+
+        self.assertEquals(
+            len(line["properties"]["sensitive_area"]["features"]), 2
+        )
+        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 2)
+
+    def test_create_and_get_line_inside_1SA_and_2GA(self):
+        # - one outside one SensitiveArea and inside both GeoArea
+        data = {
+            "owner_id": 1,
+            "geom": {
+                "type": "LineString",
+                "coordinates": [[-2, 2], [-0.5, 0.5]],
+            },
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/lines/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+
+        # method get tested: get one specific Line
+        lines = resp.json()
+
+        id = lines["properties"]["id"]
+        resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
+        self.assertEquals(resp.status_code, 200)
+
+        line = resp.json()
+        self.assertEquals(
+            len(line["properties"]["sensitive_area"]["features"]), 1
+        )
+        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 2)
+
+    def test_create_and_get_line_outside_all_SA_and_GA(self):
+        # - one outside both SensitiveArea and both GeoArea
+        data = {
+            "owner_id": 1,
+            "geom": {"type": "LineString", "coordinates": [[-6, 6], [-6, -6]]},
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/lines/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+
+        # method get tested: get one specific Line
+        lines = resp.json()
+
+        id = lines["properties"]["id"]
+        resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
+        self.assertEquals(resp.status_code, 200)
+        line = resp.json()
+
+        self.assertEquals(
+            len(line["properties"]["sensitive_area"]["features"]), 0
+        )
+        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 0)
+
+    def test_create_and_get_line_intersecting_1SA_and_1GA(self):
+        # same test with line intersecting the areas:
+        # => inside one SensitiveArea and one GeoArea
+        data = {
+            "owner_id": 1,
+            "geom": {"type": "LineString", "coordinates": [[2, 6], [2, 4]]},
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/lines/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # method get tested: get one specific Line
+        lines = resp.json()
+
+        id = lines["properties"]["id"]
+        resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
+        self.assertEquals(resp.status_code, 200)
+        line = resp.json()
+        self.assertEquals(
+            len(line["properties"]["sensitive_area"]["features"]), 1
+        )
+        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 1)
+
+    def test_create_and_get_line_intersecting_with_one_point_only_1SA_and_1GA(
+        self,
+    ):
+        # same test with line  with only one point the areas:
+        # => inside one SensitiveArea and one GeoArea
+        data = {
+            "owner_id": 1,
+            "geom": {"type": "LineString", "coordinates": [[2, 6], [2, 5]]},
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/lines/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        # method get tested: get one specific Line
+        lines = resp.json()
+
+        id = lines["properties"]["id"]
+        resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
+        self.assertEquals(resp.status_code, 200)
+        line = resp.json()
+        self.assertEquals(
+            len(line["properties"]["sensitive_area"]["features"]), 1
+        )
+        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 1)
+
+    def test_create_and_get_line_list(self):
+        # test get list: create several lines (nb)
+        data = {
+            "owner_id": 1,
+            "geom": {"type": "LineString", "coordinates": [[-5, -5], [5, 5]]},
+        }
+        nb = 4
+        for i in range(0, nb):
+            resp = self.authentified_client.post(
+                "/api/v1/cables/lines/", data, format="json"
+            )
+            self.assertEquals(resp.status_code, 201)
+
+        resp = self.authentified_client.get("/api/v1/cables/lines/")
+        self.assertEquals(resp.status_code, 200)
+        points = resp.json()
+        self.assertEquals(len(points["features"]), nb)
