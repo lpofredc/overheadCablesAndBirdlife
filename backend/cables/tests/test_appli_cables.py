@@ -14,7 +14,7 @@ class CreateDiagnosticTestCase(TestCase):
     """
 
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml"]
+    fixtures = ["commons/tests/fixtures/test_nomenclatures.xml"]
 
     def setUp(self):
         self.anonymous_client = APIClient()

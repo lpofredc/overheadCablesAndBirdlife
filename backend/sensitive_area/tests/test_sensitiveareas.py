@@ -8,7 +8,7 @@ class SensitiveAreaAuthorizedAuthenticationTestCase(TestCase):
     """Class to test sensitive_area module"""
 
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml"]
+    fixtures = ["commons/tests/fixtures/test_nomenclatures.xml"]
 
     def setUp(self):
         self.anonymous_client = APIClient()
@@ -16,7 +16,7 @@ class SensitiveAreaAuthorizedAuthenticationTestCase(TestCase):
         self.user = createTestUser("user", "password", "add_sensitivearea")
         self.authentified_client = logTestUser("user", "password")
 
-    def test_create_and_get_sensitve_area(self):
+    def test_create_and_get_sensitive_area(self):
         # method post tested: create 2 SensitiveArea
         data = {
             "name": "Zone Sensible 1",

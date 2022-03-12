@@ -239,8 +239,8 @@ class Operation(Action):
         on_delete=models.PROTECT,
         limit_choices_to={"type__mnemonic": "equipment_type"},
         related_name="operation_pole_eqmt_type",
-        verbose_name=_("Type of operation for pole"),
-        help_text=_("Type of operation for pole"),
+        verbose_name=_("Type of equipment"),
+        help_text=_("Type of equipment"),
         # TODO to be removed
         null=True,
     )

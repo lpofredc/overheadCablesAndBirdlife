@@ -16,7 +16,10 @@ class PointAnonymousAuthenticationTestCase(TestCase):
     # media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_cables.xml",
+    ]
 
     def setUp(self):
         self.anonymous_client = APIClient()
@@ -80,7 +83,10 @@ class PointUnauthorizedAuthenticationTestCase(TestCase):
     # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_cables.xml",
+    ]
 
     def setUp(self):
         self.user = createTestUser("user", "password")
@@ -133,7 +139,10 @@ class PointAuthorizedAuthenticationTestCase(TestCase):
     # media
     # (pictures), 2 mortality cases
     # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
-    fixtures = ["test_nomenclatures.xml", "test_cables.xml"]
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_cables.xml",
+    ]
 
     def setUp(self):
         self.anonymous_client = APIClient()
@@ -157,20 +166,26 @@ class PointAuthorizedAuthenticationTestCase(TestCase):
         )
         self.assertEquals(resp.status_code, 200)
 
-    # # change owner value from these data to make put request thereafter
-    # data["properties"]["owner"] = owne/manage.py test --pattern="tests_*.py"
-    # )
-    # self.assertEquals(resp.status_code, 200)
-    # # change again the owner with patch request
-    # resp = self.authorized_client.patch(
-    #     f"/api/cables/points/edit/{first_id}/", data={"owner": owner_pk[0]}
-    # )
-    # self.assertEquals(resp.status_code, 200)
-    # # test get method on a detail Pole (through edit ViewSet)
-    # resp = self.authorized_client.get(
-    #     f"/api/cables/points/edit/{first_id}/"
-    # )
-    # self.assertEquals(resp.status_code, 200)
+
+###############################################################################################
+###############################################################################################
+###############################################################################################
+###############################################################################################
+
+# # change owner value from these data to make put request thereafter
+# data["properties"]["owner"] = owne/manage.py test --pattern="tests_*.py"
+# )
+# self.assertEquals(resp.status_code, 200)
+# # change again the owner with patch request
+# resp = self.authorized_client.patch(
+#     f"/api/cables/points/edit/{first_id}/", data={"owner": owner_pk[0]}
+# )
+# self.assertEquals(resp.status_code, 200)
+# # test get method on a detail Pole (through edit ViewSet)
+# resp = self.authorized_client.get(
+#     f"/api/cables/points/edit/{first_id}/"
+# )
+# self.assertEquals(resp.status_code, 200)
 
 
 #     # create owners (nomenclature items) needed to create points
