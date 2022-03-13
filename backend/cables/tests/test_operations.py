@@ -1,12 +1,10 @@
 from django.test import TestCase
-
-# from django.utils.timezone import datetime
 from rest_framework.test import APIClient
+from sinp_nomenclatures.models import Nomenclature
 
 from cables.models import Operation
 from commons.tests.tests_commons import createTestUser, logTestUser
-
-# from sinp_nomenclatures.models import Item, Type
+from media.models import Media
 
 
 class OperationsAnonymousAuthenticationTestCase(TestCase):
@@ -138,3 +136,428 @@ class OperationUnauthorizedAuthenticationTestCase(TestCase):
             f"/api/v1/cables/points/{self.pk}/"
         )
         self.assertEquals(resp.status_code, 403)
+
+
+class CreatePointOperationTestCase(TestCase):
+    """Class to test creation of Diagnosis related to Point infrastructure.
+    This test case mainly focuses on automatic following specific function:
+    When first Diagnosis is created from an infrastructure, it has last=True.
+    When another one is created for this same infrastructure, the old one is set with last=False and the new one with last=True
+
+    Require creation and consultation of various elements
+    """
+
+    # fixture includes:
+    # - sinp_nomenclature items (stand for dictionanry for specific data)
+    # - media items (used to create some Diagnosis)
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_media.xml",
+    ]
+
+    def setUp(self):
+        # create client with authentified user
+        self.user = createTestUser(
+            "user", "password", "add_point", "add_operation"
+        )
+        self.authentified_client = logTestUser("user", "password")
+
+        # Gather data from DB to create Diagnosis
+        owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
+        self.infCond = Nomenclature.objects.filter(
+            type__mnemonic="infrastr_condition"
+        )[0].id
+
+        self.risk_id = Nomenclature.objects.filter(
+            type__mnemonic="risk_level"
+        )[0].id
+        self.op_type_id = Nomenclature.objects.filter(
+            type__mnemonic="operation_type"
+        )[0].id
+        self.eqmtTypeList = Nomenclature.objects.filter(
+            type__mnemonic="equipment_type"
+        )
+        self.eqmtTypeIdList = [
+            eqmtType.id for eqmtType in self.eqmtTypeList
+        ]  # Gather list of pole type Id
+        self.mediaList = Media.objects.all()
+        self.mediaIdList = [
+            media.id for media in self.mediaList
+        ]  # Gather list of media Id
+
+        # create new Point
+        data = {
+            "owner_id": owner_id,
+            "geom": {"type": "Point", "coordinates": [0.5, 0.5]},
+        }
+        resp = self.authentified_client.post(
+            "/api/v1/cables/points/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        self.point_id = resp.json()["properties"]["id"]  # get Point id
+
+    def test_create_first_Operation_with_last_TRUE(self):
+        data = {
+            "infrastructure": self.point_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+        # check value
+        op = resp.json()
+        self.assertTrue(op["last"])
+
+    def test_create_2_Operations_with_last_TRUE_for_newer_FALSE_for_older(
+        self,
+    ):
+        data = {
+            "infrastructure": self.point_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+
+        # check value for created Operation
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+
+        # created new Operation on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Operation
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Operation.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_2_Operation_containing_Media_with_last_TRUE_for_newer_FALSE_for_older(
+        self,
+    ):
+        data = {
+            "infrastructure": self.point_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+            "media_id": self.mediaIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+
+        # check value for created Operation
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+
+        # Gather id of pole type list from created Operation and compare to self.poletypeIdList
+        eqmtType_check = [eqmtType["id"] for eqmtType in first["eqmt_type"]]
+        self.assertListEqual(self.eqmtTypeIdList, eqmtType_check)
+
+        # Gather id of media list from created Operation and compare to self.mediaIdList
+        media_check = [media["id"] for media in first["media"]]
+        self.assertListEqual(self.mediaIdList, media_check)
+
+        # created new Operation on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Operation
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Operation.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_Operation_without_EquimentType__should_fail__(self):
+        data = {
+            "infrastructure": self.point_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "media_id": self.mediaIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+        # check creation fail with statut code 400
+        self.assertEquals(resp.status_code, 400)
+
+    def test_create_third_Operation_and_2_first_with_last_TRUE___should_not_occure___(
+        self,
+    ):
+        data = {
+            "infrastructure": self.point_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+        }
+
+        # create 2 Operations on same infrastructure
+        for i in range(0, 2):
+            resp = self.authentified_client.post(
+                "/api/v1/cables/operations/", data, format="json"
+            )
+            self.assertEquals(resp.status_code, 201)
+            # check value
+            op = resp.json()
+            self.assertEquals(op["last"], True)
+
+        # set last=True for all Operations
+        Operation.objects.update(infrastructure=self.point_id, last=True)
+        # check both Operation with last=True
+        ops = Operation.objects.filter(infrastructure=self.point_id, last=True)
+        self.assertEquals(len(ops), 2)
+
+        # create third operation on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)  # check success
+        # check last one created with lat=True
+        new = resp.json()
+        self.assertTrue(new["last"])
+        # check only one is last=True, 2 have last=False
+        ops = Operation.objects.filter(
+            infrastructure=self.point_id, last=False
+        )
+        self.assertEquals(len(ops), 2)
+        ops = Operation.objects.filter(infrastructure=self.point_id, last=True)
+        self.assertEquals(len(ops), 1)
+
+
+class CreateLineOperationTestCase(TestCase):
+    """Class to test creation of Operation related to Line infrastructure.
+    This test case mainly focuses on automatic following specific function:
+    When first Operation is created from an infrastructure, it has last=True.
+    When another one is created for this same infrastructure, the old one is set with last=False and the new one with last=True
+
+    Require creation and consultation of various elements
+    """
+
+    # fixture includes:
+    # - sinp_nomenclature items (stand for dictionanry for specific data)
+    # - media items (used to create some Diagnosis)
+    fixtures = [
+        "commons/tests/fixtures/test_nomenclatures.xml",
+        "commons/tests/fixtures/test_media.xml",
+    ]
+
+    def setUp(self):
+        # create client with authentified user
+        self.user = createTestUser(
+            "user", "password", "add_line", "add_operation"
+        )
+        self.authentified_client = logTestUser("user", "password")
+
+        # Gather data from DB to create Diagnosis
+        owner_id = Nomenclature.objects.filter(type__mnemonic="owner")[0].id
+        self.infCond = Nomenclature.objects.filter(
+            type__mnemonic="infrastr_condition"
+        )[0].id
+
+        self.risk_id = Nomenclature.objects.filter(
+            type__mnemonic="risk_level"
+        )[0].id
+        self.op_type_id = Nomenclature.objects.filter(
+            type__mnemonic="operation_type"
+        )[0].id
+        self.eqmtTypeList = Nomenclature.objects.filter(
+            type__mnemonic="equipment_type"
+        )
+        self.eqmtTypeIdList = [
+            eqmtType.id for eqmtType in self.eqmtTypeList
+        ]  # Gather list of pole type Id
+        self.mediaList = Media.objects.all()
+        self.mediaIdList = [
+            media.id for media in self.mediaList
+        ]  # Gather list of media Id
+
+        # create new Line
+        data = {
+            "owner_id": owner_id,
+            "geom": {"type": "LineString", "coordinates": [[2, 6], [2, 4]]},
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/lines/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+        self.line_id = resp.json()["properties"]["id"]  # get Line id
+
+    def test_create_first_Operation_with_last_TRUE(self):
+        # create Operation
+        data = {
+            "infrastructure": self.line_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+        # check value
+        op = resp.json()
+        self.assertTrue(op["last"])
+
+    def test_create_2_Operations_with_last_TRUE_for_newer_FALSE_for_older(
+        self,
+    ):
+        data = {
+            "infrastructure": self.line_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)
+
+        # check value for created Operation
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+
+        # created new Operation on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Operation
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Operation.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_2_Operation_containing_Media_with_last_TRUE_for_newer_FALSE_for_older(
+        self,
+    ):
+        data = {
+            "infrastructure": self.line_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+            "media_id": self.mediaIdList,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+
+        # check value for created Operation
+        first = resp.json()
+        first_id = first["id"]
+        self.assertTrue(first["last"])
+
+        # Gather id of pole type list from created Operation and compare to self.poletypeIdList
+        eqmtType_check = [eqmtType["id"] for eqmtType in first["eqmt_type"]]
+        self.assertListEqual(self.eqmtTypeIdList, eqmtType_check)
+
+        # Gather id of media list from created Operation and compare to self.mediaIdList
+        media_check = [media["id"] for media in first["media"]]
+        self.assertListEqual(self.mediaIdList, media_check)
+
+        # created new Operation on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+
+        self.assertEquals(resp.status_code, 201)
+        # check value for new created Operation
+        second = resp.json()
+        self.assertTrue(second["last"])
+        # check value for old one
+        first = Operation.objects.get(id=first_id)
+        self.assertFalse(first.last)
+
+    def test_create_Operation_without_EquimentType__should_fail__(self):
+        data = {
+            "infrastructure": self.line_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+        }
+
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+        # check creation fail with statut code 400
+        self.assertEquals(resp.status_code, 400)
+
+    def test_create_third_Operation_and_2_first_with_last_TRUE___should_not_occure___(
+        self,
+    ):
+        data = {
+            "infrastructure": self.line_id,
+            "date": "2022-01-01",
+            "remark": "My remark",
+            "operation_type_id": self.op_type_id,
+            "eqmt_type_id": self.eqmtTypeIdList,
+        }
+
+        # create 2 Operations on same infrastructure
+        for i in range(0, 2):
+            resp = self.authentified_client.post(
+                "/api/v1/cables/operations/", data, format="json"
+            )
+            self.assertEquals(resp.status_code, 201)
+            # check value
+            op = resp.json()
+            self.assertEquals(op["last"], True)
+
+        # set last=True for all Operations
+        Operation.objects.update(infrastructure=self.line_id, last=True)
+        # check both Operation with last=True
+        ops = Operation.objects.filter(infrastructure=self.line_id, last=True)
+        self.assertEquals(len(ops), 2)
+
+        # create third operation on same infrastructure
+        resp = self.authentified_client.post(
+            "/api/v1/cables/operations/", data, format="json"
+        )
+        self.assertEquals(resp.status_code, 201)  # check success
+        # check last one created with lat=True
+        new = resp.json()
+        self.assertTrue(new["last"])
+        # check only one is last=True, 2 have last=False
+        ops = Operation.objects.filter(infrastructure=self.line_id, last=False)
+        self.assertEquals(len(ops), 2)
+        ops = Operation.objects.filter(infrastructure=self.line_id, last=True)
+        self.assertEquals(len(ops), 1)

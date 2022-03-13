@@ -186,6 +186,7 @@ class OperationSerializer(ModelSerializer):
             "eqmt_type_id",
             "media",
             "media_id",
+            "last",
         ]
         # Allow to handle create/update/partial_update with nested data
         extra_kwargs = {
@@ -206,7 +207,7 @@ class OperationSerializer(ModelSerializer):
         """
 
     def create(self, validated_data):
-        old_ops = Diagnosis.objects.all().filter(
+        old_ops = Operation.objects.all().filter(
             infrastructure=validated_data["infrastructure"]
         )
 

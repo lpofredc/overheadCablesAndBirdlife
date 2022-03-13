@@ -2,7 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from sinp_nomenclatures.models import Nomenclature
 
-from cables.models import Diagnosis, Line, Point
+from cables.models import Diagnosis
 from commons.tests.tests_commons import createTestUser, logTestUser
 from media.models import Media
 
@@ -148,9 +148,8 @@ class CreatePointDiagnosisTestCase(TestCase):
     """
 
     # fixture includes:
-    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
-    # (pictures), 2 mortality cases
-    # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
+    # - sinp_nomenclature items (stand for dictionanry for specific data)
+    # - media items (used to create some Diagnosis)
     fixtures = [
         "commons/tests/fixtures/test_nomenclatures.xml",
         "commons/tests/fixtures/test_media.xml",
@@ -191,13 +190,13 @@ class CreatePointDiagnosisTestCase(TestCase):
             "/api/v1/cables/points/", data, format="json"
         )
         self.assertEquals(resp.status_code, 201)
+        self.point_id = resp.json()["properties"]["id"]  # get Point id
 
     def test_create_first_Diag_with_last_TRUE(self):
-        point_id = Point.objects.all()[0].id  # get Point id
-        # create Diagnosis
         data = {
-            "infrastructure": point_id,
+            "infrastructure": self.point_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -213,11 +212,10 @@ class CreatePointDiagnosisTestCase(TestCase):
         self.assertTrue(diag["last"])
 
     def test_create_2_Diags_with_last_TRUE_for_newer_FALSE_for_older(self):
-        point_id = Point.objects.all()[0].id  # get Point id
-        # create Diagnosis
         data = {
-            "infrastructure": point_id,
+            "infrastructure": self.point_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -247,11 +245,10 @@ class CreatePointDiagnosisTestCase(TestCase):
     def test_create_2_Diags_containing_PoleTypes_and_Media_with_last_TRUE_for_newer_FALSE_for_older(
         self,
     ):
-        point_id = Point.objects.all()[0].id  # get Point id
-        # create Diagnosis
         data = {
-            "infrastructure": point_id,
+            "infrastructure": self.point_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -274,7 +271,6 @@ class CreatePointDiagnosisTestCase(TestCase):
         # Gather id of media list from created diagnosis and compare to self.mediaIdList
         media_check = [media["id"] for media in first["media"]]
         self.assertListEqual(self.mediaIdList, media_check)
-        # self.assertEquals(self.poleTypeList[0].label, first["pole_type"][0].label)
         # created new Diagnosis on same infrastructure
         resp = self.authentified_client.post(
             "/api/v1/cables/diagnosis/", data, format="json"
@@ -290,10 +286,10 @@ class CreatePointDiagnosisTestCase(TestCase):
     def test_create_third_Diag_and_2_first_with_last_TRUE___should_not_occure___(
         self,
     ):
-        point_id = Point.objects.all()[0].id  # get Point id
         data = {
-            "infrastructure": point_id,
+            "infrastructure": self.point_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "condition_id": self.infCond,
             "isolation_advice": False,
@@ -303,7 +299,6 @@ class CreatePointDiagnosisTestCase(TestCase):
             "pole_dangerousness_id": self.risk_id,
         }
         # create 2 Diagnosis on same infrastructure
-        diags = []
         for i in range(0, 2):
             resp = self.authentified_client.post(
                 "/api/v1/cables/diagnosis/", data, format="json"
@@ -312,10 +307,12 @@ class CreatePointDiagnosisTestCase(TestCase):
             # check value
             diag = resp.json()
             self.assertEquals(diag["last"], True)
-        # set last=True for last Diagnosis
-        Diagnosis.objects.update(infrastructure=point_id, last=True)
+        # set last=True for all Diagnosis
+        Diagnosis.objects.update(infrastructure=self.point_id, last=True)
         # check both Diagnosis with last=True
-        diags = Diagnosis.objects.filter(infrastructure=point_id, last=True)
+        diags = Diagnosis.objects.filter(
+            infrastructure=self.point_id, last=True
+        )
         self.assertEquals(len(diags), 2)
         # create third diagnosis on same infrastructure
         resp = self.authentified_client.post(
@@ -326,9 +323,13 @@ class CreatePointDiagnosisTestCase(TestCase):
         new = resp.json()
         self.assertTrue(new["last"])
         # check only one is last=True, 2 have last=False
-        diags = Diagnosis.objects.filter(infrastructure=point_id, last=False)
+        diags = Diagnosis.objects.filter(
+            infrastructure=self.point_id, last=False
+        )
         self.assertEquals(len(diags), 2)
-        diags = Diagnosis.objects.filter(infrastructure=point_id, last=True)
+        diags = Diagnosis.objects.filter(
+            infrastructure=self.point_id, last=True
+        )
         self.assertEquals(len(diags), 1)
 
 
@@ -342,9 +343,8 @@ class CreateLineDiagnosisTestCase(TestCase):
     """
 
     # fixture includes:
-    # - at least 2 points, 2 lines, 3 diagnosis, 3 operations, 2 GeoAreas, 2 SensitiveAreas, 2 media
-    # (pictures), 2 mortality cases
-    # - It contains needed sinp_nomenclature items (stand for dictionanry for specific data)
+    # - sinp_nomenclature items (stand for dictionanry for specific data)
+    # - media items (used to create some Diagnosis)
     fixtures = [
         "commons/tests/fixtures/test_nomenclatures.xml",
         "commons/tests/fixtures/test_media.xml",
@@ -367,6 +367,8 @@ class CreateLineDiagnosisTestCase(TestCase):
         self.mediaIdList = [
             media.id for media in list(self.mediaList)
         ]  # Gather list of media Id
+
+        # create new Line
         data = {
             "owner_id": owner_id,
             "geom": {"type": "LineString", "coordinates": [[2, 6], [2, 4]]},
@@ -376,13 +378,13 @@ class CreateLineDiagnosisTestCase(TestCase):
             "/api/v1/cables/lines/", data, format="json"
         )
         self.assertEquals(resp.status_code, 201)
+        self.line_id = resp.json()["properties"]["id"]  # get Line id
 
     def test_create_first_Diag_with_last_TRUE(self):
-        line_id = Line.objects.all()[0].id  # get Point id
-        # create Diagnosis
         data = {
-            "infrastructure": line_id,
+            "infrastructure": self.line_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -399,11 +401,10 @@ class CreateLineDiagnosisTestCase(TestCase):
         self.assertTrue(diag["last"])
 
     def test_create_2_Diags_with_last_TRUE_for_newer_FALSE_for_older(self):
-        line_id = Line.objects.all()[0].id  # get Line id
-        # create Diagnosis
         data = {
-            "infrastructure": line_id,
+            "infrastructure": self.line_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -434,11 +435,10 @@ class CreateLineDiagnosisTestCase(TestCase):
     def test_create_2_Diags_containing_Media_with_last_TRUE_for_newer_FALSE_for_older(
         self,
     ):
-        line_id = Line.objects.all()[0].id  # get Point id
-        # create Diagnosis
         data = {
-            "infrastructure": line_id,
+            "infrastructure": self.line_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -473,10 +473,10 @@ class CreateLineDiagnosisTestCase(TestCase):
     def test_create_third_Diag_and_2_first_with_last_TRUE___should_not_occur___(
         self,
     ):
-        line_id = Line.objects.all()[0].id  # get Point id
         data = {
-            "infrastructure": line_id,
+            "infrastructure": self.line_id,
             "date": "2022-01-01",
+            "remark": "My remark",
             "neutralized": False,
             "sgmt_build_integr_risk": self.risk_id,
             "sgmt_moving_risk": self.risk_id,
@@ -485,7 +485,6 @@ class CreateLineDiagnosisTestCase(TestCase):
         }
 
         # create 2 Diagnosis on same infrastructure
-        diags = []
         for i in range(0, 2):
             resp = self.authentified_client.post(
                 "/api/v1/cables/diagnosis/", data, format="json"
@@ -494,10 +493,12 @@ class CreateLineDiagnosisTestCase(TestCase):
             # check value
             diag = resp.json()
             self.assertEquals(diag["last"], True)
-        # set last=True for last Diagnosis
-        Diagnosis.objects.update(infrastructure=line_id, last=True)
+        # set last=True for all Diagnosis
+        Diagnosis.objects.update(infrastructure=self.line_id, last=True)
         # check both Diagnosis with last=True
-        diags = Diagnosis.objects.filter(infrastructure=line_id, last=True)
+        diags = Diagnosis.objects.filter(
+            infrastructure=self.line_id, last=True
+        )
         self.assertEquals(len(diags), 2)
         # create third diagnosis on same infrastructure
         resp = self.authentified_client.post(
@@ -508,7 +509,11 @@ class CreateLineDiagnosisTestCase(TestCase):
         new = resp.json()
         self.assertTrue(new["last"])
         # check only one is last=True, 2 have last=False
-        diags = Diagnosis.objects.filter(infrastructure=line_id, last=False)
+        diags = Diagnosis.objects.filter(
+            infrastructure=self.line_id, last=False
+        )
         self.assertEquals(len(diags), 2)
-        diags = Diagnosis.objects.filter(infrastructure=line_id, last=True)
+        diags = Diagnosis.objects.filter(
+            infrastructure=self.line_id, last=True
+        )
         self.assertEquals(len(diags), 1)
