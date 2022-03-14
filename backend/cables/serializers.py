@@ -117,6 +117,15 @@ class DiagnosisSerializer(ModelSerializer):
         New Diagnosis related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
         In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
         APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures with attachment of ManyToMany fields data, Diagnostic is deleted (if it was created) and an APIException is raised.
+
+        Arguments:
+            validated_data {dict} -- contains data for new Diagnosis creation
+
+        Raises:
+            APIException -- In case of issue with create process. If process fails, any new object created will be deleted before raising new APIException
+
+        Returns:
+            {Diagnosis} -- returns new Diagnosis object
         """
 
     def create(self, validated_data):
@@ -204,6 +213,15 @@ class OperationSerializer(ModelSerializer):
         New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
         In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
         APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures with attachment of ManyToMany fields data, Diagnostic is deleted (if it was created) and an APIException is raised.
+
+        Arguments:
+            validated_data {dict} -- contains data for new Operation creation
+
+        Raises:
+            APIException -- In case of issue with create process. If process fails, any new object created will be deleted before raising new APIException
+
+        Returns:
+            {Operation} -- returns new Operation object
         """
 
     def create(self, validated_data):
@@ -327,6 +345,15 @@ class PointSerializer(GeoFeatureModelSerializer):
 
         At Point creation, method search all GeoArea and all SensitiveArea that intersects with new Point coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Point field sensitive_area (Infrastructure.sensitive_area).
         If issue occures for attachment with sensitive/geo areas, the Point is deleted (if it was created) and an APIException is raised.
+
+        Arguments:
+            validated_data {dict} -- contains data for new Point creation
+
+        Raises:
+            APIException -- In case of issue with create process. If process fails, any new object created will be deleted before raising new APIException
+
+        Returns:
+            {Point} -- returns new Point object
         """
 
     def create(self, validated_data):
@@ -394,6 +421,15 @@ class LineSerializer(GeoFeatureModelSerializer):
 
         At Line creation, method search all GeoArea and all SensitiveArea that intersects with new Line coordinates, and set GeoArea id list to Point field geo_area (Infrastructure.geo_area) and SensitiveArea id list to Line field sensitive_area (Infrastructure.sensitive_area).
         If issue occures for attachment with sensitive/geo areas, the Line is deleted (if it was created) and an APIException is raised.
+
+        Arguments:
+            validated_data {dict} -- contains data for new Line creation
+
+        Raises:
+            APIException -- In case of issue with create process. If process fails, any new object created will be deleted before raising new APIException
+
+        Returns:
+            {Line} -- returns new Line object
         """
 
     def create(self, validated_data):
