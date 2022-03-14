@@ -1,7 +1,7 @@
 <template>
   <v-container fluid
     ><v-list>
-      <v-list-item v-for="(img, index) in imgUrl" :key="index">
+      <v-list-item v-for="(img, index) in imgFileContent" :key="index">
         <v-row
           ><v-col
             ><v-img
@@ -12,9 +12,8 @@
           ><v-col>date: {{ pictDate }}</v-col
           ><v-col></v-col
           ><v-col cols="1"
-            ><v-icon small color="red">mdi-trash-can</v-icon
-            ><v-btn @click="testEnvoi">Test envoi</v-btn></v-col
-          ></v-row
+            ><v-icon small color="red">mdi-trash-can</v-icon>
+          </v-col></v-row
         >
       </v-list-item>
     </v-list>
@@ -26,7 +25,7 @@
       accept="image/png, image/jpeg, image/bmp"
       prepend-icon="mdi-camera"
       :label="$t('picture.add_file')"
-      @change="loadImage"
+      @change="displayImage"
     ></v-file-input>
   </v-container>
 </template>
@@ -39,8 +38,8 @@ export default {
     pictDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
-    imgUrl: [],
-    imgObj: [],
+    imgFileContent: [],
+    imgFileObject: [],
     showError: false,
     rules: [
       (value) =>
@@ -54,46 +53,32 @@ export default {
     ],
   }),
   methods: {
-    async testEnvoi() {
-      const formData = new FormData()
-      console.log(this.imgObj[0].type)
-      console.log(typeof this.imgObj[0])
-      formData.append('storage', this.imgObj[0], 'Bubobubo_20200611.png')
-      formData.append('date', '2022-01-01')
-      // const data = { Storage: formData, date: '2022-01-01' }
-      await this.$axios.$post('media/', formData, {
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      // })
-    },
     /**
-     * Method to load and display picture before uploading through the API
+     * displayImage(): Method to load and display picture before uploading through the API
      *
      * This method is triggered on file selection through v-file-input:
-     * - Image url is push to imgUrl array
-     * - Image file object is push to imgObj array
+     * - Image file content is push to imgFileContent array
+     * - Image file object is push to imgFileObject array
      *
      * In case of error, error message display through errorSnackBar component
      */
-    loadImage() {
+    displayImage() {
       try {
         if (this.newImg && this.$refs.pictInput.validate()) {
           const reader = new FileReader()
           reader.readAsDataURL(this.newImg)
+          // event listener on successful loading,
           reader.addEventListener('load', () => {
-            this.imgUrl.push(reader.result)
-            this.imgObj.push(this.newImg)
-            this.$refs.pictInput.reset()
+            this.imgFileContent.push(reader.result) // file content push to array
+            this.imgFileObject.push(this.newImg) // File object push to array
+            this.$refs.pictInput.reset() // reset v-file-input
           })
         }
       } catch (_err) {
         const error = {}
-        error.code = errorCodes.imgLoading.code
-        error.msg = $nuxt.$t(`error.${errorCodes.imgLoading.msg}`)
-        // set error message to errorStore and triggers message displyy through "err" watcher in
+        error.code = errorCodes.img_loading.code
+        error.msg = $nuxt.$t(`error.${errorCodes.img_loading.msg}`)
+        // set error message to errorStore and triggers message display through "err" watcher in
         // error-snackbar component
         this.$store.commit('errorStore/setError', error)
       }

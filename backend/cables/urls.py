@@ -24,6 +24,7 @@ urlpatterns = [
     path(
         "points/",
         PointViewSet.as_view({"get": "list", "post": "create"}),
+        # PointViewSet.as_view({"get": "list"}),
         name="point_list",
     ),
     path(

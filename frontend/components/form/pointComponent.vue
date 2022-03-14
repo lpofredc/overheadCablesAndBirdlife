@@ -179,7 +179,7 @@
           <legend class="mx-3 px-1">
             {{ $t('point.pictures') }}
           </legend>
-          <utils-picture-component /></fieldset
+          <utils-picture-component ref="upc" /></fieldset
       ></v-container>
       <v-container>
         <v-row class="justify-space-around mb-2">
@@ -287,49 +287,86 @@ export default {
       this.$store.commit('pointStore/add', { lat: null, lng: null })
       this.$router.back()
     },
+    /**
+     * submit(): Method to submit the form
+     */
     async submit() {
       if (this.$refs.form.validate()) {
-        // try {
-        // create Point
-        const ptData = {}
-        ptData.geom = {
-          type: 'Point',
-          coordinates: [this.lng, this.lat],
+        // try create new Pole (Point infrastructure)
+        let newPole = null
+        const mediaIdList = []
+        try {
+          // create Point
+          const ptData = {}
+          ptData.geom = {
+            type: 'Point',
+            coordinates: [this.lng, this.lat],
+          }
+          ptData.owner_id = this.owner
+          newPole = await this.$axios.$post('cables/points/', ptData)
+        } catch (err) {
+          const error = {}
+          error.code = errorCodes.create_point.code
+          error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
+          // set error message to errorStore and triggers message display through "err" watcher in
+          // error-snackbar component
+          this.$store.commit('errorStore/setError', error)
+          this.$router.push('/view')
         }
-        ptData.owner_id = this.owner
-        const newPoint = await this.$axios.$post('cables/points/', ptData)
-        // If no newPoint, Exception is thrown to be capture by catch section below
-        if (!newPoint) {
-          throw new Exception()
+        // new Pole is successfully created
+        if (newPole) {
+          // try save each picture (if any) in database
+          this.$refs.upc.imgFileObject.forEach(async (img) => {
+            try {
+              const formData = new FormData()
+              formData.append('storage', img)
+              // TODO get true date and other form fields
+              formData.append('date', '2022-01-01')
+              const newImg = await this.$axios.$post('media/', formData, {
+                headers: {
+                  accept: 'application/json',
+                  'Content-Type': 'multipart/form-data',
+                },
+              })
+              mediaIdList.push(newImg.id)
+              // Error handling for each picture. An error for one picture do not prevent other
+              // pictures be saved
+            } catch (_err) {
+              const error = {}
+              error.code = errorCodes.img_sending.code
+              error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
+              // set error message to errorStore and triggers message display through "err" watcher in
+              // error-snackbar component
+              this.$store.commit('errorStore/setError', error)
+            }
+          })
+          // TODO: to be completed from here
+          // try create Diagnosis
+          try {
+            const diagData = {}
+            diagData.infrastructure = newPole.properties.id
+            diagData.date = this.createDate
+            diagData.remark = this.remark
+            diagData.neutralized = this.neutralized
+            diagData.condition_id = this.poleCondition
+            diagData.isolation_advice = this.isolAdv
+            diagData.dissuasion_advice = this.dissuadAdv
+            diagData.attraction_advice = this.attractAdv
+            diagData.pole_type_id = this.poleDesc
+            diagData.pole_attractivity_id = this.attractiveness
+            diagData.pole_dangerousness_id = this.dangerousness
+            diagData.media_id = mediaIdList
+            await this.$axios.$post('cables/diagnosis/', diagData)
+            this.$router.push('/view')
+          } catch (_err) {
+            // $nuxt.error({
+            //   statusCode: errorCodes.create_pole.code,
+            //   message:
+            //     `Error ${errorCodes.create_pole.code}: ` +
+            //     $nuxt.$t(`error.${errorCodes.create_pole.msg}`),
+            // })
+          }
         }
-        // Create Diagnosis
-        const diagData = {}
-        diagData.infrastructure = newPoint.properties.id
-        diagData.date = this.createDate
-        diagData.remark = this.remark
-        diagData.neutralized = this.neutralized
-        diagData.condition_id = this.poleCondition
-        diagData.isolation_advice = this.isolAdv
-        diagData.dissuasion_advice = this.dissuadAdv
-        diagData.attraction_advice = this.attractAdv
-        diagData.pole_type_id = this.poleDesc
-        diagData.pole_attractivity_id = this.attractiveness
-        diagData.pole_dangerousness_id = this.dangerousness
-        diagData.media_id = []
-        const newDiag = await this.$axios.$post('cables/diagnosis/', diagData)
-        // If no newDiag, Exception is thrown to be capture by catch section below
-        if (!newDiag) {
-          throw new Exception()
-        }
-        this.$router.push('/view')
-        // } catch (_err) {
-        //   $nuxt.error({
-        //     statusCode: errorCodes.create_pole.code,
-        //     message:
-        //       `Error ${errorCodes.create_pole.code}: ` +
-        //       $nuxt.$t(`error.${errorCodes.create_pole.msg}`),
-        //   })
-        // }
       }
     },
   },

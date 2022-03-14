@@ -51,13 +51,23 @@ errorCodes = {
     msg: 'loading-risklevels-issue',
   },
   // refer submit in point-component
-  create_pole: {
+  create_point: {
     code: 801,
     msg: 'create-issue',
   },
-  // refer loadImage in pictureComponent
-  imgLoading: {
+  // refer submit in point-component
+  create_pole_diagnosis: {
     code: 802,
+    msg: 'create-issue',
+  },
+  // refer loadImage in pictureComponent
+  img_loading: {
+    code: 901,
     msg: 'loading-img-issue',
+  },
+  // refer submit in related form component
+  img_sending: {
+    code: 902,
+    msg: 'sending-img-issue',
   },
 }
