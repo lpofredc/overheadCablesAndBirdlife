@@ -55,4 +55,9 @@ errorCodes = {
     code: 801,
     msg: 'create-issue',
   },
+  // refer loadImage in pictureComponent
+  imgLoading: {
+    code: 802,
+    msg: 'loading-img-issue',
+  },
 }

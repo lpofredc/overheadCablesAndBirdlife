@@ -1,7 +1,7 @@
 <template>
   <v-container fluid
     ><v-list>
-      <v-list-item v-for="(img, index) in images" :key="index">
+      <v-list-item v-for="(img, index) in imgUrl" :key="index">
         <v-row
           ><v-col
             ><v-img
@@ -12,111 +12,12 @@
           ><v-col>date: {{ pictDate }}</v-col
           ><v-col></v-col
           ><v-col cols="1"
-            ><v-icon small color="red">mdi-trash-can</v-icon></v-col
+            ><v-icon small color="red">mdi-trash-can</v-icon
+            ><v-btn @click="testEnvoi">Test envoi</v-btn></v-col
           ></v-row
         >
       </v-list-item>
     </v-list>
-    <!-- <v-container class="d-flex space-around flex-wrap mx-2">
-      <v-card
-        v-for="(img, index) in images"
-        :key="index"
-        width="350px"
-        heigth="200px"
-        class="strech ma-2"
-      >
-        <v-row
-          ><v-col
-            ><v-img
-              :src="img"
-              max-height="75"
-              max-width="125"
-              class="ma-2" /></v-col
-          ><v-col
-            ><v-icon small color="red">mdi-trash-can</v-icon> -->
-    <!-- <v-menu
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              ><template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="pictDate"
-                  :label="$t('forms.datecreate')"
-                  persistent-hint
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  dense
-                  class="pa-2"
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="pictDate"
-                no-title
-              ></v-date-picker> </v-menu
-            > -->
-    <!-- <v-text-field
-              ref="lat"
-              v-model="lat"
-              :label="$t('point.latitude')"
-              :disabled="!manualChange"
-              type="number"
-              :rules="[rules.requiredOrNotValid, rules.latRange]"
-              required
-              hide-spin-buttons
-              class="shrink mx-5" /></v-col
-        ></v-row>
-        <v-row>
-          <v-textarea
-            v-model="remark"
-            clearable
-            clear-icon="mdi-close-circle"
-            :label="$t('point.remark')"
-            class="mx-5"
-          ></v-textarea
-        ></v-row> </v-card
-    ></v-container> -->
-    <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->
-    <!-- <v-container class="d-flex space-around flex-wrap mx-2">
-      <v-card
-        v-for="(img, index) in images"
-        :key="index"
-        width="350px"
-        heigth="200px"
-        class="strech ma-2"
-      >
-        <v-row
-          ><v-col
-            ><v-img
-              :src="img"
-              max-height="75"
-              max-width="125"
-              class="ma-2" /></v-col
-          ><v-col
-            ><v-icon small color="red">mdi-trash-can</v-icon> <v-text-field
-              ref="lat"
-              v-model="lat"
-              :label="$t('point.latitude')"
-              :disabled="!manualChange"
-              type="number"
-              :rules="[rules.requiredOrNotValid, rules.latRange]"
-              required
-              hide-spin-buttons
-              class="shrink mx-5" /></v-col
-        ></v-row>
-        <v-row>
-          <v-textarea
-            v-model="remark"
-            clearable
-            clear-icon="mdi-close-circle"
-            :label="$t('point.remark')"
-            class="mx-5"
-          ></v-textarea
-        ></v-row> </v-card
-    ></v-container> -->
     <v-file-input
       ref="pictInput"
       v-model="newImg"
@@ -125,8 +26,7 @@
       accept="image/png, image/jpeg, image/bmp"
       prepend-icon="mdi-camera"
       :label="$t('picture.add_file')"
-      hide-input
-      @change="uploadImage"
+      @change="loadImage"
     ></v-file-input>
   </v-container>
 </template>
@@ -139,23 +39,71 @@ export default {
     pictDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
-    images: [],
+    imgUrl: [],
+    imgObj: [],
+    showError: false,
     rules: [
       (value) =>
-        !value || value.size < 200000000 || $nuxt.$t('picture.add_file'),
+        !value ||
+        value.size < 200000 ||
+        `${$nuxt.$t('forms.too_big_file')} 200 Ko`,
+      (value) =>
+        !value ||
+        value.type.startsWith('image/') ||
+        $nuxt.$t('picture.add_file'),
     ],
   }),
   methods: {
-    uploadImage() {
-      if (this.newImg && this.$refs.pictInput.validate()) {
-        const reader = new FileReader()
-        reader.readAsDataURL(this.newImg)
-        reader.addEventListener('load', () => {
-          this.images.push(reader.result)
-        })
-        this.$refs.pictInput.reset()
+    async testEnvoi() {
+      const formData = new FormData()
+      console.log(this.imgObj[0].type)
+      console.log(typeof this.imgObj[0])
+      formData.append('storage', this.imgObj[0], 'Bubobubo_20200611.png')
+      formData.append('date', '2022-01-01')
+      // const data = { Storage: formData, date: '2022-01-01' }
+      await this.$axios.$post('media/', formData, {
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      // })
+    },
+    /**
+     * Method to load and display picture before uploading through the API
+     *
+     * This method is triggered on file selection through v-file-input:
+     * - Image url is push to imgUrl array
+     * - Image file object is push to imgObj array
+     *
+     * In case of error, error message display through errorSnackBar component
+     */
+    loadImage() {
+      try {
+        if (this.newImg && this.$refs.pictInput.validate()) {
+          const reader = new FileReader()
+          reader.readAsDataURL(this.newImg)
+          reader.addEventListener('load', () => {
+            this.imgUrl.push(reader.result)
+            this.imgObj.push(this.newImg)
+            this.$refs.pictInput.reset()
+          })
+        }
+      } catch (_err) {
+        const error = {}
+        error.code = errorCodes.imgLoading.code
+        error.msg = $nuxt.$t(`error.${errorCodes.imgLoading.msg}`)
+        // set error message to errorStore and triggers message displyy through "err" watcher in
+        // error-snackbar component
+        this.$store.commit('errorStore/setError', error)
       }
     },
   },
 }
 </script>
+
+<style scoped>
+.v-file-input {
+  width: 400px;
+}
+</style>

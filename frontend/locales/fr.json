@@ -22,7 +22,9 @@
     "coordinates": "Coordonnées",
     "datecreate": "Date de création",
     "general": "Informations Générales",
-    "risk_assessment": "Evaluation des Risques"
+    "risk_assessment": "Evaluation des Risques",
+    "too_big_file": "La taille du fichier ne doit pas exéder",
+    "not_img_file": "Le fichier sélectionné doit-être une image"
   },
   "point": {
     "advice": "Recommandations",
@@ -73,6 +75,7 @@
     "create-issue": "Une erreur inattendue s'est produite lors du processus de création d'un nouvel élément. Aucun élément n'a été créé",
     "loading-issue": "Une erreur non identifiée durant le chargement des paramètres est survenue. Vous avez été déconnecté",
     "loading-conditions-issue": "un problème de chargement des options \"Etat des Infrastructures\" est survenu. Vous avez été déconnecté",
+    "loading-img-issue": "Erreur de chargement. Fichier non chargée",
     "loading-owners-issue": "un problème de chargement des options \"Propriétaire\" est survenu. Vous avez été déconnecté",
     "loading-poletypes-issue": "un problème de chargement des options \"type de Poteaux\" est survenu. Vous avez été déconnecté",
     "loading-risklevels-issue": "un problème de chargement des options \"Niveau de Risque\" est survenu. Vous avez été déconnecté",

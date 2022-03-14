@@ -22,7 +22,9 @@
     "coordinates": "Coordinates",
     "datecreate": "Creation date",
     "general": "General Information",
-    "risk_assessment": "Risks Assessment"
+    "risk_assessment": "Risks Assessment",
+    "too_big_file": "File size should less than",
+    "not_img_file": "Selected file should be an image file"
   },
   "point": {
     "advice": "Advices",
@@ -72,6 +74,7 @@
     "create-issue": "An inadvertant error occured during element creation process. No new element was created. Please try it again",
     "loading-issue": "A not identified application parameter loading issue occured. You were disconnected",
     "loading-conditions-issue": "Issue with loading \"Infrastructure Condition\" options occured. You were disconnected",
+    "loading-img-issue": "Loading issue. File is not loaded",
     "loading-ownerss-issue": "Issue with loading \"Owner\" options occured. You were disconnected",
     "loading-poletypes-issue": "Issue with loading \"PoleType\" options occured. You were disconnected",
     "loading-risklevels-issue": "Issue with loading \"Risk Level\" options occured. You were disconnected",
