@@ -52,7 +52,7 @@
               class="d-flex justify-space-around flex-wrap ma-0 pa-0"
             >
               <v-select
-                v-model="owner"
+                v-model="pointData.owner_id"
                 :items="networkOwners"
                 item-text="label"
                 item-value="id"
@@ -71,7 +71,7 @@
               >
                 <template #activator="{ on, attrs }">
                   <v-text-field
-                    v-model="createDate"
+                    v-model="diagData.date"
                     :label="$t('forms.datecreate')"
                     persistent-hint
                     prepend-icon="mdi-calendar"
@@ -82,7 +82,7 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="createDate"
+                  v-model="diagData.date"
                   no-title
                 ></v-date-picker> </v-menu
             ></v-container>
@@ -90,7 +90,7 @@
               class="d-flex justify-space-around flex-wrap ma-0 pa-0"
             >
               <v-select
-                v-model="poleDesc"
+                v-model="diagData.pole_type_id"
                 :items="poleTypes"
                 item-text="label"
                 item-value="id"
@@ -103,7 +103,7 @@
                 class="poletypes shrink mx-10 my-4"
               ></v-select>
               <v-select
-                v-model="poleCondition"
+                v-model="diagData.condition_id"
                 :items="conditions"
                 item-text="label"
                 item-value="id"
@@ -112,7 +112,7 @@
                 class="shrink mx-10 my-4"
               ></v-select></v-container
             ><v-textarea
-              v-model="remark"
+              v-model="diagData.remark"
               clearable
               clear-icon="mdi-close-circle"
               :label="$t('point.remark')"
@@ -125,7 +125,7 @@
               class="d-flex justify-space-around flex-wrap ma-0 pa-0"
             >
               <v-checkbox
-                v-model="neutralized"
+                v-model="diagData.neutralized"
                 :label="$t('point.neutralized')"
                 dense
                 class="shrink mx-10 my-4"
@@ -137,9 +137,9 @@
 
         <fieldset class="d-flex justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">{{ $t('point.advice') }}</legend>
-          <v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0"
-            ><v-select
-              v-model="attractiveness"
+          <v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0">
+            <v-select
+              v-model="diagData.pole_attractivity_id"
               :items="riskLevels"
               item-text="label"
               item-value="id"
@@ -148,7 +148,7 @@
               class="shrink mx-5"
             ></v-select>
             <v-select
-              v-model="dangerousness"
+              v-model="diagData.pole_dangerousness_id"
               :items="riskLevels"
               item-text="label"
               item-value="id"
@@ -158,17 +158,17 @@
             ></v-select></v-container
           ><v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0">
             <v-checkbox
-              v-model="isolAdv"
+              v-model="diagData.isolation_advice"
               :label="$t('point.advice_isol')"
               dense
             ></v-checkbox>
             <v-checkbox
-              v-model="dissuadAdv"
+              v-model="diagData.dissuasion_advice"
               :label="$t('point.advice_disrupt')"
               dense
             ></v-checkbox>
             <v-checkbox
-              v-model="attractAdv"
+              v-model="diagData.attraction_advice"
               :label="$t('point.advice_attract')"
               dense
             ></v-checkbox>
@@ -201,19 +201,29 @@ export default {
       // form values
       newLat: null,
       newLng: null,
-      attractAdv: false,
-      attractiveness: 8, // null,
-      createDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      dangerousness: 8, // null,
-      dissuadAdv: false,
-      isolAdv: false,
-      neutralized: false,
-      owner: 1, // null,
-      poleCondition: 6, // null,
-      poleDesc: [],
-      remark: null,
+      // define data related to Point
+      pointData: {
+        geom: {
+          type: 'Point',
+          coordinates: [],
+        },
+        owner_id: 1, // null,
+      },
+      // define data related to Diagnosis
+      diagData: {
+        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
+        remark: null,
+        pole_type_id: [11, 12], // null,
+        neutralized: false,
+        condition_id: 6, // null,
+        attraction_advice: false,
+        dissuasion_advice: false,
+        isolation_advice: false,
+        pole_attractivity_id: 8, // null
+        pole_dangerousness_id: 8, // null
+      },
       // rules for form validation
       rules: {
         required: (v) => !!v || this.$t('valid.required'),
@@ -302,18 +312,17 @@ export default {
      */
     async submit() {
       if (this.formValid) {
-        let newPole = null
+        let poleCreated = null
         const mediaIdList = []
-        let newDiag = null
+        let diagCreated = null
         // Create new Pole (Point infrastructure)
         try {
-          const ptData = {}
-          ptData.geom = {
-            type: 'Point',
-            coordinates: [this.lng, this.lat],
-          }
-          ptData.owner_id = this.owner
-          newPole = await this.$axios.$post('cables/points/', ptData)
+          this.pointData.geom.coordinates = [this.lng, this.lat]
+          // this.pointData.owner_id = this.owner
+          poleCreated = await this.$axios.$post(
+            'cables/points/',
+            this.pointData
+          )
         } catch (err) {
           const error = {}
           error.code = errorCodes.create_point.code
@@ -325,32 +334,23 @@ export default {
           this.back()
         }
         // new Pole is successfully created
-        if (newPole) {
+        if (poleCreated) {
           // Create Diagnosis
           try {
-            console.log(this.$refs.form.getAttribute)
-            const diagData = {}
-            diagData.infrastructure = newPole.properties.id
-            diagData.date = this.createDate
-            diagData.remark = this.remark
-            diagData.neutralized = this.neutralized
-            diagData.condition_id = this.poleCondition
-            diagData.isolation_advice = this.isolAdv
-            diagData.dissuasion_advice = this.dissuadAdv
-            diagData.attraction_advice = this.attractAdv
-            diagData.pole_type_id = this.poleDesc
-            diagData.pole_attractivity_id = this.attractiveness
-            diagData.pole_dangerousness_id = this.dangerousness
-            diagData.media_id = mediaIdList
-            newDiag = await this.$axios.$post('cables/diagnosis/', diagData)
+            this.diagData.infrastructure = poleCreated.properties.id
+            this.diagData.media_id = mediaIdList
+            diagCreated = await this.$axios.$post(
+              'cables/diagnosis/',
+              this.diagData
+            )
             this.$router.push('/view')
           } catch (_err) {
             // if no new Diagnosis created
-            if (!newDiag) {
+            if (!diagCreated) {
               // if no new Point created, delete it
-              if (newPole) {
+              if (poleCreated) {
                 await this.$axios.$delete(
-                  `cables/points/${newPole.properties.id}/`
+                  `cables/points/${poleCreated.properties.id}/`
                 )
               }
             }
@@ -366,7 +366,7 @@ export default {
             this.back()
           }
 
-          if (newDiag) {
+          if (diagData) {
             // Create all Media before continuing
             await Promise.all(
               this.$refs.upc.imgFileObject.map(async (img) => {
@@ -396,7 +396,7 @@ export default {
             )
             // add Media to Diagnosis
             try {
-              await this.$axios.$patch(`cables/diagnosis/${newDiag.id}/`, {
+              await this.$axios.$patch(`cables/diagnosis/${diagData.id}/`, {
                 media_id: mediaIdList,
               })
             } catch (_err) {
