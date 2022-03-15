@@ -282,21 +282,31 @@ export default {
     }),
   },
   methods: {
-    // get back if cancel Point creation. "newPointCoord" reinitialized with lat and lng set to null
+    /**
+     * back(): Method to get back if cancel Point creation.
+     *
+     * "newPointCoord" reinitialized with lat and lng set to null
+     */
     back() {
       this.$store.commit('pointStore/add', { lat: null, lng: null })
       this.$router.back()
     },
+
     /**
-     * submit(): Method to submit the form
+     * submit(): Method to submit the form to create a Point, then Diagnosis, then Media
+     * (pictures) and add these to Diagnosis,
+     * .
+     *
+     * If process fail at any step, all element created before are deleted through error handling
+     * process.
      */
     async submit() {
-      if (this.$refs.form.validate()) {
-        // try create new Pole (Point infrastructure)
+      if (this.formValid) {
         let newPole = null
         const mediaIdList = []
+        let newDiag = null
+        // Create new Pole (Point infrastructure)
         try {
-          // create Point
           const ptData = {}
           ptData.geom = {
             type: 'Point',
@@ -311,38 +321,14 @@ export default {
           // set error message to errorStore and triggers message display through "err" watcher in
           // error-snackbar component
           this.$store.commit('errorStore/setError', error)
-          this.$router.push('/view')
+          // this.$router.push('/view')
+          this.back()
         }
         // new Pole is successfully created
         if (newPole) {
-          // try save each picture (if any) in database
-          this.$refs.upc.imgFileObject.forEach(async (img) => {
-            try {
-              const formData = new FormData()
-              formData.append('storage', img)
-              // TODO get true date and other form fields
-              formData.append('date', '2022-01-01')
-              const newImg = await this.$axios.$post('media/', formData, {
-                headers: {
-                  accept: 'application/json',
-                  'Content-Type': 'multipart/form-data',
-                },
-              })
-              mediaIdList.push(newImg.id)
-              // Error handling for each picture. An error for one picture do not prevent other
-              // pictures be saved
-            } catch (_err) {
-              const error = {}
-              error.code = errorCodes.img_sending.code
-              error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
-              // set error message to errorStore and triggers message display through "err" watcher in
-              // error-snackbar component
-              this.$store.commit('errorStore/setError', error)
-            }
-          })
-          // TODO: to be completed from here
-          // try create Diagnosis
+          // Create Diagnosis
           try {
+            console.log(this.$refs.form.getAttribute)
             const diagData = {}
             diagData.infrastructure = newPole.properties.id
             diagData.date = this.createDate
@@ -356,15 +342,79 @@ export default {
             diagData.pole_attractivity_id = this.attractiveness
             diagData.pole_dangerousness_id = this.dangerousness
             diagData.media_id = mediaIdList
-            await this.$axios.$post('cables/diagnosis/', diagData)
+            newDiag = await this.$axios.$post('cables/diagnosis/', diagData)
             this.$router.push('/view')
           } catch (_err) {
-            // $nuxt.error({
-            //   statusCode: errorCodes.create_pole.code,
-            //   message:
-            //     `Error ${errorCodes.create_pole.code}: ` +
-            //     $nuxt.$t(`error.${errorCodes.create_pole.msg}`),
-            // })
+            // if no new Diagnosis created
+            if (!newDiag) {
+              // if no new Point created, delete it
+              if (newPole) {
+                await this.$axios.$delete(
+                  `cables/points/${newPole.properties.id}/`
+                )
+              }
+            }
+            // Error display
+            const error = {}
+            error.code = errorCodes.create_pole_diagnosis.code
+            error.msg = $nuxt.$t(
+              `error.${errorCodes.create_pole_diagnosis.msg}`
+            )
+            // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
+            this.$store.commit('errorStore/setError', error)
+            // this.$router.push('/view')
+            this.back()
+          }
+
+          if (newDiag) {
+            // Create all Media before continuing
+            await Promise.all(
+              this.$refs.upc.imgFileObject.map(async (img) => {
+                try {
+                  const formData = new FormData()
+                  formData.append('storage', img)
+                  // TODO get true date and other form fields
+                  formData.append('date', '2022-01-01')
+                  const newImg = await this.$axios.$post('media/', formData, {
+                    headers: {
+                      accept: 'application/json',
+                      'Content-Type': 'multipart/form-data',
+                    },
+                  })
+                  mediaIdList.push(newImg.id) // set Media id to mediaIdList
+                } catch (_err) {
+                  const error = {}
+                  error.code = errorCodes.img_sending.code
+                  error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
+                  // set error message to errorStore and triggers message display through "err"
+                  // watcher in error-snackbar component
+                  this.$store.commit('errorStore/setError', error)
+                  // this.$router.push('/view')
+                  this.back()
+                }
+              })
+            )
+            // add Media to Diagnosis
+            try {
+              await this.$axios.$patch(`cables/diagnosis/${newDiag.id}/`, {
+                media_id: mediaIdList,
+              })
+            } catch (_err) {
+              // if adding Media failed, delete created Media
+              if (mediaIdList.length > 0) {
+                mediaIdList.forEach(async (imgId) => {
+                  await this.$axios.$delete(`media/${imgId}/`)
+                })
+              }
+              const error = {}
+              error.code = errorCodes.img_sending.code
+              error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
+              // set error message to errorStore and triggers message display through "err"
+              // watcher in error-snackbar component
+              this.$store.commit('errorStore/setError', error)
+              // this.$router.push('/view')
+              this.back()
+            }
           }
         }
       }
