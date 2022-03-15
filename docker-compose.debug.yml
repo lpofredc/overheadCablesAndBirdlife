@@ -1,14 +1,28 @@
 version: '3.4'
 
 services:
+  backend:
+    image: backend
+    build:
+      context: backend
+      dockerfile: ./Dockerfile.dev
+    env_file:
+      - .env
+    ports:
+      - 0.0.0.0:8000:8000
+    volumes:
+      - ./backend:/app
+    command: ["python", "-m", "manage", "runserver"]
+
   frontend:
     image: frontend
     build:
       context: frontend
-      dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: development
+      dockerfile: ./Dockerfile.dev
+    env_file:
+      - .env
     ports:
-      - 3000:3000
-      - 9229:9229
-    command: ["node", "--inspect=0.0.0.0:9229", "index.js"]
+      - 0.0.0.0:3000:3000
+    volumes:
+      - ./frontend:/app
+    command: ["npm", "run", "dev"]

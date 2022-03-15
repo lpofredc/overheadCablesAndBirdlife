@@ -1,0 +1,11 @@
+## Build
+FROM node:lts-alpine as builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN yarn
+COPY . ./
+RUN yarn build
+
+EXPOSE 3000
+
+# VOLUME ["/app"]

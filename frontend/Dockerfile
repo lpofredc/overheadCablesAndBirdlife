@@ -13,7 +13,7 @@
 ## Build
 FROM node:lts-alpine as builder
 WORKDIR /app
-COPY package.json ./
+COPY package.json package-lock.json ./
 RUN yarn
 COPY . ./
 RUN yarn build
