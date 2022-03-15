@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-row v-if="$vuetify.breakpoint.lgAndUp">
-      
       <!-- <v-col width="50%"></v-col> -->
       <v-col width="50%"><map-component :edit-mode="false" /></v-col>
       <v-col><display-component /></v-col
@@ -35,8 +34,13 @@ export default {
   },
   mounted() {
     // Loading of Nomenclatures needed to get data to set up the application
-    // Implemented there as authentification needed.
+    // Implemented there as authentification needed
     this.$store.dispatch('nomenclaturesStore/loadNomenclatures')
+    // initialize coordinatesStore with newPointCoord at null
+    this.$store.commit('coordinatesStore/addPointCoord', {
+      lat: null,
+      lng: null,
+    })
   },
   /**
    * Manage opening/closing drawer menu

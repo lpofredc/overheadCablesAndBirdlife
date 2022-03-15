@@ -1,17 +1,5 @@
 <template>
   <div style="height: calc(100vh - 76px); width: 100%">
-    <!-- <p>{{pointData[0]}}</p>
-      <p>{{lineStringData}}</p> -->
-    <!-- {{ newPoint }} -->
-    <!-- <l-map
-      ref="map"
-      :class="editMode ? 'change-map' : 'view-map'"
-      :center="center"
-      :bounds="bounds"
-      :max-bounds="maxBounds"
-      @click="recordPosition"
-      @ready="onMapReady()"
-    > -->
     <l-map
       ref="map"
       :class="editMode ? 'change-map' : 'view-map'"
@@ -29,33 +17,6 @@
         :options-style="styleData"
         :options="GeojsonOptions"
       />
-      <!-- l-marker Not visible if lat or lng data is null, and if not in mode="point" -->
-      <!-- <l-marker
-        v-if="mode === 'point' && newMarker"
-        :lat-lng.sync="newMarker.position"
-        :draggable="true"
-        :max-bounds="maxBounds"
-        :visible="newPointCoord.lat !== null && newPointCoord.lng !== null"
-        @dragend="updatePosition"
-      />  -->
-      <!-- <l-marker
-        v-for="item in [
-          [45, 0],
-          [46, 1],
-        ]"
-        :key="item"
-        :lat-lng="item"
-        :draggable="true"
-        :max-bounds="maxBounds"
-        @dragend="updatePosition"
-      /> -->
-      <!-- <l-geo-json
-        v-if="newPoint.geometry"
-        name="newPoint"
-        :geojson="newPoint"
-        :options-style="styleData"
-        :options="GeojsonOptions"
-      /> -->
       <l-geo-json
         v-if="cablesData"
         name="lineStringData"
@@ -108,12 +69,7 @@ export default {
     return {
       map: null,
       // creation markers
-      newMarker: null,
-      // newPoint: {
-      //   type: 'Feature',
-      //   properties: null,
-      //   geometry: null,
-      // },
+      createLayer: null,
       // newPoint: {
       //   type: 'Feature',
       //   properties: { id: 1, test: 'test' },
@@ -129,7 +85,7 @@ export default {
       //   //   ],
       //   // },
       // },
-      newLineMarkers: [[45, 0]],
+      // newLineMarkers: [[45, 0]],
       // Map parameters
       bounds: latLngBounds([
         [40, -6],
@@ -176,43 +132,12 @@ export default {
         })
       }
     },
-    // pointData() {
-    //   const geoJson = {
-    //     type: 'FeatureCollection',
-    //     features: this.PointData,
-    //   }
-    //   return geoJson
-    // },
-    // lineStringData() {
-    //   const geoJson = {
-    //     type: 'FeatureCollection',
-    //     features: this.cablesData.filter(
-    //       (e) => e.geometry.type === 'LineString'
-    //     ),
-    //   }
-    //   return geoJson
-    // },
-    // pointData() {
-    //   const geoJson = {
-    //     type: 'FeatureCollection',
-    //     features: this.cablesData.filter((e) => e.geometry.type === 'Point'),
-    //   }
-    //   return geoJson
-    // },
-    // lineStringData() {
-    //   const geoJson = {
-    //     type: 'FeatureCollection',
-    //     features: this.cablesData.filter(
-    //       (e) => e.geometry.type === 'LineString'
-    //     ),
-    //   }
-    //   return geoJson
-    // },
     ...mapGetters({
       cablesData: 'cablesStore/infstrDataFeatures',
       pointData: 'cablesStore/pointDataFeatures',
       lineStringData: 'cablesStore/lineDataFeatures',
-      newPointCoord: 'pointStore/newPointCoord',
+      newPointCoord: 'coordinatesStore/newPointCoord',
+      newLineCoord: 'coordinatesStore/newLineCoord',
     }),
   },
   watch: {
@@ -228,63 +153,16 @@ export default {
     // ##################### Works if initial point created with map control ########
     newPointCoord(newVal) {
       if (this.editMode && this.mode === 'point') {
-        if (this.newMarker) {
+        if (this.createLayer) {
           if (newVal && newVal.lat && newVal.lng) {
-            this.newMarker.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
+            this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
           } else {
             // In fact, set the marker to point [0, 0]
-            this.newMarker.setLatLng(new L.LatLng(null, null))
+            this.createLayer.setLatLng(new L.LatLng(null, null))
           }
         }
       }
     },
-    // #########################################################################################
-    // newPointCoord(newVal) {
-    //       if (this.editMode && this.mode === 'point') {
-    //         if (this.newMarker) {
-    //           if (newVal && newVal.lat && newVal.lng) {
-    //             this.newMarker.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
-    //           } else {
-    //             this.newMarker.setLatLng(new L.LatLng(null, null))
-    //           }
-    //         } else {
-    //           this.newMarker = L.geoJSON({
-    //             type: 'Feature',
-    //             geometry: {
-    //               type: 'Point',
-    //               coordinates: [45, 0],
-    //             },
-    //           }).addTo(this.map)
-    //         }
-    //       }
-    //     },
-    //   /**
-    //    * Watcher for "newLineCoord" value
-    //    *
-    //    * Only activated on "editMode=true" with "mode='line'" and if coordinate data are well
-    //    * defined.
-    //    * Marker position is changed based on new coordinate value.
-    //    * If Marker does not exist, it is created with new value.
-    //    * Map is centered on the new point.
-    //    */
-    //   // newLineCoord(/* newVal */) {
-    //   //   if (this.editMode && this.mode === 'line') {
-    //   //     // if (newVal && newVal.lat && newVal.lng) {
-    //   //     //   if (this.newMarker) {
-    //   //     //     // if Marker already exists
-    //   //     //     this.newMarker.position = newVal
-    //   //     //   } else {
-    //   //     //     // else create it and set values
-    //   //     //     this.newMarker = {
-    //   //     //       position: newVal,
-    //   //     //       draggable: true,
-    //   //     //     }
-    //   //     //   }
-    //   //     //   // map center on marker
-    //   //     //   this.center = [newVal.lat, newVal.lng]
-    //   //     // }
-    //   //   }
-    //   // },
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
@@ -335,30 +213,6 @@ export default {
         }
       }
     },
-    /**
-     * Method that records pointer position on the map
-     *
-     * Only activated on "editMode"
-     * The position is recorded in store value "newPointCoord". A watcher on newPointCoord will
-     * create or move the Marker as needed on the map.
-     */
-    // recordPosition(event) {
-    //   if (this.editMode) {
-    //     this.$store.commit('pointStore/add', event.latlng)
-    //   }
-    // },
-    /**
-     * Method that records pointer position when moved on the map (linked to @drag)
-     *
-     * Only activated on "editMode"
-     * The position is recorded in store value "newPointCoord". A watcher on newPointCoord will the create
-     * or move the Marker as needed on the map.
-     */
-    updatePosition() {
-      if (this.editMode) {
-        this.$store.commit('pointStore/add', this.newMarker.position)
-      }
-    },
     onMapReady() {
       this.map = this.$refs.map.mapObject
       // console.log('MAP', this.map)
@@ -384,54 +238,86 @@ export default {
         })
         // Action on Point/Line creation
         this.map.on('pm:create', (e) => {
-          this.newMarker = e.layer
-          this.map.pm.disableDraw()
-          this.map.pm.addControls({
-            drawMarker: false,
-            dragMode: true,
-            removalMode: true,
-          })
-          this.$store.commit('pointStore/add', {
-            lng: e.layer.toGeoJSON().geometry.coordinates[0],
-            lat: e.layer.toGeoJSON().geometry.coordinates[1],
-          })
-          // this.newPoint = e.layer.toGeoJSON()
+          this.createLayer = e.layer
+
+          switch (this.mode) {
+            case 'point':
+              this.$store.commit('coordinatesStore/addPointCoord', {
+                lng: e.layer.toGeoJSON().geometry.coordinates[0],
+                lat: e.layer.toGeoJSON().geometry.coordinates[1],
+              })
+              this.map.pm.disableDraw()
+              this.map.pm.addControls({
+                drawMarker: false,
+                dragMode: true,
+                removalMode: true,
+              })
+              break
+            case 'line':
+              this.$store.commit(
+                'coordinatesStore/addLineCoord',
+                e.layer.toGeoJSON().geometry.coordinates
+              )
+              this.map.pm.addControls({
+                drawPolyline: false,
+                editMode: true,
+                removalMode: true,
+              })
+              break
+          }
 
           // Action on Point/Line change by dragging
           e.layer.on('pm:dragend', (e) => {
-            // this.newPoint = e.layer.toGeoJSON()
-            this.$store.commit(
-              'pointStore/add',
+            switch (this.mode) {
+              case 'point':
+                this.$store.commit('coordinatesStore/addPointCoord', {
+                  lng: e.layer.toGeoJSON().geometry.coordinates[0],
+                  lat: e.layer.toGeoJSON().geometry.coordinates[1],
+                })
+                break
+              case 'line':
+                this.$store.commit(
+                  'coordinatesStore/addLineCoord',
+                  e.layer.toGeoJSON().geometry.coordinates
+                )
+                break
+            }
+          })
 
-              {
-                lng: e.layer.toGeoJSON().geometry.coordinates[0],
-                lat: e.layer.toGeoJSON().geometry.coordinates[1],
-              }
-            )
+          // Action on Point/Line change by dragging
+          e.layer.on('pm:edit', (e) => {
+            if (this.mode === 'line')
+              this.$store.commit(
+                'coordinatesStore/addLineCoord',
+                e.layer.toGeoJSON().geometry.coordinates
+              )
           })
 
           // Action on Point/Line change on delete
           e.layer.on('pm:remove', (_e) => {
-            // this.newPoint.geometry = null
-            this.$store.commit('pointStore/add', { lat: null, lng: null })
-            this.map.pm.addControls({
-              drawMarker: true,
-              dragMode: false,
-              removalMode: false,
-            })
+            switch (this.mode) {
+              case 'point':
+                this.$store.commit('coordinatesStore/addPointCoord', {
+                  lat: null,
+                  lng: null,
+                })
+                this.map.pm.addControls({
+                  drawMarker: true,
+                  dragMode: false,
+                  removalMode: false,
+                })
+                break
+
+              case 'line':
+                this.$store.commit('coordinatesStore/addLineCoord', [])
+                this.map.pm.addControls({
+                  drawPolyline: true,
+                  editMode: false,
+                  removalMode: false,
+                })
+                break
+            }
           })
-
-          // e.layer.on('pm:dragend', (e) => {
-          //   console.log('pm:edit', e.layer)
-          //   console.log('pm:edit', e.layer.getLatLngs())
-          // })
-
-          // this.newPoint.geometry = new L.Polyline(e.layer.getLatLngs()).toGeoJSON().geometry
-          // console.log('geoJsonLine',geoJsonLine)
-          // e.layer.on('pm:update',(x)=>{
-          //   console.log('pm:update',x);
-          // this.newPoint.geometry = new L.Polyline(x.getLatLngs()).toGeoJSON().geometry
-          // })
         })
       }
     },

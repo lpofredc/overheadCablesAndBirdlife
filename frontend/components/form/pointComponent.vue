@@ -197,7 +197,7 @@ export default {
   data() {
     return {
       formValid: true,
-      manualChange: false,
+      manualChange: false, // boolean to activate manual coordinate change
       // form values
       newLat: null,
       newLng: null,
@@ -251,14 +251,18 @@ export default {
       },
       // on change in v-text-field, value is set to store.
       set(newVal) {
-        if (this.$refs.lat.validate()) {
-          this.$store.commit('pointStore/add', {
-            lat: Number(newVal),
-            lng: this.lng,
-          })
-        } else {
-          this.$store.commit('pointStore/add', { lat: null, lng: this.lng })
-        }
+        this.$store.commit('coordinatesStore/addPointCoord', {
+          lat: Number(newVal),
+          lng: this.lng,
+        })
+        // if (this.$refs.lat.validate()) {
+        //   this.$store.commit('coordinatesStore/addPointCoord', {
+        //     lat: Number(newVal),
+        //     lng: this.lng,
+        //   })
+        // } else {
+        //   this.$store.commit('coordinatesStore/addPointCoord', { lat: null, lng: this.lng })
+        // }
       },
     },
     /**
@@ -273,18 +277,22 @@ export default {
       },
       // on change in v-text-field, value is set to store.
       set(newVal) {
-        if (this.$refs.lng.validate()) {
-          this.$store.commit('pointStore/add', {
-            lat: this.lat,
-            lng: Number(newVal),
-          })
-        } else
-          this.$store.commit('pointStore/add', { lat: this.lat, lng: null })
+        this.$store.commit('coordinatesStore/addPointCoord', {
+          lat: this.lat,
+          lng: Number(newVal),
+        })
+        // if (this.$refs.lng.validate()) {
+        //   this.$store.commit('coordinatesStore/addPointCoord', {
+        //     lat: this.lat,
+        //     lng: Number(newVal),
+        //   })
+        // } else
+        //   this.$store.commit('coordinatesStore/addPointCoord', { lat: this.lat, lng: null })
       },
     },
     // Get values from store
     ...mapGetters({
-      newPoint: 'pointStore/newPointCoord',
+      newPoint: 'coordinatesStore/newPointCoord',
       conditions: 'nomenclaturesStore/getConditions',
       networkOwners: 'nomenclaturesStore/getOwners',
       poleTypes: 'nomenclaturesStore/getPoleTypes',
@@ -298,7 +306,10 @@ export default {
      * "newPointCoord" reinitialized with lat and lng set to null
      */
     back() {
-      this.$store.commit('pointStore/add', { lat: null, lng: null })
+      this.$store.commit('coordinatesStore/addPointCoord', {
+        lat: null,
+        lng: null,
+      })
       this.$router.back()
     },
 
@@ -366,7 +377,7 @@ export default {
             this.back()
           }
 
-          if (diagData) {
+          if (diagCreated) {
             // Create all Media before continuing
             await Promise.all(
               this.$refs.upc.imgFileObject.map(async (img) => {
@@ -396,7 +407,7 @@ export default {
             )
             // add Media to Diagnosis
             try {
-              await this.$axios.$patch(`cables/diagnosis/${diagData.id}/`, {
+              await this.$axios.$patch(`cables/diagnosis/${diagCreated.id}/`, {
                 media_id: mediaIdList,
               })
             } catch (_err) {

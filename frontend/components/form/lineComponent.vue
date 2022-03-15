@@ -18,16 +18,16 @@
             class="d-flex justify-space-around flex-wrap"
           >
             <v-text-field
-              v-model="pt[1]"
               :label="$t('point.latitude')"
+              :value="pt[1]"
               type="number"
               :rules="[rules.requiredOrNotValid, rules.latRange]"
               required
               hide-spin-buttons
               class="shrink mx-5" />
             <v-text-field
-              v-model="pt[0]"
               :label="$t('point.longitude')"
+              :value="pt[0]"
               type="number"
               :rules="[rules.requiredOrNotValid, rules.lngRange]"
               required
@@ -56,7 +56,7 @@
           >
             <v-select
               v-model="owner"
-              :items="networkOwners"
+              :items="diagData.owner_id"
               item-text="label"
               item-value="id"
               :rules="[rules.required]"
@@ -74,7 +74,7 @@
             >
               <template #activator="{ on, attrs }">
                 <v-text-field
-                  v-model="createDate"
+                  v-model="diagData.date"
                   :label="$t('forms.datecreate')"
                   persistent-hint
                   prepend-icon="mdi-calendar"
@@ -84,16 +84,16 @@
                   v-on="on"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="createDate" no-title></v-date-picker>
+              <v-date-picker v-model="diagData.date" no-title></v-date-picker>
             </v-menu>
             <v-checkbox
-              v-model="neutralized"
+              v-model="diagData.neutralized"
               :label="$t('point.neutralized')"
               dense
               class="shrink mx-10 my-4"
             ></v-checkbox></v-container
           ><v-textarea
-            v-model="remark"
+            v-model="diagData.remark"
             clearable
             clear-icon="mdi-close-circle"
             :label="$t('point.remark')"
@@ -108,7 +108,7 @@
           <legend class="mx-3 px-1">{{ $t('forms.risk_assessment') }}</legend>
           <v-container class="d-flex justify-space-around flex-wrap py-0">
             <v-select
-              v-model="buildIntegRisk"
+              v-model="diagData.buildIntegRisk"
               :items="riskLevels"
               item-text="label"
               item-value="id"
@@ -117,7 +117,7 @@
               class="shrink mx-5 mt-2"
             ></v-select>
             <v-select
-              v-model="movingRisk"
+              v-model="diagData.movingRisk"
               :items="riskLevels"
               item-text="label"
               item-value="id"
@@ -128,7 +128,7 @@
           ></v-container>
           <v-container class="d-flex justify-space-around flex-wrap py-0">
             <v-select
-              v-model="topoIntegRisk"
+              v-model="diagData.topoIntegRisk"
               :items="riskLevels"
               item-text="label"
               item-value="id"
@@ -137,7 +137,7 @@
               class="shrink mx-5 mt-2"
             ></v-select>
             <v-select
-              v-model="vegetIntegRisk"
+              v-model="diagData.vegetIntegRisk"
               :items="riskLevels"
               item-text="label"
               item-value="id"
@@ -160,18 +160,37 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'PointComponent',
+  name: 'LineComponent',
   data() {
     return {
-      // ####################
       // form values
       formValid: true,
-      // newLineCoord: [],
-      neutralized: false,
-      newLineCoord: [
-        [1, 45],
-        [1, 46],
-      ],
+      // define data related to Point
+      lineData: {
+        geom: {
+          type: 'LineString',
+          coordinates: [],
+        },
+        owner_id: 1, // null,
+      },
+      // define data related to Diagnosis
+      diagData: {
+        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
+        remark: null,
+        pole_type_id: [11, 12], // null,
+        neutralized: false,
+        buildIntegRisk: null,
+        movingRisk: null,
+        topoIntegRisk: null,
+        vegetIntegRisk: null,
+      },
+      // diagData.media_id = []
+      // newLineCoord: [
+      //   [1, 45],
+      //   [1, 46],
+      // ],
       // manualChange: false,
       buildIntegRisk: null,
       movingRisk: null,
@@ -199,7 +218,7 @@ export default {
   computed: {
     // Get values from store
     ...mapGetters({
-      // newLine: 'pointStore/newLineCoord',
+      newLineCoord: 'coordinatesStore/newLineCoord',
       networkOwners: 'nomenclaturesStore/getOwners',
       riskLevels: 'nomenclaturesStore/getRiskLevels',
     }),
@@ -207,7 +226,7 @@ export default {
   methods: {
     // get back if cancel Line creation. "newLineCoord" reinitialized with at []
     back() {
-      // this.$store.commit('pointStore/add', { lat: null, lng: null })
+      // this.$store.commit('coordinatesStore/addPointCoord', { lat: null, lng: null })
       this.$router.back()
     },
     async submit() {
@@ -226,17 +245,12 @@ export default {
           throw new Exception()
         }
         // Create Diagnosis
-        const diagData = {}
-        diagData.infrastructure = newLine.properties.id
-        diagData.date = this.createDate
-        diagData.remark = this.remark
-        diagData.neutralized = this.neutralized
-        diagData.media_id = []
-        diagData.buildIntegRisk = this.buildIntegRisk
-        diagData.movingRisk = this.movingRisk
-        diagData.topoIntegRisk = this.topoIntegRisk
-        diagData.vegetIntegRisk = this.vegetIntegRisk
-        const newDiag = await this.$axios.$post('cables/diagnosis/', diagData)
+        this.diagData.infrastructure = newLine.properties.id
+        this.diagData.media_id = []
+        const newDiag = await this.$axios.$post(
+          'cables/diagnosis/',
+          this.diagData
+        )
         // If no newDiag, Exception is thrown to be capture by catch section below
         if (!newDiag) {
           throw new Exception()
