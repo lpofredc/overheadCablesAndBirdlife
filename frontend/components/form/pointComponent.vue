@@ -318,19 +318,18 @@ export default {
      * (pictures) and add these to Diagnosis,
      * .
      *
-     * If process fail at any step, all element created before are deleted through error handling
+     * If process fail at any step, all elements created before are deleted through error handling
      * process.
      */
     async submit() {
       if (this.formValid) {
-        let poleCreated = null
+        let pointCreated = null
         const mediaIdList = []
         let diagCreated = null
         // Create new Pole (Point infrastructure)
         try {
           this.pointData.geom.coordinates = [this.lng, this.lat]
-          // this.pointData.owner_id = this.owner
-          poleCreated = await this.$axios.$post(
+          pointCreated = await this.$axios.$post(
             'cables/points/',
             this.pointData
           )
@@ -344,11 +343,11 @@ export default {
           // this.$router.push('/view')
           this.back()
         }
-        // new Pole is successfully created
-        if (poleCreated) {
+        // new Point is successfully created
+        if (pointCreated) {
           // Create Diagnosis
           try {
-            this.diagData.infrastructure = poleCreated.properties.id
+            this.diagData.infrastructure = pointCreated.properties.id
             this.diagData.media_id = mediaIdList
             diagCreated = await this.$axios.$post(
               'cables/diagnosis/',
@@ -358,10 +357,10 @@ export default {
           } catch (_err) {
             // if no new Diagnosis created
             if (!diagCreated) {
-              // if no new Point created, delete it
-              if (poleCreated) {
+              // if new Point was created before, delete it
+              if (pointCreated) {
                 await this.$axios.$delete(
-                  `cables/points/${poleCreated.properties.id}/`
+                  `cables/points/${pointCreated.properties.id}/`
                 )
               }
             }
@@ -373,7 +372,6 @@ export default {
             )
             // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
             this.$store.commit('errorStore/setError', error)
-            // this.$router.push('/view')
             this.back()
           }
 

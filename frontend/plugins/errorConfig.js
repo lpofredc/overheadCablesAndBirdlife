@@ -55,9 +55,19 @@ errorCodes = {
     code: 801,
     msg: 'create-issue',
   },
+  // refer submit in line-component
+  create_line: {
+    code: 802,
+    msg: 'create-issue',
+  },
   // refer submit in point-component
   create_pole_diagnosis: {
-    code: 802,
+    code: 803,
+    msg: 'create-issue',
+  },
+  // refer submit in line-component
+  create_line_diagnosis: {
+    code: 804,
     msg: 'create-issue',
   },
   // refer loadImage in pictureComponent

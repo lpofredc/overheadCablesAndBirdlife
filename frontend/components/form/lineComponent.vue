@@ -55,8 +55,8 @@
             "
           >
             <v-select
-              v-model="owner"
-              :items="diagData.owner_id"
+              v-model="lineData.owner_id"
+              :items="networkOwners"
               item-text="label"
               item-value="id"
               :rules="[rules.required]"
@@ -186,21 +186,6 @@ export default {
         topoIntegRisk: null,
         vegetIntegRisk: null,
       },
-      // diagData.media_id = []
-      // newLineCoord: [
-      //   [1, 45],
-      //   [1, 46],
-      // ],
-      // manualChange: false,
-      buildIntegRisk: null,
-      movingRisk: null,
-      createDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString()
-        .substr(0, 10),
-      owner: null,
-      remark: null,
-      topoIntegRisk: null,
-      vegetIntegRisk: null,
       // rules for form validation
       rules: {
         required: (v) => !!v || this.$t('valid.required'),
@@ -224,46 +209,75 @@ export default {
     }),
   },
   methods: {
-    // get back if cancel Line creation. "newLineCoord" reinitialized with at []
+    /**
+     * back(): Method to get back if cancel Point creation.
+     *
+     * "newLineCoord" reinitialized with at []
+     */
     back() {
-      // this.$store.commit('coordinatesStore/addPointCoord', { lat: null, lng: null })
+      this.$store.commit('coordinatesStore/addLineCoord', [])
       this.$router.back()
     },
+
+    /**
+     * submit(): Method to submit the form to create a Line, then Diagnosis
+     *
+     * TODO Add pictures ["then Media (pictures) and add these to Diagnosis]
+     *
+     * If process fail at any step, all elements created before are deleted through error handling
+     * process.
+     */
     async submit() {
-      if (this.$refs.form.validate()) {
-        // // try {
-        // create Line
-        const lineData = {}
-        lineData.geom = {
-          type: 'LineString',
-          coordinates: this.newLineCoord,
+      if (this.formValid) {
+        let lineCreated = null
+        const mediaIdList = []
+        let diagCreated = null
+        // Create new segment (Line infrastructure)
+        try {
+          this.lineData.geom.coordinates = this.newLineCoord
+          lineCreated = await this.$axios.$post('cables/lines/', this.lineData)
+        } catch (err) {
+          const error = {}
+          error.code = errorCodes.create_line.code
+          error.msg = $nuxt.$t(`error.${errorCodes.create_line.msg}`)
+          // set error message to errorStore and triggers message display through "err" watcher in
+          // error-snackbar component
+          this.$store.commit('errorStore/setError', error)
+          // this.$router.push('/view')
+          this.back()
         }
-        lineData.owner_id = this.owner
-        const newLine = await this.$axios.$post('cables/lines/', lineData)
-        // If no newLine, Exception is thrown to be capture by catch section below
-        if (!newLine) {
-          throw new Exception()
+        // new Line is successfully created
+        if (lineCreated) {
+          // Create Diagnosis
+          try {
+            this.diagData.infrastructure = lineCreated.properties.id
+            this.diagData.media_id = mediaIdList
+            diagCreated = await this.$axios.$post(
+              'cables/diagnosis/',
+              this.diagData
+            )
+            this.$router.push('/view')
+          } catch (_err) {
+            // if no new Diagnosis created
+            if (!diagCreated) {
+              // if new Line was created before, delete it
+              if (lineCreated) {
+                await this.$axios.$delete(
+                  `cables/lines/${lineCreated.properties.id}/`
+                )
+              }
+            }
+            // Error display
+            const error = {}
+            error.code = errorCodes.create_line_diagnosis.code
+            error.msg = $nuxt.$t(
+              `error.${errorCodes.create_line_diagnosis.msg}`
+            )
+            // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
+            this.$store.commit('errorStore/setError', error)
+            this.back()
+          }
         }
-        // Create Diagnosis
-        this.diagData.infrastructure = newLine.properties.id
-        this.diagData.media_id = []
-        const newDiag = await this.$axios.$post(
-          'cables/diagnosis/',
-          this.diagData
-        )
-        // If no newDiag, Exception is thrown to be capture by catch section below
-        if (!newDiag) {
-          throw new Exception()
-        }
-        // this.$router.push('/view')
-        // // } catch (_err) {
-        // //   $nuxt.error({
-        // //     statusCode: errorCodes.create_pole.code,
-        // //     message:
-        // //       `Error ${errorCodes.create_pole.code}: ` +
-        // //       $nuxt.$t(`error.${errorCodes.create_pole.msg}`),
-        // //   })
-        // // }
       }
     },
   },
