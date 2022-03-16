@@ -99,14 +99,6 @@ class OperationFilter(BaseModelFilter):
     type_model = filters.CharFilter(
         field_name="infrastructure__polymorphic_ctype__model"
     )
-    # is_segment = filters.BooleanFilter(field_name="pole__id", lookup_expr="isnull")
-    # date = filters.DateFilter(field_name="operation_date", lookup_expr="date")
-    # from_date = filters.DateFilter(field_name="operation_date", lookup_expr="date__gte")
-    # to_date = filters.DateFilter(field_name="operation_date", lookup_expr="date__lte")
-    # eqmt_type = filters.NumberFilter(field_name="eqmt_type__id")
-    # year = filters.NumberFilter(field_name="operation_date", lookup_expr="year")
-    # from_year = filters.NumberFilter(field_name="operation_date", lookup_expr="year__gte")
-    # to_year = filters.NumberFilter(field_name="operation_date", lookup_expr="year__lte")
 
     class Meta:
         model = Operation
