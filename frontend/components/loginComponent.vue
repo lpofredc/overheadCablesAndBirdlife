@@ -13,6 +13,7 @@
             type="text"
             class="pl-3 pr-5"
             required
+            @keyup.enter="userLogin"
           ></v-text-field>
         </v-row>
 
@@ -24,6 +25,7 @@
             type="password"
             class="pl-3 pr-5"
             required
+            @keyup.enter="userLogin"
           ></v-text-field>
         </v-row>
         <v-row justify="space-around" class="mt-10">
@@ -47,10 +49,8 @@ export default {
     return {
       valid: true,
       login: {
-        // username: '',
-        // password: '',
-        username: 'sylvain',
-        password: 'sylvain',
+        username: '',
+        password: '',
       },
       nameRules: [(v) => !!v || this.$t('login.required_username_msg')],
       pwdRules: [(v) => !!v || this.$t('login.required_pwd_msg')],
