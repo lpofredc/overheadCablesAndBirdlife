@@ -28,9 +28,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv()
-)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv())
 # DEFAULT_C
 
 
@@ -49,6 +47,7 @@ INSTALLED_APPS = [
     "django_filters",
     "djoser",
     "polymorphic",
+    "users",
     "commons.apps.BaseModelConfig",
     "cables.apps.CablesConfig",
     "mortality.apps.MortalityConfig",
@@ -113,12 +112,11 @@ DATABASES = {
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3000",
 # ]
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv()
-)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv())
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
+AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -165,9 +163,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
