@@ -6,16 +6,20 @@
     "disconnected": "Hors connection",
     "id": "Identifiant",
     "map": "Cartographie",
-    "type": "Type"
+    "remark": "Commentaire",
+    "type": "Type",
+    "valid": "Créer"
   },
   "display": {
     "all": "Tout",
-    "infrastructures": "Poteaux/Pylônes et Cables",
+    "infrastructures": "Supports et Lignes",
     "mortality-cases": "Cas de mortalité",
-    "poles": "Poteaux/Pylônes",
-    "poles-eqmt": "Equipements Poteaux/Pylônes",
-    "segments": "Segments",
-    "segments-eqmt": "Equipements Segments",
+    "support": "Support",
+    "supports": "Supports",
+    "supports-eqmt": "Equipements Support",
+    "line": "Ligne",
+    "lines": "Lignes",
+    "lines-eqmt": "Equipements Lignes",
     "sensitive-areas": "Zones Sensibles"
   },
   "forms": {
@@ -26,35 +30,29 @@
     "too_big_file": "La taille du fichier ne doit pas exéder",
     "not_img_file": "Le fichier sélectionné doit-être une image"
   },
-  "point": {
+  "support": {
     "advice": "Recommandations",
     "advice_isol": "A isoler",
     "advice_disrupt": "Rendre dissuasif",
     "advice_attract": "Rendre attractif",
     "attractiveness": "Attractivité",
-    "cancel": "Annuler",
     "condition": "Etat",
-    "coord": "Coordonnées",
     "dangerousness": "Dangerosité",
-    "features": "Caractéristiques",
     "latitude": "Latitude",
     "longitude": "Longitude",
-    "manual-hadling": "Saisir les coordonnées manuellement",
+    "manual-handling": "Saisir les coordonnées manuellement",
     "network": "Réseau",
     "neutralized": "Neutralisé",
-    "new_pole": "Nouveau Poteau/Pylône",
+    "new_support": "Nouveau Support",
     "owner": "Propriétaire",
-    "pictures": "Images",
-    "poleType": "Type Poteau/Pylône",
-    "remark": "Commentaire",
-    "valid": "Créer"
+    "supportType": "Type Support"
   },
   "line": {
     "buildIntegRisk": "Risque Intégration Bâti",
     "create_line": "Vous devez créer un tronçon sur la carte",
     "movingRisk": "Risque Déplacement",
     "new_segment": "Nouveau Tronçon",
-    "topoIntegRisk": "Risque Intégration Topologique",
+    "topoIntegRisk": "Risque Intégration Topographique",
     "vegetIntegRisk": "Risque Intégration Vegetation"
   },
   "login": {
@@ -67,7 +65,8 @@
     "username": "Identifiant"
   },
   "picture": {
-    "add_file": "Ajouter des Images"
+    "add_file": "Ajouter des Images",
+    "pictures": "Images"
   },
   "error": {
     "id-pwd-issue": "Erreur de nom d'utilisateur ou de mot de passe",

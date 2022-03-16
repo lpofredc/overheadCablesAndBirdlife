@@ -40,10 +40,10 @@
         <v-btn fab dark small color="orange">
           <v-icon>mdi-shape-polygon-plus</v-icon>
         </v-btn>
-        <v-btn fab dark small to="/point" color="green">
+        <v-btn fab dark small to="/supports/new" color="green">
           <v-icon>mdi-transmission-tower</v-icon>
         </v-btn>
-        <v-btn fab dark small to="/line" color="indigo">
+        <v-btn fab dark small to="/lines/new" color="indigo">
           <v-icon>mdi-cable-data</v-icon>
         </v-btn>
         <v-btn fab dark small color="red">

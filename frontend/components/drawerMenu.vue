@@ -18,7 +18,7 @@
         <v-list-item-title>{{ $t('login.sign-in') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item> -->
-    <v-list-item to="view" :disabled="!$auth.loggedIn">
+    <v-list-item to="/view" :disabled="!$auth.loggedIn">
       <v-list-item-icon>
         <v-icon>mdi-map-search</v-icon>
       </v-list-item-icon>

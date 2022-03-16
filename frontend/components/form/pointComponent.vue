@@ -1,7 +1,7 @@
 <template>
   <div style="height: 90vh" class="overflow-auto">
     <v-form ref="form" v-model="formValid" class="text-center">
-      <h1>{{ $t('point.new_pole') }}</h1>
+      <h1>{{ $t('support.new_support') }}</h1>
       <!-- Filedset COORDINATES -->
       <v-container>
         <fieldset class="d-flex justify-space-around flex-wrap ma-2">
@@ -9,7 +9,7 @@
           <v-text-field
             ref="lat"
             v-model="lat"
-            :label="$t('point.latitude')"
+            :label="$t('support.latitude')"
             :disabled="!manualChange"
             type="number"
             :rules="[rules.requiredOrNotValid, rules.latRange]"
@@ -20,7 +20,7 @@
           <v-text-field
             ref="lng"
             v-model="lng"
-            :label="$t('point.longitude')"
+            :label="$t('support.longitude')"
             :disabled="!manualChange"
             type="number"
             :rules="[rules.requiredOrNotValid, rules.lngRange]"
@@ -31,7 +31,7 @@
           <v-checkbox
             v-model="manualChange"
             dense
-            :label="$t('point.manual-hadling')"
+            :label="$t('support.manual-handling')"
             class="mx-5"
           ></v-checkbox>
         </fieldset>
@@ -57,7 +57,7 @@
                 item-text="label"
                 item-value="id"
                 :rules="[rules.required]"
-                :label="$t('point.network')"
+                :label="$t('support.network')"
                 required
                 class="shrink mx-10 my-4"
               >
@@ -86,36 +86,35 @@
                   no-title
                 ></v-date-picker> </v-menu
             ></v-container>
-            <v-container
-              class="d-flex justify-space-around flex-wrap ma-0 pa-0"
-            >
-              <v-select
+            <v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0"
+              ><v-autocomplete
                 v-model="diagData.pole_type_id"
                 :items="poleTypes"
                 item-text="label"
                 item-value="id"
                 :rules="[rules.required]"
                 hide-selected
-                :label="$t('point.poleType')"
+                :label="$t('support.supportType')"
                 multiple
                 deletable-chips
                 small-chips
                 class="poletypes shrink mx-10 my-4"
-              ></v-select>
+              ></v-autocomplete>
+
               <v-select
                 v-model="diagData.condition_id"
                 :items="conditions"
                 item-text="label"
                 item-value="id"
                 :rules="[rules.required]"
-                :label="$t('point.condition')"
+                :label="$t('support.condition')"
                 class="shrink mx-10 my-4"
               ></v-select></v-container
             ><v-textarea
               v-model="diagData.remark"
               clearable
               clear-icon="mdi-close-circle"
-              :label="$t('point.remark')"
+              :label="$t('app.remark')"
               :rules="[rules.textLength]"
               rows="2"
               counter="300"
@@ -126,7 +125,7 @@
             >
               <v-checkbox
                 v-model="diagData.neutralized"
-                :label="$t('point.neutralized')"
+                :label="$t('support.neutralized')"
                 dense
                 class="shrink mx-10 my-4"
               ></v-checkbox>
@@ -136,7 +135,7 @@
         <!-- Filedset RISK ASSESSMENT -->
 
         <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-          <legend class="mx-3 px-1">{{ $t('point.advice') }}</legend>
+          <legend class="mx-3 px-1">{{ $t('support.advice') }}</legend>
           <v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0">
             <v-select
               v-model="diagData.pole_attractivity_id"
@@ -144,7 +143,7 @@
               item-text="label"
               item-value="id"
               :rules="[rules.required]"
-              :label="$t('point.attractiveness')"
+              :label="$t('support.attractiveness')"
               class="shrink mx-5"
             ></v-select>
             <v-select
@@ -153,23 +152,23 @@
               item-text="label"
               item-value="id"
               :rules="[rules.required]"
-              :label="$t('point.dangerousness')"
+              :label="$t('support.dangerousness')"
               class="shrink mx-5"
             ></v-select></v-container
           ><v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0">
             <v-checkbox
               v-model="diagData.isolation_advice"
-              :label="$t('point.advice_isol')"
+              :label="$t('support.advice_isol')"
               dense
             ></v-checkbox>
             <v-checkbox
               v-model="diagData.dissuasion_advice"
-              :label="$t('point.advice_disrupt')"
+              :label="$t('support.advice_disrupt')"
               dense
             ></v-checkbox>
             <v-checkbox
               v-model="diagData.attraction_advice"
-              :label="$t('point.advice_attract')"
+              :label="$t('support.advice_attract')"
               dense
             ></v-checkbox>
           </v-container>
@@ -177,14 +176,14 @@
 
         <fieldset class="d-flex justify-space-around flex-wrap mx-2">
           <legend class="mx-3 px-1">
-            {{ $t('point.pictures') }}
+            {{ $t('picture.pictures') }}
           </legend>
           <utils-picture-component ref="upc" /></fieldset
       ></v-container>
       <v-container>
         <v-row class="justify-space-around mb-2">
-          <v-btn @click="back">{{ $t('point.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('point.valid') }}</v-btn></v-row
+          <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
+          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn></v-row
         ></v-container
       >
     </v-form>
@@ -445,6 +444,7 @@ export default {
 
 .v-text-field,
 .v-select,
+.v-autocomplete,
 .v-checkbox {
   width: 200px;
 }

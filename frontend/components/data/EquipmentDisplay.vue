@@ -4,9 +4,9 @@
     <v-radio-group v-model="display" row dense @change="source">
       <v-row justify="space-around">
         <v-radio :label="$t('display.all')" value="both"></v-radio>
-        <v-radio :label="$t('display.poles-eqmt')" value="poles"></v-radio>
+        <v-radio :label="$t('display.supports-eqmt')" value="poles"></v-radio>
         <v-radio
-          :label="$t('display.segments-eqmt')"
+          :label="$t('display.lines-eqmt')"
           value="segments"
         ></v-radio></v-row
     ></v-radio-group>
