@@ -30,7 +30,7 @@ class GeoArea(models.Model):
         verbose_name=_("Type of the geographical area"),
         help_text=_("Type of the geographical area"),
     )
-    geom = gis_models.PolygonField(srid=4326)
+    geom = gis_models.MultiPolygonField(srid=4326)
 
     def __str__(self):
         return f"{self.name} - [{self.code}]"
