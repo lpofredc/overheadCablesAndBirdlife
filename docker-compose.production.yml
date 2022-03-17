@@ -3,5 +3,36 @@ version: '3.4'
 services:
   db:
     image: postgis/postgis:14-master
+    volumes:
+      - /opt/docker/cables_app_v2/db/data:/var/lib/postgresql/data
     env_file:
       - .env
+    networks:
+      - cablesv2_net
+
+  backend:
+    volumes:
+      - /opt/docker/cables_app_v2/backend/media:/app/uploads
+      - backend_static:/app/static
+    networks:
+      - cablesv2_net
+
+   
+  frontend:
+    ports:
+      - 10.0.3.1:9011:80
+    volumes:
+      - backend_static:/usr/share/nginx/html/static
+    networks:
+      - front
+      - cablesv2_net
+
+volumes:
+  backend_static:
+
+networks:
+  front:
+    external: true
+  cablesv2_net:
+    driver: bridge
+
