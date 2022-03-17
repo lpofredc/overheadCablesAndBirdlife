@@ -162,6 +162,9 @@ django-cors-headers==3.11.0; python_version >= "3.7" \
 django-filter==21.1; python_version >= "3.6" \
     --hash=sha256:632a251fa8f1aadb4b8cceff932bb52fe2f826dd7dfe7f3eac40e5c463d6836e \
     --hash=sha256:f4a6737a30104c98d2e2a5fb93043f36dd7978e0c7ddc92f5998e85433ea5063
+django-fixture-magic==0.1.5 \
+    --hash=sha256:d82a4d4f6ade078e942927b5157f0536d0cd0232adfeb943dced0858128dd734 \
+    --hash=sha256:c50f3de4a46a5844e2c1e2a9ff88b29db0830da8383e43d5ef6a66f1c4bfd8af
 django-polymorphic==3.1.0 \
     --hash=sha256:d6955b5308bf6e41dcb22ba7c96f00b51dfa497a8a5ab1e9c06c7951bf417bf8 \
     --hash=sha256:08bc4f4f4a773a19b2deced5a56deddd1ef56ebd15207bf4052e2901c25ef57e
