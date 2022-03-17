@@ -61,16 +61,12 @@ import { latLngBounds } from 'leaflet'
 import { mapGetters } from 'vuex'
 import '@geoman-io/leaflet-geoman-free'
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
-import { Feature } from 'geojson'
 
 export default {
   name: 'DataMap',
   props: { 
     editMode: Boolean, 
-    mode: { type: String, default: null } , 
-    test: {
-      type: Object as () => Feature, default: null
-    }
+    mode: { type: String, default: null }
   },
 
   data() {
