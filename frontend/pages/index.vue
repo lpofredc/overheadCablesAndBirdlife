@@ -1,16 +1,18 @@
 <template>
-  <div>
-    <v-row justify="center" align="center">
-      <v-col cols="12" sm="8" md="6">
-        <v-card class="logo py-4 d-flex justify-center">
-          <welcome-component />
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row v-if="!$auth.loggedIn">
-      <login-component />
-    </v-row>
-  </div>
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <v-flex>
+        <v-row v-if="!$auth.loggedIn">
+          <login-component />
+        </v-row>
+        <v-row justify="center" align="center">
+          <v-col cols="12" sm="8" md="6">
+            <welcome-component />
+          </v-col>
+        </v-row>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
