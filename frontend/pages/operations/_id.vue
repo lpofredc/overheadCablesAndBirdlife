@@ -1,7 +1,9 @@
 <template>
   <div>
     <v-row v-if="$vuetify.breakpoint.lgAndUp"
-      ><v-col width="50%"> <map-component /> </v-col><v-col></v-col
+      ><v-col width="50%"> <map-component /> </v-col
+      ><v-col>
+        <data-operation-detail :data="data"></data-operation-detail> </v-col
     ></v-row>
     <v-tabs
       v-if="$vuetify.breakpoint.mdAndDown"
@@ -14,14 +16,23 @@
         <map-component />
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
-      <v-tab-item> </v-tab-item>
+      <v-tab-item>
+        <data-operation-detail :data="data"></data-operation-detail
+      ></v-tab-item>
     </v-tabs>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'OperationDetailPage',
+  name: 'SupportDetailPage',
+  /**
+   * asyncData(): Method that gather data before page be created
+   *
+   * @param {$axios, params} allow to send request to data through $axios, and params allows to
+   * access the "slug"
+   * (with page "support/_id.vue" => "http://path/support/12" => id = 12)
+   */
   async asyncData({ $axios, params }) {
     return {
       data: await $axios.$get(`cables/operations/${params.id}`),
