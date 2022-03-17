@@ -4,7 +4,7 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from .models import GeoArea
 
 
-class GeoAreaGeoSerializer(ModelSerializer):
+class GeoAreaSerializer(ModelSerializer):
     """Serializer for GeoArea model"""
 
     class Meta:
@@ -12,7 +12,7 @@ class GeoAreaGeoSerializer(ModelSerializer):
         fields = ["id", "name", "code"]
 
 
-class GeoAreaSerializer(GeoFeatureModelSerializer):
+class GeoAreaGeoSerializer(GeoFeatureModelSerializer):
     """Serializer for GeoArea model"""
 
     class Meta:
