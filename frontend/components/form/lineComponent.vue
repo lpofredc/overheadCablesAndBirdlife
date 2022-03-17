@@ -24,7 +24,8 @@
               :rules="[rules.requiredOrNotValid, rules.latRange]"
               required
               hide-spin-buttons
-              class="shrink mx-5" />
+              class="shrink mx-5"
+            />
             <v-text-field
               :label="$t('support.longitude')"
               :value="pt[0]"
@@ -33,7 +34,8 @@
               required
               hide-spin-buttons
               class="shrink mx-5"
-          /></v-container>
+            />
+          </v-container>
           <!-- <v-checkbox
             v-model="manualChange"
             dense
@@ -91,8 +93,9 @@
               :label="$t('support.neutralized')"
               dense
               class="shrink mx-10 my-4"
-            ></v-checkbox></v-container
-          ><v-textarea
+            ></v-checkbox>
+          </v-container>
+          <v-textarea
             v-model="diagData.remark"
             clearable
             clear-icon="mdi-close-circle"
@@ -124,8 +127,8 @@
               :rules="[rules.required]"
               :label="$t('line.movingRisk')"
               class="shrink mx-5 mt-2"
-            ></v-select
-          ></v-container>
+            ></v-select>
+          </v-container>
           <v-container class="d-flex justify-space-around flex-wrap py-0">
             <v-select
               v-model="diagData.topoIntegRisk"
@@ -144,16 +147,16 @@
               :rules="[rules.required]"
               :label="$t('line.vegetIntegRisk')"
               class="shrink mx-5 mt-2"
-            ></v-select
-          ></v-container>
+            ></v-select>
+          </v-container>
         </fieldset>
       </v-container>
       <v-container>
         <v-row class="justify-space-around mb-2">
           <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn></v-row
-        ></v-container
-      >
+          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn>
+        </v-row>
+      </v-container>
     </v-form>
   </div>
 </template>
@@ -286,7 +289,7 @@ export default {
 
 
 <style>
-.v-tab {
+/* .v-tab {
   width: 100px;
   background-color: 'indigo';
 }
@@ -295,17 +298,18 @@ export default {
   width: 80px;
 }
 
-.v-text-field,
+/* .v-text-field,
 .v-select,
 .v-checkbox {
   width: 200px;
-}
+} */
 
+/*
 .v-textarea {
   min-width: 500px;
 }
 
 .v-chip {
   margin: 2px;
-}
+} */
 </style>

@@ -1,56 +1,77 @@
 <template>
-  <div style="height: 90vh" class="overflow-auto">
-    <v-form ref="form" v-model="formValid" class="text-center">
-      <h1>{{ $t('support.new_support') }}</h1>
-      <!-- Filedset COORDINATES -->
-      <v-container>
-        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
-          <legend class="mx-3 px-1">{{ $t('forms.coordinates') }}</legend>
-          <v-text-field
-            ref="lat"
-            v-model="lat"
-            :label="$t('support.latitude')"
-            :disabled="!manualChange"
-            type="number"
-            :rules="[rules.requiredOrNotValid, rules.latRange]"
-            required
-            hide-spin-buttons
-            class="shrink mx-5"
-          />
-          <v-text-field
-            ref="lng"
-            v-model="lng"
-            :label="$t('support.longitude')"
-            :disabled="!manualChange"
-            type="number"
-            :rules="[rules.requiredOrNotValid, rules.lngRange]"
-            required
-            hide-spin-buttons
-            class="shrink mx-5"
-          />
-          <v-checkbox
-            v-model="manualChange"
-            dense
-            :label="$t('support.manual-handling')"
-            class="mx-5"
-          ></v-checkbox>
-        </fieldset>
-        <!-- Filedset GENERAL INFORMATION -->
-        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
-          <legend class="mx-3 px-1">{{ $t('forms.general') }}</legend>
-          <v-container
-            class="
-              d-flex
-              justify-space-around
-              flex-sm-row flex-column
-              align-center
-              flex-wrap
-              mx-2
-            "
-          >
-            <v-container
-              class="d-flex justify-space-around flex-wrap ma-0 pa-0"
-            >
+  <v-card elevation="0" class="fill-height">
+    <v-form
+      ref="
+    form"
+      v-model="formValid"
+      class="text-center"
+    >
+      <v-toolbar color="pink" dark elevation="0">
+        <v-toolbar-title>{{ $t('support.new_support') }}</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-btn icon @click="$router.back()">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-card-text class="overflow-auto">
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('forms.coordinates') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="4">
+              <v-text-field
+                ref="lat"
+                v-model="lat"
+                :label="$t('support.latitude')"
+                :disabled="!manualChange"
+                type="number"
+                placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-text-field
+                ref="lng"
+                v-model="lng"
+                :label="$t('support.longitude')"
+                :disabled="!manualChange"
+                type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              />
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-checkbox
+                v-model="manualChange"
+                dense
+                :label="$t('support.manual-handling')"
+              ></v-checkbox>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-divider></v-divider>
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('forms.general') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6">
               <v-select
                 v-model="pointData.owner_id"
                 :items="networkOwners"
@@ -58,16 +79,17 @@
                 item-value="id"
                 :rules="[rules.required]"
                 :label="$t('support.network')"
+                outlined
+                dense
                 required
-                class="shrink mx-10 my-4"
               >
               </v-select>
+            </v-col>
+
+            <v-col cols="12" md="6">
               <v-menu
                 :close-on-content-click="false"
                 transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="auto"
               >
                 <template #activator="{ on, attrs }">
                   <v-text-field
@@ -76,18 +98,18 @@
                     persistent-hint
                     prepend-icon="mdi-calendar"
                     readonly
-                    class="shrink mx-10 my-4"
+                    outlined
+                    dense
                     v-bind="attrs"
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="diagData.date"
-                  no-title
-                ></v-date-picker> </v-menu
-            ></v-container>
-            <v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0"
-              ><v-autocomplete
+                <v-date-picker v-model="diagData.date" no-title></v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col cols="12">
+              <v-autocomplete
                 v-model="diagData.pole_type_id"
                 :items="poleTypes"
                 item-text="label"
@@ -98,9 +120,12 @@
                 multiple
                 deletable-chips
                 small-chips
-                class="poletypes shrink mx-10 my-4"
+                outlined
+                dense
               ></v-autocomplete>
+            </v-col>
 
+            <v-col cols="12" md="8">
               <v-select
                 v-model="diagData.condition_id"
                 :items="conditions"
@@ -108,86 +133,110 @@
                 item-value="id"
                 :rules="[rules.required]"
                 :label="$t('support.condition')"
-                class="shrink mx-10 my-4"
-              ></v-select></v-container
-            ><v-textarea
-              v-model="diagData.remark"
-              clearable
-              clear-icon="mdi-close-circle"
-              :label="$t('app.remark')"
-              :rules="[rules.textLength]"
-              rows="2"
-              counter="300"
-              class="ma-2 px-5"
-            ></v-textarea>
-            <v-container
-              class="d-flex justify-space-around flex-wrap ma-0 pa-0"
-            >
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" md="4">
               <v-checkbox
                 v-model="diagData.neutralized"
                 :label="$t('support.neutralized')"
                 dense
-                class="shrink mx-10 my-4"
               ></v-checkbox>
-            </v-container>
-          </v-container>
-        </fieldset>
-        <!-- Filedset RISK ASSESSMENT -->
-
-        <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-          <legend class="mx-3 px-1">{{ $t('support.advice') }}</legend>
-          <v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0">
-            <v-select
-              v-model="diagData.pole_attractivity_id"
-              :items="riskLevels"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('support.attractiveness')"
-              class="shrink mx-5"
-            ></v-select>
-            <v-select
-              v-model="diagData.pole_dangerousness_id"
-              :items="riskLevels"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('support.dangerousness')"
-              class="shrink mx-5"
-            ></v-select></v-container
-          ><v-container class="d-flex justify-space-around flex-wrap ma-0 pa-0">
-            <v-checkbox
-              v-model="diagData.isolation_advice"
-              :label="$t('support.advice_isol')"
-              dense
-            ></v-checkbox>
-            <v-checkbox
-              v-model="diagData.dissuasion_advice"
-              :label="$t('support.advice_disrupt')"
-              dense
-            ></v-checkbox>
-            <v-checkbox
-              v-model="diagData.attraction_advice"
-              :label="$t('support.advice_attract')"
-              dense
-            ></v-checkbox>
-          </v-container>
-        </fieldset>
-
-        <fieldset class="d-flex justify-space-around flex-wrap mx-2">
-          <legend class="mx-3 px-1">
-            {{ $t('picture.pictures') }}
-          </legend>
-          <utils-picture-component ref="upc" /></fieldset
-      ></v-container>
-      <v-container>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="diagData.remark"
+                clearable
+                clear-icon="mdi-close-circle"
+                :label="$t('app.remark')"
+                :rules="[rules.textLength]"
+                rows="2"
+                counter="300"
+                outlined
+                dense
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-divider></v-divider>
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('support.advice') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="diagData.pole_attractivity_id"
+                :items="riskLevels"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('support.attractiveness')"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="diagData.pole_dangerousness_id"
+                :items="riskLevels"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('support.dangerousness')"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-checkbox
+                v-model="diagData.isolation_advice"
+                :label="$t('support.advice_isol')"
+                dense
+              ></v-checkbox>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-checkbox
+                v-model="diagData.dissuasion_advice"
+                :label="$t('support.advice_disrupt')"
+                dense
+              ></v-checkbox>
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-checkbox
+                v-model="diagData.attraction_advice"
+                :label="$t('support.advice_attract')"
+                dense
+              ></v-checkbox>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-divider></v-divider>
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('picture.pictures') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <utils-picture-component ref="upc" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
         <v-row class="justify-space-around mb-2">
           <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn></v-row
-        ></v-container
-      >
+          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn>
+        </v-row>
+      </v-card-actions>
     </v-form>
-  </div>
+  </v-card>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -433,7 +482,7 @@ export default {
 
 
 <style>
-.v-tab {
+/* .v-tab {
   width: 100px;
   background-color: 'indigo';
 }
@@ -455,5 +504,5 @@ export default {
 
 .v-textarea {
   min-width: 400px;
-}
+} */
 </style>

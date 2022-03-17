@@ -1,28 +1,24 @@
 <template>
-   <v-row dense>
-          <v-col
+  <v-row dense class="justify-center">
+    <v-col
       v-for="i in partners"
       :key="i.id"
-      :loading="loading"
-            cols="12"
-            sm="12"
-            md="6"
-            lg="4"
-            class="d-flex center"
-          >
-            <v-card
-
-      class="mx-auto my-12"
+      loading
+      cols="12"
+      sm="6"
+      md="4"
+      lg="2"
     >
-      <v-img height="100" src="https://via.placeholder.com/300.png/09f/fff"></v-img>
-
-      <v-card-title><a :href="i.url" target="_blank">{{ i.name }}</a></v-card-title>
-
-    </v-card>
-          </v-col>
-        </v-row>
-    
-  </div>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <a :href="i.url" target="_blank" v-bind="attrs" v-on="on">
+            <v-img height="100" contain :src="i.logo" :alt="i.name"></v-img>
+          </a>
+        </template>
+        <span>{{ i.name }}</span>
+      </v-tooltip>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
