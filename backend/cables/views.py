@@ -25,7 +25,11 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
 
     serializer_class = InfrastructurePolymorphicSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Infrastructure.objects.all()
+    queryset = (
+        Infrastructure.objects.all()
+        .prefetch_related("geo_area")
+        .prefetch_related("sensitive_area")
+    )
     filterset_class = InfrastructureFilter
 
 
