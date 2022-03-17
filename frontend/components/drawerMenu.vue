@@ -24,7 +24,16 @@
       </v-list-item-icon>
 
       <v-list-item-content>
-        <v-list-item-title>{{ $t('login.application') }}n</v-list-item-title>
+        <v-list-item-title>{{ $t('login.application') }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item href="/admin" :disabled="!$auth.loggedIn">
+      <v-list-item-icon>
+        <v-icon>mdi-cogs</v-icon>
+      </v-list-item-icon>
+
+      <v-list-item-content>
+        <v-list-item-title>{{ $t('login.admin') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>
