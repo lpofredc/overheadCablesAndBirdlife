@@ -99,7 +99,7 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         self.last_name = self.last_name.upper()
         super(User, self).save(*args, **kwargs)
 
-    def get_full_name(self):
+    def full_name(self):
         """
         Returns the first_name plus the last_name, with a space in between.
         """
