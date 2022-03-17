@@ -29,5 +29,5 @@ class PartnersViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the partners"""
 
     serializer_class = PartnersSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Partners.objects.all()
