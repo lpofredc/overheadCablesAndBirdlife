@@ -27,6 +27,7 @@ urlpatterns = [
     path("api/v1/mortality/", include("mortality.urls")),
     path("api/v1/species/", include("species.urls")),
     path("api/v1/media/", include("media.urls")),
+    path("api/v1/custom-content/", include("custom_content.urls")),
     path("api/v1/nomenclature/", include("sinp_nomenclatures.urls")),
     path("admin/", admin.site.urls),
 ]
