@@ -129,6 +129,7 @@ class GeoAreaAuthorizedAuthenticationTestCase(TestCase):
         self.authentified_client = logTestUser("user", "password")
 
     def test_get_geo_areas(self):
+        # TODO test to be corrected; issue with multipolygon
         # get id of a geoarea type in nomanclature (the first one)
         ga_type = (
             Nomenclature.objects.all()
