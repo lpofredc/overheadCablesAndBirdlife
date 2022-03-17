@@ -48,13 +48,14 @@ INSTALLED_APPS = [
     "djoser",
     "polymorphic",
     "users",
-    "commons.apps.BaseModelConfig",
-    "cables.apps.CablesConfig",
-    "mortality.apps.MortalityConfig",
-    "sensitive_area.apps.SensitiveAreaConfig",
-    "geo_area.apps.GeoAreaConfig",
-    "media.apps.MediaConfig",
-    "species.apps.SpeciesConfig",
+    "custom_content",
+    "commons",
+    "cables",
+    "mortality",
+    "sensitive_area",
+    "geo_area",
+    "media",
+    "species",
     "rest_framework",
     "rest_framework_gis",
     "sinp_nomenclatures",
@@ -148,7 +149,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-
+STATIC_ROOT = BASE_DIR / "static"
 STATIC_URL = "static/"
 
 # Default primary key field type
@@ -183,7 +184,11 @@ DJOSER = {
 
 
 # APPLICATION SPECIFICS
-MEDIA_UPLOAD = config("MEDIA_UPLOAD", default="uploads/")
+MEDIA_UPLOAD = "uploads/"
+MEDIA_ROOT = BASE_DIR / MEDIA_UPLOAD
+# print("MEDIA_ROOT", MEDIA_ROOT)
+MEDIA_URL = "/api/v1/media/"
+# DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 LOGGING = {
     "version": 1,
