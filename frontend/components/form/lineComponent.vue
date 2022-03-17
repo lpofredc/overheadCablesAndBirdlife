@@ -18,7 +18,7 @@
             class="d-flex justify-space-around flex-wrap"
           >
             <v-text-field
-              :label="$t('point.latitude')"
+              :label="$t('support.latitude')"
               :value="pt[1]"
               type="number"
               :rules="[rules.requiredOrNotValid, rules.latRange]"
@@ -26,7 +26,7 @@
               hide-spin-buttons
               class="shrink mx-5" />
             <v-text-field
-              :label="$t('point.longitude')"
+              :label="$t('support.longitude')"
               :value="pt[0]"
               type="number"
               :rules="[rules.requiredOrNotValid, rules.lngRange]"
@@ -37,7 +37,7 @@
           <!-- <v-checkbox
             v-model="manualChange"
             dense
-            :label="$t('point.manual-hadling')"
+            :label="$t('support.manual-handling')"
             class="mx-5"
           ></v-checkbox> -->
         </fieldset>
@@ -60,7 +60,7 @@
               item-text="label"
               item-value="id"
               :rules="[rules.required]"
-              :label="$t('point.network')"
+              :label="$t('support.network')"
               required
               class="shrink mx-10 my-4"
             >
@@ -88,7 +88,7 @@
             </v-menu>
             <v-checkbox
               v-model="diagData.neutralized"
-              :label="$t('point.neutralized')"
+              :label="$t('support.neutralized')"
               dense
               class="shrink mx-10 my-4"
             ></v-checkbox></v-container
@@ -96,7 +96,7 @@
             v-model="diagData.remark"
             clearable
             clear-icon="mdi-close-circle"
-            :label="$t('point.remark')"
+            :label="$t('app.remark')"
             :rules="[rules.textLength]"
             rows="2"
             counter="300"
@@ -150,8 +150,8 @@
       </v-container>
       <v-container>
         <v-row class="justify-space-around mb-2">
-          <v-btn @click="back">{{ $t('point.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('point.valid') }}</v-btn></v-row
+          <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
+          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn></v-row
         ></v-container
       >
     </v-form>

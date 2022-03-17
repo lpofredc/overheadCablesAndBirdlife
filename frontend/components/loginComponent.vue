@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center" class="mt-16">
-    <v-form ref="form" v-model="valid" class="mt-16 ml-10">
-      <v-card width="400" class="pa-5 pb-10">
+    <v-form ref="form" v-model="valid" class="mt-5 ml-4">
+      <v-card min-width="400" class="pa-5 pb-10">
         <v-row justify="center" class="my-5"
           ><div>{{ $t('login.sign-in') }}</div></v-row
         >
@@ -12,6 +12,7 @@
             :rules="nameRules"
             type="text"
             class="pl-3 pr-5"
+            filled
             required
             @keyup.enter="userLogin"
           ></v-text-field>
@@ -23,6 +24,7 @@
             v-model="login.password"
             :rules="pwdRules"
             type="password"
+            filled
             class="pl-3 pr-5"
             required
             @keyup.enter="userLogin"

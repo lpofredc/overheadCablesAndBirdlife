@@ -6,16 +6,20 @@
     "disconnected": "Logged out",
     "id": "Id",
     "map": "Map",
-    "type": "Type"
+    "remark": "Remarks",
+    "type": "Type",
+    "valid": "Create"
   },
   "display": {
     "all": "All",
-    "infrastructures": "Poles/Pylons and Cables",
+    "infrastructures": "Supports and Cables",
     "mortality-cases": "Mortality cases",
-    "poles": "Poles/Pylons",
-    "poles-eqmt": "Poles Equipements",
-    "segments": "Segments",
-    "segments-eqmt": "Segments Equipements",
+    "support": "Support",
+    "supports": "Supports",
+    "supports-eqmt": "Supports Equipments",
+    "line": "Line",
+    "lines": "Lines",
+    "lines-eqmt": "Lines Equipments",
     "sensitive-areas": "Sensitive areas"
   },
   "forms": {
@@ -26,34 +30,29 @@
     "too_big_file": "File size should less than",
     "not_img_file": "Selected file should be an image file"
   },
-  "point": {
+  "support": {
     "advice": "Advices",
     "advice_isol": "Isolate",
     "advice_disrupt": "Make it disruptive",
     "advice_attract": "Make it attractive",
     "attractiveness": "Attractiveness",
-    "cancel": "Cancel",
     "condition": "Condition",
     "dangerousness": "Dangerousness",
-    "features": "Features",
     "latitude": "Latitude",
     "longitude": "Longitude",
-    "manual-hadling": "Manually enter coordinates",
+    "manual-handling": "Manually enter coordinates",
     "network": "Network",
     "neutralized": "Neutralized",
-    "new_pole": "New Pole/Pylon",
+    "new_support": "New Support",
     "owner": "Owner",
-    "pictures": "Pictures",
-    "poleType": "Pole/Pylone Type",
-    "remark": "Remarks",
-    "valid": "Create"
+    "poleType": "Support Type"
   },
   "line": {
     "buildIntegRisk": "Building Integration Risk",
     "create_line": "Please start by creating segment on the map",
     "movingRisk": "Moving Related Risk",
     "new_segment": "New Segment",
-    "topoIntegRisk": "Topologic Integration Risk",
+    "topoIntegRisk": "Topographic Integration Risk",
     "vegetIntegRisk": "Vegetation Integration Risk"
   },
   "login": {
@@ -66,7 +65,8 @@
     "username": "Username"
   },
   "picture": {
-    "add_file": "Add Pictures"
+    "add_file": "Add Pictures",
+    "pictures": "Pictures"
   },
   "error": {
     "id-pwd-issue": "Error of username or password",

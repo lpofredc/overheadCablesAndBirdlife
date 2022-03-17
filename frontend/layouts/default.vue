@@ -1,6 +1,14 @@
 
 <template>
   <v-app>
+    <v-navigation-drawer
+      :mini-variant="miniVariant"
+      clipped
+      mobile-breakpoint="0"
+      app
+    >
+      <drawer-menu
+    /></v-navigation-drawer>
     <v-app-bar clipped-left app dark color="light-blue darken-4"
       ><v-app-bar-nav-icon @click="miniVariant = !miniVariant" />
       <v-toolbar-title v-text="app_name" />
@@ -12,14 +20,7 @@
         <v-icon large>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-navigation-drawer
-      :mini-variant="miniVariant"
-      clipped
-      mobile-breakpoint="0"
-      app
-    >
-      <drawer-menu /></v-navigation-drawer
-    ><v-main>
+    <v-main>
       <Nuxt />
     </v-main>
     <error-snackbar />

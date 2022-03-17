@@ -3,16 +3,17 @@
     <v-radio-group v-model="display" row dense @change="source">
       <v-row justify="space-around">
         <v-radio :label="$t('display.all')" value="both"></v-radio>
-        <v-radio :label="$t('display.poles')" value="poles"></v-radio>
-        <v-radio :label="$t('display.segments')" value="segments"></v-radio
-      ></v-row>
-    </v-radio-group>
-    <v-data-table
-      :headers="headers"
+        <v-radio :label="$t('display.supports')" value="poles"></v-radio>
+        <v-radio :label="$t('display.lines')" value="segments"></v-radio
+      ></v-row> </v-radio-group
+    ><v-data-table
+      :headers="tableHeaders"
       :items="selectedData"
       :items-per-page="5"
       class="elevation-1"
-    ></v-data-table>
+      @click:row="showDetail"
+    >
+    </v-data-table>
   </div>
 </template>
 
@@ -23,9 +24,11 @@ export default {
 
   data() {
     return {
+      singleExpand: false,
+      expanded: [],
       display: 'both',
       selectedData: [],
-      headers: [
+      tableHeaders: [
         {
           text: this.$t('app.id'),
           align: 'start',
@@ -33,7 +36,10 @@ export default {
           value: 'properties.id',
         },
         { text: this.$t('app.type'), value: 'resourcetype' },
-        { text: this.$t('point.owner'), value: 'properties.owner.label' },
+        { text: this.$t('support.owner'), value: 'properties.owner.label' },
+        { text: 'Notation', value: 'score' },
+        { text: 'Neutralisé', value: '?' },
+        { text: 'Dernier diagnostic', value: '?' },
       ],
     }
   },
@@ -62,6 +68,13 @@ export default {
           break
         default:
         // TODO raise an exception and handle it or display message to user
+      }
+    },
+    showDetail(evt) {
+      if (evt.resourcetype === 'Point') {
+        this.$router.push(`/supports/${evt.properties.id}`)
+      } else if (evt.resourcetype === 'Line') {
+        this.$router.push(`/lines/${evt.properties.id}`)
       }
     },
   },

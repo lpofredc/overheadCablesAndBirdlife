@@ -28,9 +28,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv()
-)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv())
 # DEFAULT_C
 
 # Application definition
@@ -48,13 +46,15 @@ INSTALLED_APPS = [
     "django_filters",
     "djoser",
     "polymorphic",
-    "commons.apps.BaseModelConfig",
-    "cables.apps.CablesConfig",
-    "mortality.apps.MortalityConfig",
-    "sensitive_area.apps.SensitiveAreaConfig",
-    "geo_area.apps.GeoAreaConfig",
-    "media.apps.MediaConfig",
-    "species.apps.SpeciesConfig",
+    "users",
+    "custom_content",
+    "commons",
+    "cables",
+    "mortality",
+    "sensitive_area",
+    "geo_area",
+    "media",
+    "species",
     "rest_framework",
     "rest_framework_gis",
     "sinp_nomenclatures",
@@ -112,13 +112,12 @@ DATABASES = {
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3000",
 # ]
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv()
-)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv())
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
+AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -150,7 +149,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / "static"
 STATIC_URL = "static/"
 
 # Default primary key field type
@@ -165,9 +164,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
@@ -187,7 +184,11 @@ DJOSER = {
 
 
 # APPLICATION SPECIFICS
-MEDIA_UPLOAD = config("MEDIA_UPLOAD", default="uploads/")
+MEDIA_UPLOAD = "uploads/"
+MEDIA_ROOT = BASE_DIR / MEDIA_UPLOAD
+# print("MEDIA_ROOT", MEDIA_ROOT)
+MEDIA_URL = "/api/v1/media/"
+# DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 LOGGING = {
     "version": 1,

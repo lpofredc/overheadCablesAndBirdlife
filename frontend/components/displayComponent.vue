@@ -1,9 +1,9 @@
 <template>
-  <div class="overflow-auto">
+  <div style="height: 90vh" class="overflow-auto">
     <v-tabs center-active grow color="indigo">
       <v-tab> {{ $t('display.infrastructures') }} </v-tab>
       <v-tab-item> <data-infrastructure-display /></v-tab-item>
-      <v-tab> {{ $t('display.poles-eqmt') }} </v-tab>
+      <v-tab> {{ $t('display.supports-eqmt') }} </v-tab>
       <v-tab-item> <data-equipment-display /></v-tab-item>
       <v-tab>
         {{ $t('display.sensitive-areas') }}

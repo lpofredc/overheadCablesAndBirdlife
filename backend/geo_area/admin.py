@@ -6,8 +6,12 @@ from .models import GeoArea
 
 
 class GeoAreaAdmin(GisModelAdmin):
-    list_display = ("name",)
-    list_filter = ("name",)
+    list_display = (
+        "type",
+        "code",
+        "name",
+    )
+    list_filter = ("type",)
 
 
 admin.site.register(GeoArea, GeoAreaAdmin)

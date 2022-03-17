@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 90vh" class="overflow-auto">
     <v-row v-if="$vuetify.breakpoint.lgAndUp"
       ><v-col width="50%">
         <map-component :edit-mode="true" mode="point" /> </v-col
