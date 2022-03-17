@@ -55,8 +55,7 @@
   </div>
 </template>
 
-<script lang="ts">
-
+<script>
 import { latLngBounds } from 'leaflet'
 import { mapGetters } from 'vuex'
 import '@geoman-io/leaflet-geoman-free'
@@ -64,10 +63,7 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
 
 export default {
   name: 'DataMap',
-  props: { 
-    editMode: Boolean, 
-    mode: { type: String, default: null }
-  },
+  props: { editMode: Boolean, mode: { type: String, default: null } },
 
   data() {
     return {
