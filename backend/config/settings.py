@@ -31,7 +31,6 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv())
 # DEFAULT_C
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -116,6 +115,7 @@ DATABASES = {
 # ]
 CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv())
 
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 AUTH_USER_MODEL = "users.User"
