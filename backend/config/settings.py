@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
+    "fixture_magic",
     "django_filters",
     "djoser",
     "polymorphic",

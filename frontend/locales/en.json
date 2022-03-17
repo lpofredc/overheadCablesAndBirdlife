@@ -57,6 +57,7 @@
   },
   "login": {
     "application": "Application",
+    "admin": "Administration",
     "home_page": "Home Page",
     "password": "Password",
     "required_pwd_msg": "Username is required",
