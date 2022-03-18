@@ -2,11 +2,11 @@
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
       <v-flex>
-        <v-row v-if="!$auth.loggedIn">
+        <!-- <v-row v-if="!$auth.loggedIn">
           <login-component />
-        </v-row>
+        </v-row> -->
         <v-row justify="center" align="center">
-          <v-col cols="12" sm="8" md="6">
+          <v-col>
             <welcome-component />
           </v-col>
         </v-row>

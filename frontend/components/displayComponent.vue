@@ -1,10 +1,14 @@
 <template>
-  <div style="height: 90vh" class="overflow-auto">
+  <div class="d-flex align-stretch">
     <v-tabs center-active grow color="indigo">
       <v-tab> {{ $t('display.infrastructures') }} </v-tab>
-      <v-tab-item> <data-infrastructure-display /></v-tab-item>
+      <v-tab-item>
+        <data-infrastructure-display />
+      </v-tab-item>
       <v-tab> {{ $t('display.supports-eqmt') }} </v-tab>
-      <v-tab-item> <data-equipment-display /></v-tab-item>
+      <v-tab-item>
+        <data-equipment-display />
+      </v-tab-item>
       <v-tab>
         {{ $t('display.sensitive-areas') }}
       </v-tab>
@@ -12,7 +16,9 @@
         <data-sens-area-display />
       </v-tab-item>
       <v-tab> {{ $t('display.mortality-cases') }} </v-tab>
-      <v-tab-item> <data-mortality-display /></v-tab-item>
+      <v-tab-item>
+        <data-mortality-display />
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
@@ -28,7 +34,8 @@ export default {
   background-color: 'indigo';
 }
 
+/* 
 .v-btn {
   width: 80px;
-}
+} */
 </style>

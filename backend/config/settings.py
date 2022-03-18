@@ -189,7 +189,7 @@ DJOSER = {
 MEDIA_UPLOAD = "uploads/"
 MEDIA_ROOT = BASE_DIR / MEDIA_UPLOAD
 # print("MEDIA_ROOT", MEDIA_ROOT)
-MEDIA_URL = "/api/v1/media/"
+MEDIA_URL = "/api/v1/uploads/"
 # DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 LOGGING = {

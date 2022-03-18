@@ -1,46 +1,54 @@
 <template>
-  <v-row justify="center" class="mt-16">
-    <v-form ref="form" v-model="valid" class="mt-5 ml-4">
-      <v-card min-width="400" class="pa-5 pb-10">
-        <v-row justify="center" class="my-5"
-          ><div>{{ $t('login.sign-in') }}</div></v-row
-        >
-        <v-row justify="start">
-          <v-icon large class="mx-3">mdi-account-circle</v-icon>
-          <v-text-field
-            v-model="login.username"
-            :rules="nameRules"
-            type="text"
-            class="pl-3 pr-5"
-            filled
-            required
-            @keyup.enter="userLogin"
-          ></v-text-field>
-        </v-row>
+  <v-card>
+    <v-form ref="form" v-model="valid">
+      <v-card-title>
+        {{ $t('login.sign-in') }}
+      </v-card-title>
+      <v-card-text>
+        <v-container id="input-usage" fluid>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                v-model="login.username"
+                :rules="nameRules"
+                prepend-icon="mdi-account-circle"
+                type="text"
+                outlined
+                fluid
+                required
+                @keyup.enter="userLogin"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
 
-        <v-row justify="start" class="mb-3">
-          <v-icon large class="mx-3">mdi-lock</v-icon>
-          <v-text-field
-            v-model="login.password"
-            :rules="pwdRules"
-            type="password"
-            filled
-            class="pl-3 pr-5"
-            required
-            @keyup.enter="userLogin"
-          ></v-text-field>
-        </v-row>
-        <v-row justify="space-around" class="mt-10">
-          <v-btn width="150" color="info" @click="reset">
-            {{ $t('app.cancel') }}
-          </v-btn>
-          <v-btn width="150" color="primary" @click="userLogin">
-            {{ $t('login.sign-in') }}
-          </v-btn>
-        </v-row>
-      </v-card>
+        <v-container id="input-usage" fluid>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                v-model="login.password"
+                :rules="pwdRules"
+                prepend-icon="mdi-lock"
+                type="password"
+                outlined
+                required
+                @keyup.enter="userLogin"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="error" @click="reset">
+          {{ $t('app.cancel') }}
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="success" @click="userLogin">
+          {{ $t('login.sign-in') }}
+        </v-btn>
+      </v-card-actions>
     </v-form>
-  </v-row>
+  </v-card>
 </template>
 
 <script>

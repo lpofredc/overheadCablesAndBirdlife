@@ -1,12 +1,8 @@
 from django.test import TestCase
-
-# from django.utils.timezone import datetime
 from rest_framework.test import APIClient
 
 from cables.models import Action
 from commons.tests.tests_commons import createTestUser, logTestUser
-
-# from sinp_nomenclatures.models import Item, Type
 
 
 class ActionAnonymousAuthenticationTestCase(TestCase):

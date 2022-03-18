@@ -1,5 +1,7 @@
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission  # , User
 from rest_framework.test import APIClient
+
+from users.models import User
 
 
 def createTestUser(username, password, *perm_codename):

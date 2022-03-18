@@ -1,58 +1,57 @@
 <template>
-  <div style="height: calc(100vh - 76px); width: 100%">
-    <l-map
-      ref="map"
-      :class="editMode ? 'change-map' : 'view-map'"
-      :center="center"
-      :bounds="bounds"
-      :max-bounds="maxBounds"
-      @ready="onMapReady()"
+  <l-map
+    ref="map"
+    class="d-flex align-stretch"
+    :class="editMode ? 'change-map' : 'view-map'"
+    :center="center"
+    :bounds="bounds"
+    :max-bounds="maxBounds"
+    @ready="onMapReady()"
+  >
+    <l-tile-layer :url="url" :attribution="attribution" />
+    <!-- Display of existing Pole layer-->
+    <l-geo-json
+      v-if="pointData"
+      name="pointData"
+      :geojson="pointData"
+      :options-style="styleData"
+      :options="GeojsonOptions"
+    />
+    <l-geo-json
+      v-if="cablesData"
+      name="lineStringData"
+      :geojson="lineStringData"
+      :options-style="styleData"
+      :options="GeojsonOptions"
+    />
+    <v-speed-dial
+      class="fab mb-5"
+      absolute
+      bottom
+      right
+      direction="top"
+      transition="slide - y - reverse - transition"
     >
-      <l-tile-layer :url="url" :attribution="attribution" />
-      <!-- Display of existing Pole layer-->
-      <l-geo-json
-        v-if="pointData"
-        name="pointData"
-        :geojson="pointData"
-        :options-style="styleData"
-        :options="GeojsonOptions"
-      />
-      <l-geo-json
-        v-if="cablesData"
-        name="lineStringData"
-        :geojson="lineStringData"
-        :options-style="styleData"
-        :options="GeojsonOptions"
-      />
-      <v-speed-dial
-        class="fab mb-5"
-        absolute
-        bottom
-        right
-        direction="top"
-        transition="slide - y - reverse - transition"
-      >
-        <template v-if="!editMode" #activator>
-          <v-btn color="primary darken-2" dark fab>
-            <v-icon x-large> + </v-icon>
-          </v-btn>
-        </template>
-        <v-btn fab dark small color="orange">
-          <v-icon>mdi-shape-polygon-plus</v-icon>
+      <template v-if="!editMode" #activator>
+        <v-btn color="primary darken-2" dark fab>
+          <v-icon x-large> + </v-icon>
         </v-btn>
-        <v-btn fab dark small to="/supports/new" color="green">
-          <v-icon>mdi-transmission-tower</v-icon>
-        </v-btn>
-        <v-btn fab dark small to="/lines/new" color="indigo">
-          <v-icon>mdi-cable-data</v-icon>
-        </v-btn>
-        <v-btn fab dark small color="red">
-          <v-icon>mdi-coffin</v-icon>
-        </v-btn>
-      </v-speed-dial>
-      <!-- <l-icon-default :image-path="path" /> -->
-    </l-map>
-  </div>
+      </template>
+      <v-btn fab dark small color="orange">
+        <v-icon>mdi-shape-polygon-plus</v-icon>
+      </v-btn>
+      <v-btn fab dark small to="/supports/new" color="green">
+        <v-icon>mdi-transmission-tower</v-icon>
+      </v-btn>
+      <v-btn fab dark small to="/lines/new" color="indigo">
+        <v-icon>mdi-cable-data</v-icon>
+      </v-btn>
+      <v-btn fab dark small color="red">
+        <v-icon>mdi-coffin</v-icon>
+      </v-btn>
+    </v-speed-dial>
+    <!-- <l-icon-default :image-path="path" /> -->
+  </l-map>
 </template>
 
 <script>

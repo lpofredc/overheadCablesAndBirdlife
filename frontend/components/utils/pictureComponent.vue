@@ -1,20 +1,17 @@
 <template>
-  <v-container fluid
-    ><v-list>
+  <v-container fluid>
+    <v-list>
       <v-list-item v-for="(img, index) in imgFileContent" :key="index">
-        <v-row
-          ><v-col
-            ><v-img
-              :src="img"
-              max-height="100"
-              max-width="166"
-              class="ma-2" /></v-col
-          ><v-col>date: {{ pictDate }}</v-col
-          ><v-col></v-col
-          ><v-col cols="1"
-            ><v-icon small color="red">mdi-trash-can</v-icon>
-          </v-col></v-row
-        >
+        <v-row>
+          <v-col>
+            <v-img :src="img" max-height="100" max-width="166" class="ma-2" />
+          </v-col>
+          <v-col>date: {{ pictDate }}</v-col>
+          <v-col></v-col>
+          <v-col cols="1">
+            <v-icon small color="red">mdi-trash-can</v-icon>
+          </v-col>
+        </v-row>
       </v-list-item>
     </v-list>
     <v-file-input
@@ -87,8 +84,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.v-file-input {
-  width: 400px;
-}
-</style>

@@ -2,12 +2,8 @@
   <div>
     <v-row v-if="$vuetify.breakpoint.lgAndUp"
       ><v-col width="50%"> <map-component /> </v-col
-      ><v-col>
-        <h1>
-          {{ $t('display.line') }} {{ data.properties.owner.label }}
-        </h1></v-col
-      ></v-row
-    >
+      ><v-col> <data-line-detail :data="data"></data-line-detail> </v-col
+    ></v-row>
     <v-tabs
       v-if="$vuetify.breakpoint.mdAndDown"
       fixed-tabs
@@ -20,10 +16,8 @@
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>
-        <h1>
-          {{ $t('display.line') }} {{ data.properties.owner.label }}
-        </h1></v-tab-item
-      >
+        <data-line-detail :data="data"></data-line-detail>
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
@@ -31,6 +25,13 @@
 <script>
 export default {
   name: 'LineDetailPage',
+  /**
+   * asyncData(): Method that gather data before page be created
+   *
+   * @param {$axios, params} allow to send request to data through $axios, and params allows to
+   * access the "slug"
+   * (with page "support/_id.vue" => "http://path/support/12" => id = 12)
+   */
   async asyncData({ $axios, params }) {
     return {
       data: await $axios.$get(`cables/infrastructures/${params.id}`),

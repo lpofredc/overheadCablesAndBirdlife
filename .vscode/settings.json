@@ -1,18 +1,16 @@
 {
-  "restructuredtext.confPath": "",
   "editor.formatOnSave": true,
   "python.pythonPath": "backend/.venv/bin/python",
   "python.formatting.provider": "black",
-  "python.formatting.blackArgs": [
-    "--line-length=99"
-  ],
-  "python.sortImports.args": [
-    "--profile",
-    "black"
-  ],
+  "python.formatting.blackArgs": ["--line-length=99"],
+  "python.sortImports.args": ["--profile", "black"],
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
     }
+  },
+  "vetur.format.defaultFormatter.html": "prettier",
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
   }
 }
