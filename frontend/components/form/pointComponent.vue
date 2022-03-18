@@ -269,7 +269,7 @@ export default {
         attraction_advice: false,
         dissuasion_advice: false,
         isolation_advice: false,
-        pole_attractivity_id: 8, // null
+        pole_attractivity_id: null,
         pole_dangerousness_id: 8, // null
       },
       // rules for form validation
