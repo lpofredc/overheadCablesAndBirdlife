@@ -1,4 +1,4 @@
-from django.contrib.gis.geos import Polygon
+from django.contrib.gis.geos import MultiPolygon, Polygon
 from django.test import TestCase
 from sinp_nomenclatures.models import Nomenclature
 
@@ -60,14 +60,18 @@ class CreatePointAndLineTestCase(TestCase):
             type_id=ga_type,
             name="Geo Area 1",
             code="GA1",
-            geom=Polygon(((-5, 5), (-5, -5), (5, -5), (5, 5), (-5, 5))),
+            geom=MultiPolygon(
+                Polygon(((-5, 5), (-5, -5), (5, -5), (5, 5), (-5, 5)))
+            ),
         )
         ga.save()
         ga = GeoArea.objects.create(
             type_id=ga_type,
             name="Geo Area 2",
             code="GA2",
-            geom=Polygon(((-1, 1), (-1, -1), (1, -1), (1, 1), (-1, 1))),
+            geom=MultiPolygon(
+                Polygon(((-1, 1), (-1, -1), (1, -1), (1, 1), (-1, 1)))
+            ),
         )
         ga.save()
 
@@ -79,6 +83,7 @@ class CreatePointAndLineTestCase(TestCase):
             "owner_id": 1,
             "geom": {"type": "Point", "coordinates": [0.5, 0.5]},
         }
+
         resp = self.authentified_client.post(
             "/api/v1/cables/points/", data, format="json"
         )
@@ -92,7 +97,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(point["properties"]["sensitive_area"]["features"]), 2
         )
-        self.assertEquals(len(point["properties"]["geo_area"]["features"]), 2)
+        self.assertEquals(len(point["properties"]["geo_area"]), 2)
 
     def test_create_and_get_point_inside_1SA_and_2GA(self):
         # - one outside one SensitiveArea and inside both GeoArea
@@ -100,6 +105,7 @@ class CreatePointAndLineTestCase(TestCase):
             "owner_id": 1,
             "geom": {"type": "Point", "coordinates": [-0.5, 0.5]},
         }
+
         resp = self.authentified_client.post(
             "/api/v1/cables/points/", data, format="json"
         )
@@ -113,7 +119,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(point["properties"]["sensitive_area"]["features"]), 1
         )
-        self.assertEquals(len(point["properties"]["geo_area"]["features"]), 2)
+        self.assertEquals(len(point["properties"]["geo_area"]), 2)
 
     def test_create_and_get_point_outside_all_SA_and_GA(self):
         # - one outside both SensitiveArea and both GeoArea
@@ -134,7 +140,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(point["properties"]["sensitive_area"]["features"]), 0
         )
-        self.assertEquals(len(point["properties"]["geo_area"]["features"]), 0)
+        self.assertEquals(len(point["properties"]["geo_area"]), 0)
 
     def test_create_and_get_point_at_limit_of_1SA_and_1GA(self):
         # same test with values at the limit:
@@ -156,7 +162,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(point["properties"]["sensitive_area"]["features"]), 1
         )
-        self.assertEquals(len(point["properties"]["geo_area"]["features"]), 1)
+        self.assertEquals(len(point["properties"]["geo_area"]), 1)
 
     def test_create_and_get_point_list(self):
         # test get list: create several points (nb)
@@ -205,7 +211,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(line["properties"]["sensitive_area"]["features"]), 2
         )
-        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 2)
+        self.assertEquals(len(line["properties"]["geo_area"]), 2)
 
     def test_create_and_get_line_inside_1SA_and_2GA(self):
         # - one outside one SensitiveArea and inside both GeoArea
@@ -233,7 +239,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(line["properties"]["sensitive_area"]["features"]), 1
         )
-        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 2)
+        self.assertEquals(len(line["properties"]["geo_area"]), 2)
 
     def test_create_and_get_line_outside_all_SA_and_GA(self):
         # - one outside both SensitiveArea and both GeoArea
@@ -258,7 +264,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(line["properties"]["sensitive_area"]["features"]), 0
         )
-        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 0)
+        self.assertEquals(len(line["properties"]["geo_area"]), 0)
 
     def test_create_and_get_line_intersecting_1SA_and_1GA(self):
         # same test with line intersecting the areas:
@@ -282,7 +288,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(line["properties"]["sensitive_area"]["features"]), 1
         )
-        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 1)
+        self.assertEquals(len(line["properties"]["geo_area"]), 1)
 
     def test_create_and_get_line_intersecting_with_one_point_only_1SA_and_1GA(
         self,
@@ -308,7 +314,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(
             len(line["properties"]["sensitive_area"]["features"]), 1
         )
-        self.assertEquals(len(line["properties"]["geo_area"]["features"]), 1)
+        self.assertEquals(len(line["properties"]["geo_area"]), 1)
 
     def test_create_and_get_line_list(self):
         # test get list: create several lines (nb)
