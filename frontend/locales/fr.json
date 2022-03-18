@@ -14,9 +14,6 @@
     "all": "Tout",
     "infrastructures": "Supports et Lignes",
     "mortality-cases": "Cas de mortalité",
-    "support": "Support",
-    "supports": "Supports",
-    "supports-eqmt": "Equipements Support",
     "line": "Ligne",
     "lines": "Lignes",
     "lines-eqmt": "Equipements Lignes",
@@ -45,7 +42,10 @@
     "neutralized": "Neutralisé",
     "new_support": "Nouveau Support",
     "owner": "Propriétaire",
-    "supportType": "Type Support"
+    "support": "Support",
+    "supports": "Supports",
+    "supports-eqmt": "Equipements Support",
+    "support-type": "Type Support"
   },
   "line": {
     "buildIntegRisk": "Risque Intégration Bâti",

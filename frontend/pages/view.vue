@@ -1,7 +1,6 @@
 <template>
   <v-container fill-height fluid class="pa-0">
     <v-row v-if="$vuetify.breakpoint.lgAndUp" class="fill-height">
-      <!-- <v-col width="50%"></v-col> -->
       <v-col cols="6" class="pr-0 pt-0 pb-0">
         <map-component :edit-mode="false" />
       </v-col>

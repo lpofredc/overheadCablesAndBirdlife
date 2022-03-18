@@ -17,7 +17,7 @@
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
       <v-dialog v-if="!$auth.loggedIn" v-model="dialog" width="500">
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn icon class="mr-2" v-bind="attrs" v-on="on">
             <v-icon large>mdi-login</v-icon>
           </v-btn>
@@ -45,6 +45,7 @@ export default {
     return {
       app_name: 'Overhead Cables & BirdLife',
       miniVariant: true, // small drawer when opening by default
+      dialog: false,
     }
   },
   methods: {

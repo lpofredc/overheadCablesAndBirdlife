@@ -5,7 +5,7 @@
       <v-tab-item>
         <data-infrastructure-display />
       </v-tab-item>
-      <v-tab> {{ $t('display.supports-eqmt') }} </v-tab>
+      <v-tab> {{ $t('support.supports-eqmt') }} </v-tab>
       <v-tab-item>
         <data-equipment-display />
       </v-tab-item>
@@ -34,7 +34,7 @@ export default {
   background-color: 'indigo';
 }
 
-/* 
+/*
 .v-btn {
   width: 80px;
 } */

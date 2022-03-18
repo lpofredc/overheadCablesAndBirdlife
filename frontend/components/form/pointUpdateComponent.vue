@@ -11,12 +11,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn icon @click="$router.back()">
+        <v-btn icon @click="$router.push('/supports/1')">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
       <v-card-text class="overflow-auto">
-        <v-container>
+        <!-- <v-container>
           <v-row>
             <v-col cols="12" class="text-left">
               <strong>{{ $t('forms.coordinates') }}</strong>
@@ -62,7 +62,7 @@
               ></v-checkbox>
             </v-col>
           </v-row>
-        </v-container>
+        </v-container> -->
         <v-divider></v-divider>
         <v-container>
           <v-row>
@@ -241,7 +241,9 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'PointComponent',
+  name: 'PointUpdateComponent',
+  // TODO add type with TypeScript syntax
+  props: { data: Object, default: {} },
   data() {
     return {
       formValid: true,
@@ -255,74 +257,75 @@ export default {
           type: 'Point',
           coordinates: [],
         },
-        owner_id: 1, // null,
+        owner_id: null,
       },
       // define data related to Diagnosis
       diagData: {
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        // date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        //   .toISOString()
+        //   .substr(0, 10),
+        date: null,
         remark: null,
-        pole_type_id: [11, 12], // null,
+        pole_type_id: null,
         neutralized: false,
-        condition_id: 6, // null,
+        condition_id: null,
         attraction_advice: false,
         dissuasion_advice: false,
         isolation_advice: false,
         pole_attractivity_id: null,
-        pole_dangerousness_id: 8, // null
+        pole_dangerousness_id: null,
       },
       // rules for form validation
       rules: {
         required: (v) => !!v || this.$t('valid.required'),
         requiredOrNotValid: (v) =>
           !!v || this.$t('valid.required_or_not_valid'),
-        latRange: (v) =>
-          (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
-        lngRange: (v) =>
-          (v >= -20 && v <= 20) || `${this.$t('valid.range')}-20 : 20`,
-        textLength: (v) =>
-          (v || '').length <= 300 || `${this.$t('valid.length')}: 300`,
+        // latRange: (v) =>
+        //   (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
+        // lngRange: (v) =>
+        //   (v >= -20 && v <= 20) || `${this.$t('valid.range')}-20 : 20`,
+        // textLength: (v) =>
+        //   (v || '').length <= 300 || `${this.$t('valid.length')}: 300`,
       },
     }
   },
   computed: {
-    /**
-     * Getter and Setter for "lat" value.
-     * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
-     */
-    lat: {
-      get() {
-        return this.newPoint ? this.newPoint.lat : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: Number(newVal),
-          lng: this.lng,
-        })
-      },
-    },
-    /**
-     * Getter and Setter for "lng" value.
-     * This longitude value is bind v-text-field "lng", and linked with longitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
-     */
-    lng: {
-      get() {
-        return this.newPoint ? this.newPoint.lng : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: this.lat,
-          lng: Number(newVal),
-        })
-      },
-    },
+    // /**
+    //  * Getter and Setter for "lat" value.
+    //  * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
+    //  * from map-component.
+    //  * When value is commited, it is detected by map-component.vue
+    //  */
+    // lat: {
+    //   get() {
+    //     return this.newPoint ? this.newPoint.lat : null // avoid bug if newPoint undefined
+    //   },
+    //   // on change in v-text-field, value is set to store.
+    //   set(newVal) {
+    //     this.$store.commit('coordinatesStore/addPointCoord', {
+    //       lat: Number(newVal),
+    //       lng: this.lng,
+    //     })
+    //   },
+    // },
+    // /**
+    //  * Getter and Setter for "lng" value.
+    //  * This longitude value is bind v-text-field "lng", and linked with longitude of the LMarker
+    //  * from map-component.
+    //  * When value is commited, it is detected by map-component.vue
+    //  */
+    // lng: {
+    //   get() {
+    //     return this.newPoint ? this.newPoint.lng : null // avoid bug if newPoint undefined
+    //   },
+    //   // on change in v-text-field, value is set to store.
+    //   set(newVal) {
+    //     this.$store.commit('coordinatesStore/addPointCoord', {
+    //       lat: this.lat,
+    //       lng: Number(newVal),
+    //     })
+    //   },
+    // },
     // Get values from store
     ...mapGetters({
       newPoint: 'coordinatesStore/newPointCoord',
@@ -354,113 +357,113 @@ export default {
      * If process fail at any step, all elements created before are deleted through error handling
      * process.
      */
-    async submit() {
-      if (this.formValid) {
-        let pointCreated = null
-        const mediaIdList = []
-        let diagCreated = null
-        // Create new Pole (Point infrastructure)
-        try {
-          this.pointData.geom.coordinates = [this.lng, this.lat]
-          pointCreated = await this.$axios.$post(
-            'cables/points/',
-            this.pointData
-          )
-        } catch (err) {
-          const error = {}
-          error.code = errorCodes.create_point.code
-          error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
-          // set error message to errorStore and triggers message display through "err" watcher in
-          // error-snackbar component
-          this.$store.commit('errorStore/setError', error)
-          // this.$router.push('/view')
-          this.back()
-        }
-        // new Point is successfully created
-        if (pointCreated) {
-          // Create Diagnosis
-          try {
-            this.diagData.infrastructure = pointCreated.properties.id
-            this.diagData.media_id = mediaIdList
-            diagCreated = await this.$axios.$post(
-              'cables/diagnosis/',
-              this.diagData
-            )
-            this.$router.push('/view')
-          } catch (_err) {
-            // if no new Diagnosis created
-            if (!diagCreated) {
-              // if new Point was created before, delete it
-              if (pointCreated) {
-                await this.$axios.$delete(
-                  `cables/points/${pointCreated.properties.id}/`
-                )
-              }
-            }
-            // Error display
-            const error = {}
-            error.code = errorCodes.create_pole_diagnosis.code
-            error.msg = $nuxt.$t(
-              `error.${errorCodes.create_pole_diagnosis.msg}`
-            )
-            // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
-            this.$store.commit('errorStore/setError', error)
-            this.back()
-          }
+    // async submit() {
+    //   if (this.formValid) {
+    //     let pointCreated = null
+    //     const mediaIdList = []
+    //     let diagCreated = null
+    //     // Create new Pole (Point infrastructure)
+    //     try {
+    //       this.pointData.geom.coordinates = [this.lng, this.lat]
+    //       pointCreated = await this.$axios.$post(
+    //         'cables/points/',
+    //         this.pointData
+    //       )
+    //     } catch (err) {
+    //       const error = {}
+    //       error.code = errorCodes.create_point.code
+    //       error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
+    //       // set error message to errorStore and triggers message display through "err" watcher in
+    //       // error-snackbar component
+    //       this.$store.commit('errorStore/setError', error)
+    //       // this.$router.push('/view')
+    //       this.back()
+    //     }
+    //     // new Point is successfully created
+    //     if (pointCreated) {
+    //       // Create Diagnosis
+    //       try {
+    //         this.diagData.infrastructure = pointCreated.properties.id
+    //         this.diagData.media_id = mediaIdList
+    //         diagCreated = await this.$axios.$post(
+    //           'cables/diagnosis/',
+    //           this.diagData
+    //         )
+    //         this.$router.push('/view')
+    //       } catch (_err) {
+    //         // if no new Diagnosis created
+    //         if (!diagCreated) {
+    //           // if new Point was created before, delete it
+    //           if (pointCreated) {
+    //             await this.$axios.$delete(
+    //               `cables/points/${pointCreated.properties.id}/`
+    //             )
+    //           }
+    //         }
+    //         // Error display
+    //         const error = {}
+    //         error.code = errorCodes.create_pole_diagnosis.code
+    //         error.msg = $nuxt.$t(
+    //           `error.${errorCodes.create_pole_diagnosis.msg}`
+    //         )
+    //         // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
+    //         this.$store.commit('errorStore/setError', error)
+    //         this.back()
+    //       }
 
-          if (diagCreated) {
-            // Create all Media before continuing
-            await Promise.all(
-              this.$refs.upc.imgFileObject.map(async (img) => {
-                try {
-                  const formData = new FormData()
-                  formData.append('storage', img)
-                  // TODO get true date and other form fields
-                  formData.append('date', '2022-01-01')
-                  const newImg = await this.$axios.$post('media/', formData, {
-                    headers: {
-                      accept: 'application/json',
-                      'Content-Type': 'multipart/form-data',
-                    },
-                  })
-                  mediaIdList.push(newImg.id) // set Media id to mediaIdList
-                } catch (_err) {
-                  const error = {}
-                  error.code = errorCodes.img_sending.code
-                  error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
-                  // set error message to errorStore and triggers message display through "err"
-                  // watcher in error-snackbar component
-                  this.$store.commit('errorStore/setError', error)
-                  // this.$router.push('/view')
-                  this.back()
-                }
-              })
-            )
-            // add Media to Diagnosis
-            try {
-              await this.$axios.$patch(`cables/diagnosis/${diagCreated.id}/`, {
-                media_id: mediaIdList,
-              })
-            } catch (_err) {
-              // if adding Media failed, delete created Media
-              if (mediaIdList.length > 0) {
-                mediaIdList.forEach(async (imgId) => {
-                  await this.$axios.$delete(`media/${imgId}/`)
-                })
-              }
-              const error = {}
-              error.code = errorCodes.img_sending.code
-              error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
-              // set error message to errorStore and triggers message display through "err"
-              // watcher in error-snackbar component
-              this.$store.commit('errorStore/setError', error)
-              // this.$router.push('/view')
-              this.back()
-            }
-          }
-        }
-      }
-    },
+    //       if (diagCreated) {
+    //         // Create all Media before continuing
+    //         await Promise.all(
+    //           this.$refs.upc.imgFileObject.map(async (img) => {
+    //             try {
+    //               const formData = new FormData()
+    //               formData.append('storage', img)
+    //               // TODO get true date and other form fields
+    //               formData.append('date', '2022-01-01')
+    //               const newImg = await this.$axios.$post('media/', formData, {
+    //                 headers: {
+    //                   accept: 'application/json',
+    //                   'Content-Type': 'multipart/form-data',
+    //                 },
+    //               })
+    //               mediaIdList.push(newImg.id) // set Media id to mediaIdList
+    //             } catch (_err) {
+    //               const error = {}
+    //               error.code = errorCodes.img_sending.code
+    //               error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
+    //               // set error message to errorStore and triggers message display through "err"
+    //               // watcher in error-snackbar component
+    //               this.$store.commit('errorStore/setError', error)
+    //               // this.$router.push('/view')
+    //               this.back()
+    //             }
+    //           })
+    //         )
+    //         // add Media to Diagnosis
+    //         try {
+    //           await this.$axios.$patch(`cables/diagnosis/${diagCreated.id}/`, {
+    //             media_id: mediaIdList,
+    //           })
+    //         } catch (_err) {
+    //           // if adding Media failed, delete created Media
+    //           if (mediaIdList.length > 0) {
+    //             mediaIdList.forEach(async (imgId) => {
+    //               await this.$axios.$delete(`media/${imgId}/`)
+    //             })
+    //           }
+    //           const error = {}
+    //           error.code = errorCodes.img_sending.code
+    //           error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
+    //           // set error message to errorStore and triggers message display through "err"
+    //           // watcher in error-snackbar component
+    //           this.$store.commit('errorStore/setError', error)
+    //           // this.$router.push('/view')
+    //           this.back()
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
   },
 }
 </script>

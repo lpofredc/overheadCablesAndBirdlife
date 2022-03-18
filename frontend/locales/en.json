@@ -14,9 +14,6 @@
     "all": "All",
     "infrastructures": "Supports and Cables",
     "mortality-cases": "Mortality cases",
-    "support": "Support",
-    "supports": "Supports",
-    "supports-eqmt": "Supports Equipments",
     "line": "Line",
     "lines": "Lines",
     "lines-eqmt": "Lines Equipments",
@@ -45,7 +42,10 @@
     "neutralized": "Neutralized",
     "new_support": "New Support",
     "owner": "Owner",
-    "poleType": "Support Type"
+    "support": "Support",
+    "supports": "Supports",
+    "supports-eqmt": "Supports Equipments",
+    "support-type": "Support Type"
   },
   "line": {
     "buildIntegRisk": "Building Integration Risk",
