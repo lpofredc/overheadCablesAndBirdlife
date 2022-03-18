@@ -39,7 +39,7 @@ import { Feature } from 'geojson'
 
 export default {
   name: 'SupportDetailComponent',
-  props: { data: { type: Object as () => Feature, default: null } },
+  props: { datas: { type: Object as () => Feature, default: null } },
   data() {
     return {
       lastDiag: null,
@@ -48,19 +48,20 @@ export default {
     }
   },
   mounted() {
-    if (this.data.properties) {
+    if (this.datas.properties) {
       // Gather last Diagnosis (field last=True)
-      this.lastDiag = this.data.properties.actions_infrastructure.find(
+      this.lastDiag = this.datas.properties.actions_infrastructure.find(
         (action) => action.resourcetype === 'Diagnosis' && action.last
       )
       // Gather last Operation (field last=True)
-      this.lastOp = this.data.properties.actions_infrastructure.find(
+      this.lastOp = this.datas.properties.actions_infrastructure.find(
         (action) => action.resourcetype === 'Operation' && action.last
       )
       // Gather all older actions (Diagnosis and Operations) with field last=False
-      this.previousActions = this.data.properties.actions_infrastructure.filter(
-        (action) => !action.last
-      )
+      this.previousActions =
+        this.datas.properties.actions_infrastructure.filter(
+          (action) => !action.last
+        )
     }
   },
 }
