@@ -152,27 +152,18 @@ class DiagnosisSerializer(ModelSerializer):
 
             # create new Diagnosis
             newDiag = Diagnosis.objects.create(**validated_data)
+            if newDiag is not None:
+                # set old current Diagnosis to last=False
+                for diag in old_diags:
+                    if diag.id != newDiag.id:
+                        diag.last = False
+                        diag.save()
 
-            # set old current Diagnosis to last=False
-            for diag in old_diags:
-                if diag.id != newDiag.id:
-                    diag.last = False
-                    diag.save()
-
-            # Check only one Diag for the Infrastructure is last=True, else raise Exception to be # handled by except block
-            checkLast = Diagnosis.objects.all().filter(
-                infrastructure=validated_data["infrastructure"], last=True
-            )
-            if len(checkLast) != 1:
-                msg = "Diagnosis traceability issue"
-                logging.error(msg)
-                raise APIException(msg)
-
-            # set data to ManyToMany fields old newDiag
-            if poleType_data is not None:
-                newDiag.pole_type.set(poleType_data)
-            if media_data is not None:
-                newDiag.media.set(media_data)
+                # set data to ManyToMany fields old newDiag
+                if poleType_data is not None:
+                    newDiag.pole_type.set(poleType_data)
+                if media_data is not None:
+                    newDiag.media.set(media_data)
 
         # Error handling: newDiag is deleted if exists, and previous current Diag come back with
         # last=True. Django would send Response with status code 500 and defined message
@@ -248,7 +239,9 @@ class OperationSerializer(ModelSerializer):
             # define variables to be used in error handling if needed
             newOp = None
             previous_current = []
-            # get current Operation before creation of new one (should be only one, but keep search for several. In case of several ones, this method will correct issue by setting all previous with last=False)
+            # get current Operation before creation of new one (should be only one, but keep
+            # search for several. In case of several ones, this method will correct issue by
+            # setting all previous with last=False)
             old_ops = Operation.objects.all().filter(
                 infrastructure=validated_data["infrastructure"], last=True
             )
@@ -268,25 +261,17 @@ class OperationSerializer(ModelSerializer):
             # create new Operation
             newOp = Operation.objects.create(**validated_data)
 
-            # set old current Diagnosis to last=False
-            for op in old_ops:
-                if op.id != newOp.id:
-                    op.last = False
-                    op.save()
-
-            # Check only one Diag for the Infrastructure is last=True, else raise Exception to be # handled by except block
-            checkLast = Operation.objects.all().filter(
-                infrastructure=validated_data["infrastructure"], last=True
-            )
-            if len(checkLast) != 1:
-                msg = "Operation traceability issue"
-                logging.error(msg)
-                raise APIException(msg)
-            # set data to ManyToMany fields old newDiag
-            if eqmtType_data is not None:
-                newOp.eqmt_type.set(eqmtType_data)
-            if media_data is not None:
-                newOp.media.set(media_data)
+            if newOp is not None:
+                # set old current Diagnosis to last=False
+                for op in old_ops:
+                    if op.id != newOp.id:
+                        op.last = False
+                        op.save()
+                # set data to ManyToMany fields old newDiag
+                if eqmtType_data is not None:
+                    newOp.eqmt_type.set(eqmtType_data)
+                if media_data is not None:
+                    newOp.media.set(media_data)
 
         # Error handling: newOp is deleted if exists, and previous current Operation come back with
         # last=True. Django would send Response with status code 500 and defined message
