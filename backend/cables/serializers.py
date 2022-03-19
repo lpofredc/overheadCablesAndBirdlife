@@ -116,7 +116,7 @@ class DiagnosisSerializer(ModelSerializer):
         This method was overidden to implement a customized behaviour specific to application structure.
         New Diagnosis related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
         In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
-        APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures with attachment of ManyToMany fields data, Diagnostic is deleted (if it was created) and an APIException is raised.
+        APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures, Diagnostic is deleted (if it was created), previous current Diagnosis is set to last=True and an APIException is raised.
 
         Arguments:
             validated_data {dict} -- contains data for new Diagnosis creation
@@ -129,46 +129,64 @@ class DiagnosisSerializer(ModelSerializer):
         """
 
     def create(self, validated_data):
-        old_diags = Diagnosis.objects.all().filter(
-            infrastructure=validated_data["infrastructure"]
-        )
-        for diag in old_diags:
-            diag.last = False
-            diag.save()
-            # gather data for ManyToMany fields (and removing related data from validated_data)
-        poleType_data = None
-        media_data = None
-        if "pole_type" in validated_data:
-            poleType_data = validated_data.pop("pole_type")
-        if "media" in validated_data:
-            media_data = validated_data.pop("media")
-            # create Diagnosis
-
-        newDiag = Diagnosis.objects.create(**validated_data)
-
-        checkLast = Diagnosis.objects.all().filter(
-            infrastructure=validated_data["infrastructure"], last=True
-        )
-        if len(checkLast) != 1:
-            msg = "Diagnosis traceability issue"
-            logging.error(msg)
-            raise APIException(msg)
-
         try:
-            # set data to ManyToMany fields od newDiag
+            # define variables to be used in error handling if needed
+            newDiag = None
+            previous_current = []
+            # get current Diagnosis before creation of new one (should be only one, but keep search for several. In case of several ones, this method will correct issue by setting all previous with last=False)
+            old_diags = Diagnosis.objects.all().filter(
+                infrastructure=validated_data["infrastructure"], last=True
+            )
+            for diag in old_diags:
+                previous_current.append(
+                    diag.id
+                )  # keep id of current Diag before new one
+
+            # gather data for ManyToMany fields (and removing related data from validated_data)
+            poleType_data = None
+            media_data = None
+            if "pole_type" in validated_data:
+                poleType_data = validated_data.pop("pole_type")
+            if "media" in validated_data:
+                media_data = validated_data.pop("media")
+
+            # create new Diagnosis
+            newDiag = Diagnosis.objects.create(**validated_data)
+
+            # set old current Diagnosis to last=False
+            for diag in old_diags:
+                if diag.id != newDiag.id:
+                    diag.last = False
+                    diag.save()
+
+            # Check only one Diag for the Infrastructure is last=True, else raise Exception to be # handled by except block
+            checkLast = Diagnosis.objects.all().filter(
+                infrastructure=validated_data["infrastructure"], last=True
+            )
+            if len(checkLast) != 1:
+                msg = "Diagnosis traceability issue"
+                logging.error(msg)
+                raise APIException(msg)
+
+            # set data to ManyToMany fields old newDiag
             if poleType_data is not None:
                 newDiag.pole_type.set(poleType_data)
             if media_data is not None:
                 newDiag.media.set(media_data)
 
+        # Error handling: newDiag is deleted if exists, and previous current Diag come back with
+        # last=True. Django would send Response with status code 500 and defined message
         except Exception:
             if newDiag is not None:
                 newDiag.delete()
+                for id in previous_current:
+                    Diagnosis.objects.get(id=id).update(last=True)
+
             msg = "Issue with Diagnosis configuration. No Diagnosis created."
             logging.error(msg)
             raise APIException(msg)
 
-        return newDiag  # return new Diagnostic
+        return newDiag  # returns new Diag if success
 
 
 class OperationSerializer(ModelSerializer):
@@ -212,7 +230,7 @@ class OperationSerializer(ModelSerializer):
         This method was overidden to implement a customized behaviour specific to application structure.
         New Operation related to an Infrastructure (Point or Line) is created with field "last=True". That means it is current state of diagnosis for the Infrastructure.
         In case of new Diagnosis on same Infrastructure, the new one is created with "last=True" as current one. Older ones (should be exactly 1) then become "last=False" due to this method.
-        APIException is raised if there is not exactly 1 Diagnosis with "last=True". If issue occures with attachment of ManyToMany fields data, Diagnostic is deleted (if it was created) and an APIException is raised.
+        APIException is raised if there is not exactly 1 Operation with "last=True". If issue occures, Operation is deleted (if it was created), previous current Operation is set to last=True and an APIException is raised.
 
         Arguments:
             validated_data {dict} -- contains data for new Operation creation
@@ -225,48 +243,64 @@ class OperationSerializer(ModelSerializer):
         """
 
     def create(self, validated_data):
-        old_ops = Operation.objects.all().filter(
-            infrastructure=validated_data["infrastructure"]
-        )
-
-        for op in old_ops:
-            op.last = False
-            op.save()
-        # gather data for ManyToMany fields (and removing related data from validated_data)
-        eqmtType_data = None
-        media_data = None
-        if "eqmt_type" in validated_data:
-            eqmtType_data = validated_data.pop("eqmt_type")
-        if "media" in validated_data:
-            media_data = validated_data.pop("media")
-
-        # create Operation
-        newOp = Operation.objects.create(**validated_data)
-
-        checkLast = Operation.objects.all().filter(
-            infrastructure=validated_data["infrastructure"], last=True
-        )
-
-        if len(checkLast) != 1:
-            msg = "Operation traceability issue"
-            logging.error(msg)
-            raise APIException(msg)
 
         try:
-            # set data to ManyToMany fields od newDiag
+            # define variables to be used in error handling if needed
+            newOp = None
+            previous_current = []
+            # get current Operation before creation of new one (should be only one, but keep search for several. In case of several ones, this method will correct issue by setting all previous with last=False)
+            old_ops = Operation.objects.all().filter(
+                infrastructure=validated_data["infrastructure"], last=True
+            )
+            for op in old_ops:
+                previous_current.append(
+                    op.id
+                )  # keep id of current Operation before new one
+
+            # gather data for ManyToMany fields (and removing related data from validated_data)
+            eqmtType_data = None
+            media_data = None
+            if "eqmt_type" in validated_data:
+                eqmtType_data = validated_data.pop("eqmt_type")
+            if "media" in validated_data:
+                media_data = validated_data.pop("media")
+
+            # create new Operation
+            newOp = Operation.objects.create(**validated_data)
+
+            # set old current Diagnosis to last=False
+            for op in old_ops:
+                if op.id != newOp.id:
+                    op.last = False
+                    op.save()
+
+            # Check only one Diag for the Infrastructure is last=True, else raise Exception to be # handled by except block
+            checkLast = Operation.objects.all().filter(
+                infrastructure=validated_data["infrastructure"], last=True
+            )
+            if len(checkLast) != 1:
+                msg = "Operation traceability issue"
+                logging.error(msg)
+                raise APIException(msg)
+            # set data to ManyToMany fields old newDiag
             if eqmtType_data is not None:
                 newOp.eqmt_type.set(eqmtType_data)
             if media_data is not None:
                 newOp.media.set(media_data)
 
+        # Error handling: newOp is deleted if exists, and previous current Operation come back with
+        # last=True. Django would send Response with status code 500 and defined message
         except Exception:
             if newOp is not None:
                 newOp.delete()
+                for id in previous_current:
+                    Operation.objects.get(id=id).update(last=True)
+
             msg = "Issue with Diagnosis configuration. No Diagnosis created."
             logging.error(msg)
             raise APIException(msg)
 
-        return newOp  # return new Operation
+        return newOp  # returns new Diag if success
 
 
 class InfrastructureSerializer(GeoFeatureModelSerializer):
@@ -463,7 +497,7 @@ class InfrastructurePolymorphicSerializer(
     """Serializer for Infrastructure taking into account polymorphism
 
     Used to serialize all data from infrastructures.
-    This allow handle specific data for classe inheriting from InfrastructureModel (e.g. Pole, Segment), as each object from inheriting classes are instances of InfrastructureModel.
+    This allow handle specific data for classe inheriting from InfrastructureModel (e.g. Point, Line), as each object from inheriting classes are instances of InfrastructureModel.
     Inherit from PolymorphicSerializer.
     """
 

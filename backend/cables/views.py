@@ -25,6 +25,7 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
 
     serializer_class = InfrastructurePolymorphicSerializer
     permission_classes = [DjangoModelPermissions]
+    # Define queryset by optimizing DB requests
     queryset = (
         Infrastructure.objects.all()
         .select_related("owner")
@@ -39,8 +40,13 @@ class PointViewSet(viewsets.ModelViewSet):
 
     serializer_class = PointSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Point.objects.all()
-    # filterset_class = PointFilter
+    # Define queryset by optimizing DB requests
+    queryset = (
+        Point.objects.all()
+        .select_related("owner")
+        .prefetch_related("geo_area")
+        .prefetch_related("sensitive_area")
+    )
 
 
 class LineViewSet(viewsets.ModelViewSet):
@@ -48,8 +54,13 @@ class LineViewSet(viewsets.ModelViewSet):
 
     serializer_class = LineSerializer
     permission_classes = [DjangoModelPermissions]
-    queryset = Line.objects.all()
-    # filterset_class = LineFilter
+    # Define queryset by optimizing DB requests
+    queryset = (
+        Line.objects.all()
+        .select_related("owner")
+        .prefetch_related("geo_area")
+        .prefetch_related("sensitive_area")
+    )
 
 
 class ActionViewSet(viewsets.ModelViewSet):

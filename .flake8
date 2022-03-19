@@ -29,6 +29,7 @@ ignore =
     F405,
     B007,
     B950,
+    C901
 exclude =
     .git,
     .venv,
