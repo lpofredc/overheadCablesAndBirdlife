@@ -3,10 +3,7 @@ import logging
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions
 
-from .filters import (  # , PoleFilter, SegmentFilter, DiagnosisFilter
-    InfrastructureFilter,
-    OperationFilter,
-)
+from .filters import OperationFilter
 from .models import Action, Diagnosis, Infrastructure, Line, Operation, Point
 from .serializers import (
     ActionPolymorphicSerializer,
@@ -32,7 +29,6 @@ class InfrastructureViewSet(viewsets.ModelViewSet):
         .prefetch_related("geo_area")
         .prefetch_related("sensitive_area")
     )
-    filterset_class = InfrastructureFilter
 
 
 class PointViewSet(viewsets.ModelViewSet):
