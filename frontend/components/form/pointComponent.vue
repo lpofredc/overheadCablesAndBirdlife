@@ -240,6 +240,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import * as errorCodes from '~/static/errorConfig.json'
 
 // export default Vue.extend({
 export default {

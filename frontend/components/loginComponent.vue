@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import * as errorCodes from '~/static/errorConfig.json'
+
 export default {
   name: 'LoginComponent',
   auth: false,

@@ -1,3 +1,4 @@
+import * as errorCodes from '~/static/errorConfig.json'
 /** Nuxt Store module: NomenclatureStore for Nomenclature module
  *
  * Nomenclature define Source, Type and Item data. It works as a data dictionnary for the

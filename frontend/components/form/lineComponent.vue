@@ -16,7 +16,7 @@
       <v-card-text class="overflow-auto">
         <!-- Filedset COORDINATES -->
         <!-- <v-container>
-         
+
           <v-row>
             <v-col cols="12" class="text-left">
               <strong>{{ $t('forms.coordinates') }}</strong>
@@ -25,7 +25,7 @@
         </v-btn>
             </v-col>
           </v-row>
-          <v-row 
+          <v-row
             v-for="(pt, index) in newLineCoord"
             :key="index"
             >
@@ -202,6 +202,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import * as errorCodes from '~/static/errorConfig.json'
+
 export default {
   name: 'LineComponent',
   data() {
