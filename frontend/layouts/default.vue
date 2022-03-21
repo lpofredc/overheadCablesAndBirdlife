@@ -22,7 +22,6 @@
             <v-icon large>mdi-login</v-icon>
           </v-btn>
         </template>
-
         <login-component />
       </v-dialog>
       <v-btn v-if="$auth.loggedIn" icon class="mr-2" @click="logout">

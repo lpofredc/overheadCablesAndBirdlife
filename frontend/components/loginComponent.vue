@@ -1,8 +1,8 @@
 <template>
   <v-card>
     <v-form ref="form" v-model="valid">
-      <v-card-title>
-        {{ $t('login.sign-in') }}
+      <v-card-title class="text-h5 light-blue">
+        <v-icon>mdi-account-circle</v-icon>{{ $t('login.sign-in') }}
       </v-card-title>
       <v-card-text>
         <v-container id="input-usage" fluid>
@@ -19,11 +19,6 @@
                 @keyup.enter="userLogin"
               ></v-text-field>
             </v-col>
-          </v-row>
-        </v-container>
-
-        <v-container id="input-usage" fluid>
-          <v-row>
             <v-col cols="12">
               <v-text-field
                 v-model="login.password"
@@ -38,7 +33,7 @@
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="grey lighten-2">
         <v-btn color="error" @click="reset">
           {{ $t('app.cancel') }}
         </v-btn>

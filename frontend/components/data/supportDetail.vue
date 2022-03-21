@@ -4,7 +4,8 @@
     <v-card v-if="!update">
       <v-toolbar color="green" dark elevation="0">
         <v-toolbar-title
-          >{{ $t('support.support') }} {{ data.properties.owner.label }}
+          >{{ $t('support.support') }}
+          <strong>{{ data.properties.owner.label }}</strong>
         </v-toolbar-title>
         <v-spacer></v-spacer>
 
@@ -12,45 +13,82 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
+      <v-card-subtitle>
+        Dernier évènement le {{ lastDiag.date }} 
+        
+        <v-chip small :class="[lastDiag.neutralized ? 'success' : 'error']"
+              >{{ lastDiag.neutralized ? 'neutralisé' : 'à neutraliser' }}
+            </v-chip ></v-card-subtitle
+      >
 
       <!-- <v-btn icon @click="update = true"> -->
-      <v-btn icon @click="$router.push('/supports/21/diagnosis/64')">
-        <v-icon color="orange">mdi-pencil</v-icon>
-      </v-btn>
 
-      {{ lastDiag.date }}
       <v-container>
-        <h1>{{ $t('support.support') }} {{ data.properties.owner.label }}</h1>
-        <fieldset>
-          <legend class="mx-3 px-1">Info Support</legend>
-          <h4>réseau: {{ data.properties.owner.label }}</h4>
-          <v-container
-            v-for="(ga, index) in data.properties.geo_area"
-            :key="index"
+        <v-card class="my-2">
+          <v-card-title
+            >Info Support <v-spacer></v-spacer>
+            <v-btn icon @click="$router.push('/supports/21/diagnosis/64')">
+              <v-icon color="orange">mdi-pencil</v-icon>
+            </v-btn></v-card-title
           >
-            <h4>Zone Administrative {{ ga.name }}</h4></v-container
-          >
-          <v-container
-            v-for="(sa, index) in data.properties.sensitive_area.features"
-            :key="index"
-          >
-            <h4>Zone Sensible {{ sa.name }}</h4></v-container
-          >
-        </fieldset>
-        <fieldset>
-          <legend class="mx-3 px-1">Info Diagnostic Courant</legend>
-          <v-container>
-            <h3>DIAGNOSTICS COURANT</h3>
-            <h4>date: {{ lastDiag.date }}</h4>
-            <h4>remarque: {{ lastDiag.remark }}</h4>
-            <h4>neutralizé: {{ lastDiag.neutralized }}</h4>
-            <h4>condition: {{ lastDiag.condition.label }}</h4>
-            <h4>à iosler: {{ lastDiag.isolation_advice }}</h4>
-            <h4>rendre dissuasif: {{ lastDiag.dissuasion_advice }}</h4>
-            <h4>rendre attractif: {{ lastDiag.attraction_advice }}</h4>
-            <h4>attractivité: {{ lastDiag.pole_attractivity.label }}</h4>
-            <h4>dangerosité: {{ lastDiag.pole_dangerousness.label }}</h4>
-          </v-container>
+          <v-card-text>
+            <p class="text-strong" v-if="data.properties.geo_area.length > 0">
+              Limites administratives
+            </p>
+
+            <v-chip
+              v-for="(ga, index) in data.properties.geo_area"
+              :key="index"
+            >
+              {{ ga.name }} ({{ga.code}})
+            </v-chip>
+            <p v-if="data.properties.sensitive_area.features.length > 0">
+              Zones sensibles
+            </p>
+
+            <v-chip
+              v-for="(sa, index) in data.properties.sensitive_area.features"
+              :key="index"
+            >
+              {{ ga.name }}
+            </v-chip>
+          </v-card-text>
+        </v-card>
+        <v-card class="my-2">
+          <v-card-title>
+            Dernier diagnostique&nbsp;
+            <span class="text-font-weight">{{ lastDiag.date }}</span>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="$router.push('/supports/21/diagnosis/64')">
+              <v-icon color="orange">mdi-pencil</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col> </v-col>
+            </v-row>
+
+            
+            <v-chip :class="[lastDiag.isolation_advice ? 'success' : '']"
+              >{{ lastDiag.isolation_advice ? 'à ' : 'ne pas ' }}isoler</v-chip
+            >
+            <v-chip :class="[lastDiag.dissuasion_advice ? 'success' : '']"
+              >{{ lastDiag.dissuasion_advice ? '' : 'ne pas ' }}rendre
+              dissuasif</v-chip
+            >
+            <v-chip :class="[lastDiag.attraction_advice ? 'success' : '']"
+              >{{ lastDiag.attraction_advice ? '' : 'ne pas ' }}rendre
+              attractif</v-chip
+            >
+            <p><h4>Etat</h4> {{ lastDiag.condition.label }}</p>
+
+            <p><h4>attractivité</h4> {{ lastDiag.pole_attractivity.label }}</p>
+            <p><h4>dangerosité</h4> {{ lastDiag.pole_dangerousness.label }}</p>
+            <p>
+              <h4>remarque</h4>
+              {{ lastDiag.remark }}
+            </p>
+          </v-card-text>
           <v-container v-if="lastOp">
             <h3>OPERATION</h3>
             <h4>date: {{ lastOp.date }}</h4>
@@ -60,7 +98,7 @@
               {{ eqmt.label }}
             </v-container>
           </v-container>
-        </fieldset>
+        </v-card>
         <fieldset v-for="(action, index) in previousActions" :key="index">
           <legend class="mx-3 px-1">Autres Actions</legend>
           <v-container v-if="action.resourcetype === 'Diagnosis'">
