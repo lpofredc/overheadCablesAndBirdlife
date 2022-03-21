@@ -1,164 +1,204 @@
 <template>
-  <div style="height: 90vh" class="overflow-auto">
-    <v-form ref="form" v-model="formValid" class="text-center">
-      <h1>{{ $t('line.new_segment') }}</h1>
-      <v-container>
+  <v-card elevation="0" class="fill-height">
+    <v-form
+      ref="
+    form"
+      v-model="formValid"
+      class="text-center"
+    >
+      <v-toolbar color="pink" dark elevation="0">
+        <v-toolbar-title>{{ $t('line.new_segment') }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="$router.back()">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-card-text class="overflow-auto">
         <!-- Filedset COORDINATES -->
-        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
-          <legend class="mx-3 px-1">{{ $t('forms.coordinates') }}</legend>
-          <v-container
-            v-if="newLineCoord.length === 0"
-            class="text-h6 blue--text text--darken-4"
-          >
-            {{ $t('line.create_line') }}
-          </v-container>
-          <v-container
+        <!-- <v-container>
+         
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('forms.coordinates') }}</strong>
+              <v-btn icon @click="manualChange=!manualChange">
+          <v-icon>mdi-pen</v-icon>
+        </v-btn>
+            </v-col>
+          </v-row>
+          <v-row 
             v-for="(pt, index) in newLineCoord"
             :key="index"
-            class="d-flex justify-space-around flex-wrap"
-          >
-            <v-text-field
-              :label="$t('support.latitude')"
-              :value="pt[1]"
-              type="number"
-              :rules="[rules.requiredOrNotValid, rules.latRange]"
-              required
-              hide-spin-buttons
-              class="shrink mx-5"
-            />
-            <v-text-field
-              :label="$t('support.longitude')"
-              :value="pt[0]"
-              type="number"
-              :rules="[rules.requiredOrNotValid, rules.lngRange]"
-              required
-              hide-spin-buttons
-              class="shrink mx-5"
-            />
-          </v-container>
-          <!-- <v-checkbox
-            v-model="manualChange"
-            dense
-            :label="$t('support.manual-handling')"
-            class="mx-5"
-          ></v-checkbox> -->
-        </fieldset>
-        <!-- Filedset GENERAL INFORMATION -->
-        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
-          <legend class="mx-3 px-1">{{ $t('forms.general') }}</legend>
-          <v-container
-            class="
-              d-flex
-              justify-space-around
-              flex-sm-row flex-column
-              align-center
-              flex-wrap
-              mx-2
-            "
-          >
-            <v-select
-              v-model="lineData.owner_id"
-              :items="networkOwners"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('support.network')"
-              required
-              class="shrink mx-10 my-4"
             >
-            </v-select>
-            <v-menu
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="auto"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="diagData.date"
-                  :label="$t('forms.datecreate')"
-                  persistent-hint
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  class="shrink mx-10 my-4"
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="diagData.date" no-title></v-date-picker>
-            </v-menu>
-            <v-checkbox
-              v-model="diagData.neutralized"
-              :label="$t('support.neutralized')"
-              dense
-              class="shrink mx-10 my-4"
-            ></v-checkbox>
-          </v-container>
-          <v-textarea
-            v-model="diagData.remark"
-            clearable
-            clear-icon="mdi-close-circle"
-            :label="$t('app.remark')"
-            :rules="[rules.textLength]"
-            rows="2"
-            counter="300"
-            class="ma-2 px-5"
-          ></v-textarea>
-        </fieldset>
+            <v-col cols="12" md="6" >
+              <v-text-field
+                ref="lat"
+                :value="pt[1]"
+                :label="$t('support.latitude')"
+                :disabled="!manualChange"
+                type="number"
+                placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+                disable
+              />
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-text-field
+                ref="lng"
+                :value="pt[0]"
+                :label="$t('support.longitude')"
+                :disabled="!manualChange"
+                type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+                disable
+              />
+            </v-col>
+          </v-row>
+        </v-container> -->
+
         <!-- Filedset GENERAL INFORMATION -->
-        <fieldset class="d-flex justify-space-around flex-wrap ma-2">
-          <legend class="mx-3 px-1">{{ $t('forms.risk_assessment') }}</legend>
-          <v-container class="d-flex justify-space-around flex-wrap py-0">
-            <v-select
-              v-model="diagData.buildIntegRisk"
-              :items="riskLevels"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('line.buildIntegRisk')"
-              class="shrink mx-5 mt-2"
-            ></v-select>
-            <v-select
-              v-model="diagData.movingRisk"
-              :items="riskLevels"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('line.movingRisk')"
-              class="shrink mx-5 mt-2"
-            ></v-select>
-          </v-container>
-          <v-container class="d-flex justify-space-around flex-wrap py-0">
-            <v-select
-              v-model="diagData.topoIntegRisk"
-              :items="riskLevels"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('line.topoIntegRisk')"
-              class="shrink mx-5 mt-2"
-            ></v-select>
-            <v-select
-              v-model="diagData.vegetIntegRisk"
-              :items="riskLevels"
-              item-text="label"
-              item-value="id"
-              :rules="[rules.required]"
-              :label="$t('line.vegetIntegRisk')"
-              class="shrink mx-5 mt-2"
-            ></v-select>
-          </v-container>
-        </fieldset>
-      </v-container>
-      <v-container>
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('forms.general') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="4">
+              <v-select
+                v-model="lineData.owner_id"
+                :items="networkOwners"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('support.network')"
+                required
+                dense
+                outlined
+              >
+              </v-select>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-menu
+                :close-on-content-click="false"
+                transition="scale-transition"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="diagData.date"
+                    :label="$t('forms.datecreate')"
+                    persistent-hint
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    dense
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="diagData.date" no-title></v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col cols="12" md="4">
+              <v-checkbox
+                v-model="diagData.neutralized"
+                :label="$t('support.neutralized')"
+                dense
+              ></v-checkbox>
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="diagData.remark"
+                clearable
+                clear-icon="mdi-close-circle"
+                :label="$t('app.remark')"
+                :rules="[rules.textLength]"
+                rows="2"
+                counter="300"
+                outlined
+                dense
+              ></v-textarea>
+            </v-col>
+          </v-row>
+        </v-container>
+        <!-- Filedset GENERAL INFORMATION -->
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('forms.risk_assessment') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" lg="3" md="6">
+              <v-select
+                v-model="diagData.buildIntegRisk"
+                :items="riskLevels"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('line.buildIntegRisk')"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="12" lg="3" md="6">
+              <v-select
+                v-model="diagData.movingRisk"
+                :items="riskLevels"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('line.movingRisk')"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" lg="3" md="6">
+              <v-select
+                v-model="diagData.topoIntegRisk"
+                :items="riskLevels"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('line.topoIntegRisk')"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="12" lg="3" md="6">
+              <v-select
+                v-model="diagData.vegetIntegRisk"
+                :items="riskLevels"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                :label="$t('line.vegetIntegRisk')"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
         <v-row class="justify-space-around mb-2">
-          <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn>
+          <v-btn color="error" @click="back">{{ $t('app.cancel') }}</v-btn>
+          <v-btn color="success" @click="submit">{{ $t('app.valid') }}</v-btn>
         </v-row>
-      </v-container>
+      </v-card-actions>
     </v-form>
-  </div>
+  </v-card>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -168,6 +208,7 @@ export default {
     return {
       // form values
       formValid: true,
+      manualChange: false,
       // define data related to Point
       lineData: {
         geom: {
