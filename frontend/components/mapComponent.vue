@@ -8,7 +8,16 @@
     :max-bounds="maxBounds"
     @ready="onMapReady()"
   >
-    <l-tile-layer :url="url" :attribution="attribution" />
+    <l-control-layers position="topright"></l-control-layers>
+    <l-tile-layer
+      v-for="baseLayer in baseLayers"
+      :key="baseLayer.id"
+      :name="baseLayer.name"
+      :url="baseLayer.url"
+      :visible="baseLayer.default"
+      :attribution="baseLayer.attribution"
+      layer-type="base"
+    />
     <!-- Display of existing Pole layer-->
     <l-geo-json
       v-if="pointData"
@@ -97,11 +106,17 @@ export default {
       zoom: 5,
       path: '/images/',
       center: [47.41322, -1.219482],
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      // baseLayers: [
+      //   {
+      //     name: 'OpenStreetMap',
+      //     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      //     attribution:
+      //       '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      //   },
+      // ],
     }
   },
+
   computed: {
     // Map property options to matching function
     GeojsonOptions() {
@@ -137,8 +152,10 @@ export default {
       lineStringData: 'cablesStore/lineDataFeatures',
       newPointCoord: 'coordinatesStore/newPointCoord',
       newLineCoord: 'coordinatesStore/newLineCoord',
+      baseLayers: 'mapLayersStore/baseLayers',
     }),
   },
+
   watch: {
     /**
      * Watcher for "newPointCoord" value
@@ -162,6 +179,9 @@ export default {
         }
       }
     },
+  },
+  mounted() {
+    this.$store.dispatch('mapLayersStore/loadBaseLayers')
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
