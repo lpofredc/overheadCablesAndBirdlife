@@ -5,7 +5,7 @@
         <map-component :edit-mode="true" mode="point" />
       </v-col>
       <v-col cols="6" class="pa-0" style="background-color: red">
-        <form-point-component />
+        <form-point-component :diagnosis="data" />
       </v-col>
     </v-row>
     <v-tabs
@@ -20,7 +20,7 @@
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>
-        <form-point-component />
+        <form-point-component :diagnosis="data" />
       </v-tab-item>
     </v-tabs>
   </v-container>
@@ -28,7 +28,20 @@
 
 <script>
 export default {
-  name: 'PointPage',
+  name: 'UpdateDiagnosisPage',
+  /**
+   * asyncData(): Method that gather data before page be created
+   *
+   * @param {$axios, params} allow to send request to data through $axios, and params allows to
+   * access the selected diagnosis id
+   * (with page "support/22/diagnosis/2" => "http://path/supports/22/diagnosis/2" => second
+   * diagnosis (id=2) of the 22nd support = 12)
+   */
+  async asyncData({ $axios, params }) {
+    return {
+      data: await $axios.$get(`cables/diagnosis/${params.iddiag}`),
+    }
+  },
   data() {
     return {
       drawer_opened: true, // drawer closed by default
@@ -36,19 +49,4 @@ export default {
     }
   },
 }
-
-// },
-// mounted() {
-//   // Loading of Nomenclatures needed to get data to set up the application
-//   // Implemented there as authentification needed.
-//   this.$store.dispatch('nomenclaturesStore/loadNomenclatures')
-// },
-// /**
-//  * Manage opening/closing drawer menu
-//  */
-// methods: {
-//   openDrawer() {
-//     return this.$auth.loggedIn ? this.drawer_opened : false
-//   },
-// },
 </script>

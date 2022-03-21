@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name: 'PointPage',
+  name: 'NewPointPage',
   data() {
     return {
       drawer_opened: true, // drawer closed by default

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Permission  # , User
+from django.contrib.auth.models import Permission
 from rest_framework.test import APIClient
 
 from users.models import User

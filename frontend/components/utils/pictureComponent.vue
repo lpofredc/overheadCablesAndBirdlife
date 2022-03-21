@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import * as errorCodes from '~/static/errorConfig.json'
+
 export default {
   name: 'PictureComponent',
   data: () => ({
@@ -83,4 +85,3 @@ export default {
   },
 }
 </script>
-

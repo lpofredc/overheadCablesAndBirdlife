@@ -35,12 +35,12 @@ export default {
    * asyncData(): Method that gather data before page be created
    *
    * @param {$axios, params} allow to send request to data through $axios, and params allows to
-   * access the "slug"
+   * access the selected support id
    * (with page "support/_id.vue" => "http://path/support/12" => id = 12)
    */
   async asyncData({ $axios, params }) {
     return {
-      data: await $axios.$get(`cables/infrastructures/${params.id}`),
+      data: await $axios.$get(`cables/infrastructures/${params.idsupport}`),
     }
   },
   data() {

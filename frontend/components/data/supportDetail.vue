@@ -13,7 +13,8 @@
         </v-btn>
       </v-toolbar>
 
-      <v-btn icon @click="update = true">
+      <!-- <v-btn icon @click="update = true"> -->
+      <v-btn icon @click="$router.push('/supports/21/diagnosis/64')">
         <v-icon color="orange">mdi-pencil</v-icon>
       </v-btn>
 
@@ -50,7 +51,7 @@
             <h4>attractivité: {{ lastDiag.pole_attractivity.label }}</h4>
             <h4>dangerosité: {{ lastDiag.pole_dangerousness.label }}</h4>
           </v-container>
-          <v-container>
+          <v-container v-if="lastOp">
             <h3>OPERATION</h3>
             <h4>date: {{ lastOp.date }}</h4>
             <h4>remarque: {{ lastOp.remark }}</h4>
@@ -90,13 +91,12 @@
 </template>
 
 <script lang="ts">
+import Vue, { PropOptions } from 'vue'
 import { Feature } from 'geojson'
-
-import Vue from 'vue'
 
 export default Vue.extend({
   name: 'SupportDetailComponent',
-  props: { data: { type: Object as () => Feature, default: null } },
+  props: { data: { type: Object, default: null } as PropOptions<Feature> },
   data() {
     return {
       lastDiag: null,
