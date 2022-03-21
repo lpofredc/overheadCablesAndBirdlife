@@ -16,7 +16,7 @@
         </v-btn>
       </v-toolbar>
       <v-card-text class="overflow-auto">
-        <v-container>
+        <v-container v-if="!diagnosis">
           <v-row>
             <v-col cols="12" class="text-left">
               <strong>{{ $t('forms.coordinates') }}</strong>
@@ -71,7 +71,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" v-if="!diagnosis">
               <v-select
                 v-model="pointData.owner_id"
                 :items="networkOwners"
@@ -86,7 +86,7 @@
               </v-select>
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" v-if="!support">
               <v-menu
                 :close-on-content-click="false"
                 transition="scale-transition"
@@ -108,7 +108,7 @@
               </v-menu>
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" v-if="!support">
               <v-autocomplete
                 v-model="diagData.pole_type_id"
                 :items="poleTypes"
@@ -125,7 +125,7 @@
               ></v-autocomplete>
             </v-col>
 
-            <v-col cols="12" md="8">
+            <v-col cols="12" md="8" v-if="!support">
               <v-select
                 v-model="diagData.condition_id"
                 :items="conditions"
@@ -138,7 +138,7 @@
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" v-if="!support">
               <v-checkbox
                 v-model="diagData.neutralized"
                 :label="$t('support.neutralized')"
@@ -161,7 +161,7 @@
           </v-row>
         </v-container>
         <v-divider></v-divider>
-        <v-container>
+        <v-container v-if="!support">
           <v-row>
             <v-col cols="12" class="text-left">
               <strong>{{ $t('support.advice') }}</strong>
@@ -240,8 +240,17 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+
+// export default Vue.extend({
 export default {
   name: 'PointComponent',
+
+  props: {
+    support: { type: Object, default: null },
+    diagnosis: { type: Object, default: null },
+    operation: { type: Object, default: null },
+  },
+
   data() {
     return {
       formValid: true,
@@ -269,7 +278,7 @@ export default {
         attraction_advice: false,
         dissuasion_advice: false,
         isolation_advice: false,
-        pole_attractivity_id: null,
+        pole_attractivity_id: 8, // null,
         pole_dangerousness_id: 8, // null
       },
       // rules for form validation
@@ -347,8 +356,7 @@ export default {
     },
 
     /**
-     * submit(): Method to submit the form to create a Point, then Diagnosis, then Media
-     * (pictures) and add these to Diagnosis,
+     * submit(): Method to submit the form for Point/Diagnosis/Media creation or update
      * .
      *
      * If process fail at any step, all elements created before are deleted through error handling
@@ -356,110 +364,140 @@ export default {
      */
     async submit() {
       if (this.formValid) {
-        let pointCreated = null
-        const mediaIdList = []
-        let diagCreated = null
-        // Create new Pole (Point infrastructure)
-        try {
-          this.pointData.geom.coordinates = [this.lng, this.lat]
-          pointCreated = await this.$axios.$post(
-            'cables/points/',
-            this.pointData
-          )
-        } catch (err) {
-          const error = {}
-          error.code = errorCodes.create_point.code
-          error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
-          // set error message to errorStore and triggers message display through "err" watcher in
-          // error-snackbar component
+        // Case of creation of new Point and associated Diagnosis
+        if (!this.support && !this.diagnosis) {
+          const pointCreated = await this.createNewPoint()
+          // new Point is successfully created
+          if (pointCreated) {
+            // Create Diagnosis
+            await this.createNewDiagnosis(pointCreated.properties.id)
+          }
+        } else if (this.support) {
+          // update of existing Point
+          console.log('Update of Support not implemented yet')
+          const error = {
+            code: 0,
+            msg: 'Update of Support not implemented yet',
+          }
+          // set error message to errorStore and triggers message display through "err"
+          // watcher in error-snackbar component
           this.$store.commit('errorStore/setError', error)
-          // this.$router.push('/view')
-          this.back()
-        }
-        // new Point is successfully created
-        if (pointCreated) {
-          // Create Diagnosis
-          try {
-            this.diagData.infrastructure = pointCreated.properties.id
-            this.diagData.media_id = mediaIdList
-            diagCreated = await this.$axios.$post(
-              'cables/diagnosis/',
-              this.diagData
-            )
-            this.$router.push('/view')
-          } catch (_err) {
-            // if no new Diagnosis created
-            if (!diagCreated) {
-              // if new Point was created before, delete it
-              if (pointCreated) {
-                await this.$axios.$delete(
-                  `cables/points/${pointCreated.properties.id}/`
-                )
-              }
-            }
-            // Error display
-            const error = {}
-            error.code = errorCodes.create_pole_diagnosis.code
-            error.msg = $nuxt.$t(
-              `error.${errorCodes.create_pole_diagnosis.msg}`
-            )
-            // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
-            this.$store.commit('errorStore/setError', error)
-            this.back()
+        } else if (this.diagnosis) {
+          // update of existing Diagnosis
+          const error = {
+            code: 0,
+            msg: 'Update of Dignosis not implemented yet',
           }
-
-          if (diagCreated) {
-            // Create all Media before continuing
-            await Promise.all(
-              this.$refs.upc.imgFileObject.map(async (img) => {
-                try {
-                  const formData = new FormData()
-                  formData.append('storage', img)
-                  // TODO get true date and other form fields
-                  formData.append('date', '2022-01-01')
-                  const newImg = await this.$axios.$post('media/', formData, {
-                    headers: {
-                      accept: 'application/json',
-                      'Content-Type': 'multipart/form-data',
-                    },
-                  })
-                  mediaIdList.push(newImg.id) // set Media id to mediaIdList
-                } catch (_err) {
-                  const error = {}
-                  error.code = errorCodes.img_sending.code
-                  error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
-                  // set error message to errorStore and triggers message display through "err"
-                  // watcher in error-snackbar component
-                  this.$store.commit('errorStore/setError', error)
-                  // this.$router.push('/view')
-                  this.back()
-                }
-              })
-            )
-            // add Media to Diagnosis
-            try {
-              await this.$axios.$patch(`cables/diagnosis/${diagCreated.id}/`, {
-                media_id: mediaIdList,
-              })
-            } catch (_err) {
-              // if adding Media failed, delete created Media
-              if (mediaIdList.length > 0) {
-                mediaIdList.forEach(async (imgId) => {
-                  await this.$axios.$delete(`media/${imgId}/`)
-                })
-              }
-              const error = {}
-              error.code = errorCodes.img_sending.code
-              error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
-              // set error message to errorStore and triggers message display through "err"
-              // watcher in error-snackbar component
-              this.$store.commit('errorStore/setError', error)
-              // this.$router.push('/view')
-              this.back()
-            }
-          }
+          // set error message to errorStore and triggers message display through "err"
+          // watcher in error-snackbar component
+          this.$store.commit('errorStore/setError', error)
         }
+        this.back()
       }
+    },
+
+    /**
+     * createNewPoint(): Method that create new Point based on forms data (cf. this.pointData)
+     *
+     * @return {JSON object} as new Point
+     *
+     * If process fails, error message is displayed in snackBar through error handling process.
+     */
+    async createNewPoint() {
+      try {
+        this.pointData.geom.coordinates = [this.lng, this.lat]
+        return await this.$axios.$post('cables/points/', this.pointData)
+      } catch (_err) {
+        const error = {}
+        error.code = errorCodes.create_point.code
+        error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
+        // set error message to errorStore and triggers message display through "err" watcher in
+        // error-snackbar component
+        this.$store.commit('errorStore/setError', error)
+        this.back()
+      }
+    },
+
+    /**
+     * createNewDiagnosis(): Method that create new Diagnosis based on forms data(cf.this.diagData)
+     *
+     * @param {BigInt} infrstr_id id of related Insfrastructure (Point)
+     *
+     * Error handling: A Diagnosis should be created at time of Infrastructure (Point) creation.
+     * If Diagnosis creation fails, related Infrastructure (Point) will be deleted.
+     * Related Media will also be deleted in this case.
+     * Finally, error message is displayed in snackBar through error handling process.
+     */
+    async createNewDiagnosis(infrstr_id) {
+      // Create Media as selected in component form and get list of Ids of created Media
+      const mediaIdList = await this.createNewMedia()
+      try {
+        this.diagData.infrastructure = infrstr_id // set Infrastructure (Point) id
+        this.diagData.media_id = mediaIdList // set Media id list
+        // Create Diagnosis
+        return await this.$axios.$post('cables/diagnosis/', this.diagData)
+      } catch (_err) {
+        // If Diagnosis creation fails, related infrastructure(Point) is deleted
+        await this.$axios.$delete(`cables/points/${infrstr_id}/`)
+        // If Diagnosis creation fails, related Media created are deleted
+        if (mediaIdList) {
+          mediaIdList.forEach(
+            async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
+          )
+        }
+        // Error display
+        const error = {}
+        error.code = errorCodes.create_pole_diagnosis.code
+        error.msg = $nuxt.$t(`error.${errorCodes.create_pole_diagnosis.msg}`)
+        // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
+        this.$store.commit('errorStore/setError', error)
+        this.back()
+      }
+    },
+
+    /**
+     * createNewMedia(): Method that create new Media based on component forms data and return the
+     * list of Ids of created Media
+     *
+     * @return {BigInt[]} as new Diagnosis
+     *
+     * If process fails for at least one Media creation, error message is displayed in snackBar
+     * through error handling process. Id of Media for which creation did not fail will be return
+     * anyway.
+     */
+    async createNewMedia() {
+      const mediaIdList = []
+      // await all Promises be resolved before returning result
+      await Promise.all(
+        // upc for "util-picture-component": task on each img file of the map
+        this.$refs.upc.imgFileObject.map(async (img) => {
+          try {
+            const formData = new FormData()
+            formData.append('storage', img) // fill-in FormData with img file
+            // TODO get true date and other form fields below
+            formData.append('date', '2022-01-01')
+            formData.append('author', 'Bob')
+            formData.append('source', 'LPO')
+            formData.append('remark', 'Nothing to report')
+            // create Media
+            const newImg = await this.$axios.$post('media/', formData, {
+              headers: {
+                accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+              },
+            })
+            mediaIdList.push(newImg.id) // set Media id to mediaIdList
+          } catch (_err) {
+            const error = {}
+            error.code = errorCodes.img_sending.code
+            error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
+            // set error message to errorStore and triggers message display through "err"
+            // watcher in error-snackbar component
+            this.$store.commit('errorStore/setError', error)
+          }
+        })
+      )
+      return mediaIdList
     },
   },
 }

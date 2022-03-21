@@ -11,7 +11,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn icon @click="$router.push('/supports/1')">
+        <v-btn icon @click="$router.push('/supports/21')">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
