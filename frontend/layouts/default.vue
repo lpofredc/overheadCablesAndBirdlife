@@ -47,6 +47,9 @@ export default {
       dialog: false,
     }
   },
+  mounted() {
+    this.$store.dispatch('mapLayersStore/loadBaseLayers')
+  },
   methods: {
     /**
      * Logout user and redirect to welcome page

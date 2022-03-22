@@ -180,9 +180,6 @@ export default {
       }
     },
   },
-  mounted() {
-    this.$store.dispatch('mapLayersStore/loadBaseLayers')
-  },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object
     // (j'avais un message comme quoi le props options attendait un obkjet et non une function)
