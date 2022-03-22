@@ -7,7 +7,7 @@
       class="text-center"
     >
       <v-toolbar color="pink" dark elevation="0">
-        <v-toolbar-title>{{ $t('support.new_support') }}</v-toolbar-title>
+        <v-toolbar-title>{{ $t('support.new_support') }} </v-toolbar-title>
 
         <v-spacer></v-spacer>
 
@@ -19,7 +19,7 @@
         <v-container v-if="!diagnosis">
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong>{{ $t('forms.coordinates') }}</strong>
+              <strong>{{ $t('forms.coordinates') }} </strong>
             </v-col>
           </v-row>
           <v-row>
@@ -263,24 +263,36 @@ export default {
       pointData: {
         geom: {
           type: 'Point',
-          coordinates: [],
+          coordinates: this.support ? this.support.coordinates : [],
         },
-        owner_id: 1, // null,
+        owner_id: this.support ? this.support.owner_id : null,
       },
       // define data related to Diagnosis
       diagData: {
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
-        remark: null,
-        pole_type_id: [11, 12], // null,
-        neutralized: false,
-        condition_id: 6, // null,
-        attraction_advice: false,
-        dissuasion_advice: false,
-        isolation_advice: false,
-        pole_attractivity_id: 8, // null,
-        pole_dangerousness_id: 8, // null
+        date: this.diagnosis
+          ? this.diagnosis.date
+          : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+              .toISOString()
+              .substr(0, 10),
+        remark: this.diagnosis ? this.diagnosis.remark : null,
+        pole_type_id: this.diagnosis ? this.diagnosis.pole_type : [],
+        neutralized: this.diagnosis ? this.diagnosis.neutralized : false,
+        condition_id: this.diagnosis ? this.diagnosis.condition.id : null,
+        attraction_advice: this.diagnosis
+          ? this.diagnosis.attraction_advice
+          : false,
+        dissuasion_advice: this.diagnosis
+          ? this.diagnosis.dissuasion_advice
+          : false,
+        isolation_advice: this.diagnosis
+          ? this.diagnosis.isolation_advice
+          : false,
+        pole_attractivity_id: this.diagnosis
+          ? this.diagnosis.pole_attractivity.id
+          : null,
+        pole_dangerousness_id: this.diagnosis
+          ? this.diagnosis.pole_dangerousness.id
+          : null,
       },
       // rules for form validation
       rules: {

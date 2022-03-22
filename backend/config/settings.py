@@ -223,7 +223,6 @@ LOGGING = {
 DEFAULT_LAT = config("DEFAULT_LAT", default=45, cast=float)
 DEFAULT_LON = config("DEFAULT_LON", default=5, cast=float)
 
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SECURE = True
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_SECURE = True
