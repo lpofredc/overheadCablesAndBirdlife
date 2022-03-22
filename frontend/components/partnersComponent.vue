@@ -5,14 +5,15 @@
       :key="i.id"
       loading
       cols="12"
-      sm="6"
-      md="4"
+      xs="6"
+      sm="4"
+      md="3"
       lg="2"
     >
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <a :href="i.url" target="_blank" v-bind="attrs" v-on="on">
-            <v-img height="100" contain :src="i.logo" :alt="i.name"></v-img>
+            <v-img height="50" contain :src="i.logo" :alt="i.name"></v-img>
           </a>
         </template>
         <span>{{ i.name }}</span>
