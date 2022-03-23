@@ -87,5 +87,9 @@
     "range": "Value awaited in range: ",
     "required": "Required field",
     "required_or_not_valid": "field not filled in or data type not valid"
+  },
+  "mortality": {
+    "new_mortality": "New mortality case",
+    "observer": "Observer"
   }
 }

@@ -13,7 +13,7 @@
       <v-app-bar-nav-icon @click="miniVariant = !miniVariant" />
       <v-toolbar-title v-text="$t('app.app-name')" />
       <v-spacer></v-spacer>
-      <div>
+      <div v-if="!$vuetify.breakpoint.mdAndDown">
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
       <v-dialog
@@ -22,7 +22,7 @@
         :fullscreen="$vuetify.breakpoint.mdAndDown"
         hide-overlay
         transition="dialog-bottom-transition"
-        :width="[!$vuetify.breakpoint.mdAndDown ? 500 : false]"
+        :width="!$vuetify.breakpoint.mdAndDown ? 500 : '100%'"
       >
         <template #activator="{ on, attrs }">
           <v-btn icon class="mr-2" v-bind="attrs" v-on="on">
