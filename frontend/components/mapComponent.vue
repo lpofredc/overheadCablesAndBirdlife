@@ -55,7 +55,7 @@
       <v-btn fab dark small to="/lines/new" color="indigo">
         <v-icon>mdi-cable-data</v-icon>
       </v-btn>
-      <v-btn fab dark small color="red">
+      <v-btn fab dark small to="/mortality/new" color="red">
         <v-icon>mdi-coffin</v-icon>
       </v-btn>
     </v-speed-dial>
@@ -179,9 +179,6 @@ export default {
         }
       }
     },
-  },
-  mounted() {
-    this.$store.dispatch('mapLayersStore/loadBaseLayers')
   },
   methods: {
     // INFO: Passé en computed, onEachFeature devient alors un object

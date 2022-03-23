@@ -33,7 +33,6 @@ export default {
   name: 'ViewComponent',
   data() {
     return {
-      app_name: 'Overhead Cables & BirdLife',
       drawer_opened: true, // drawer closed by default
       miniVariant: true, // wide drawer when opening by default
     }

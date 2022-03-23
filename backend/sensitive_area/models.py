@@ -27,11 +27,9 @@ class SensitiveArea(BaseModel):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
-    name = models.CharField(
-        _("sensitive area name"), max_length=200
-    )  # , null=True)
-    code = models.CharField(max_length=100)  # , null=True)
-    geom = gis_models.PolygonField(srid=4326)  # null=True, blank=True,
+    name = models.CharField(_("sensitive area name"), max_length=200)
+    code = models.CharField(max_length=100)
+    geom = gis_models.PolygonField(srid=4326)
 
     def __str__(self):
         return f"{self.name} - [{self.code}]"

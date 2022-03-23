@@ -1,10 +1,13 @@
 <template>
-  <v-card>
+  <v-card flex>
     <v-form ref="form" v-model="valid">
-      <v-card-title class="text-h5 light-blue">
-        <v-icon>mdi-account-circle</v-icon>{{ $t('login.sign-in') }}
-      </v-card-title>
-      <v-card-text>
+      <v-toolbar dark color="light-blue darken-4">
+        <v-btn icon dark @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-toolbar-title>{{ $t('login.sign-in') }}</v-toolbar-title>
+      </v-toolbar>
+      <v-card-text flex>
         <v-container id="input-usage" fluid>
           <v-row>
             <v-col cols="12">
@@ -30,15 +33,14 @@
                 @keyup.enter="userLogin"
               ></v-text-field>
             </v-col>
+            <v-col cols="12" class="justify-center">
+              Mot de passe oublié?</v-col
+            >
           </v-row>
         </v-container>
       </v-card-text>
-      <v-card-actions class="grey lighten-2">
-        <v-btn color="error" @click="reset">
-          {{ $t('app.cancel') }}
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="success" @click="userLogin">
+      <v-card-actions>
+        <v-btn color="success" block @click="userLogin" large>
           {{ $t('login.sign-in') }}
         </v-btn>
       </v-card-actions>
@@ -52,6 +54,9 @@ import * as errorCodes from '~/static/errorConfig.json'
 export default {
   name: 'LoginComponent',
   auth: false,
+  props: {
+    dialog: { type: Boolean },
+  },
   data() {
     return {
       valid: true,
@@ -64,6 +69,10 @@ export default {
     }
   },
   methods: {
+    closeDialog() {
+      console.log('child')
+      this.$emit('close-dialog')
+    },
     reset() {
       this.$refs.form.reset()
     },

@@ -94,9 +94,7 @@ class CreatePointAndLineTestCase(TestCase):
         resp = self.authentified_client.get(f"/api/v1/cables/points/{id}/")
         self.assertEquals(resp.status_code, 200)
         point = resp.json()
-        self.assertEquals(
-            len(point["properties"]["sensitive_area"]["features"]), 2
-        )
+        self.assertEquals(len(point["properties"]["sensitive_area"]), 2)
         self.assertEquals(len(point["properties"]["geo_area"]), 2)
 
     def test_create_and_get_point_inside_1SA_and_2GA(self):
@@ -116,9 +114,7 @@ class CreatePointAndLineTestCase(TestCase):
         resp = self.authentified_client.get(f"/api/v1/cables/points/{id}/")
         self.assertEquals(resp.status_code, 200)
         point = resp.json()
-        self.assertEquals(
-            len(point["properties"]["sensitive_area"]["features"]), 1
-        )
+        self.assertEquals(len(point["properties"]["sensitive_area"]), 1)
         self.assertEquals(len(point["properties"]["geo_area"]), 2)
 
     def test_create_and_get_point_outside_all_SA_and_GA(self):
@@ -137,9 +133,7 @@ class CreatePointAndLineTestCase(TestCase):
         resp = self.authentified_client.get(f"/api/v1/cables/points/{id}/")
         self.assertEquals(resp.status_code, 200)
         point = resp.json()
-        self.assertEquals(
-            len(point["properties"]["sensitive_area"]["features"]), 0
-        )
+        self.assertEquals(len(point["properties"]["sensitive_area"]), 0)
         self.assertEquals(len(point["properties"]["geo_area"]), 0)
 
     def test_create_and_get_point_at_limit_of_1SA_and_1GA(self):
@@ -159,9 +153,7 @@ class CreatePointAndLineTestCase(TestCase):
         resp = self.authentified_client.get(f"/api/v1/cables/points/{id}/")
         self.assertEquals(resp.status_code, 200)
         point = resp.json()
-        self.assertEquals(
-            len(point["properties"]["sensitive_area"]["features"]), 1
-        )
+        self.assertEquals(len(point["properties"]["sensitive_area"]), 1)
         self.assertEquals(len(point["properties"]["geo_area"]), 1)
 
     def test_create_and_get_point_list(self):
@@ -208,9 +200,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(resp.status_code, 200)
         line = resp.json()
 
-        self.assertEquals(
-            len(line["properties"]["sensitive_area"]["features"]), 2
-        )
+        self.assertEquals(len(line["properties"]["sensitive_area"]), 2)
         self.assertEquals(len(line["properties"]["geo_area"]), 2)
 
     def test_create_and_get_line_inside_1SA_and_2GA(self):
@@ -236,9 +226,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(resp.status_code, 200)
 
         line = resp.json()
-        self.assertEquals(
-            len(line["properties"]["sensitive_area"]["features"]), 1
-        )
+        self.assertEquals(len(line["properties"]["sensitive_area"]), 1)
         self.assertEquals(len(line["properties"]["geo_area"]), 2)
 
     def test_create_and_get_line_outside_all_SA_and_GA(self):
@@ -261,9 +249,7 @@ class CreatePointAndLineTestCase(TestCase):
         self.assertEquals(resp.status_code, 200)
         line = resp.json()
 
-        self.assertEquals(
-            len(line["properties"]["sensitive_area"]["features"]), 0
-        )
+        self.assertEquals(len(line["properties"]["sensitive_area"]), 0)
         self.assertEquals(len(line["properties"]["geo_area"]), 0)
 
     def test_create_and_get_line_intersecting_1SA_and_1GA(self):
@@ -285,9 +271,7 @@ class CreatePointAndLineTestCase(TestCase):
         resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
         self.assertEquals(resp.status_code, 200)
         line = resp.json()
-        self.assertEquals(
-            len(line["properties"]["sensitive_area"]["features"]), 1
-        )
+        self.assertEquals(len(line["properties"]["sensitive_area"]), 1)
         self.assertEquals(len(line["properties"]["geo_area"]), 1)
 
     def test_create_and_get_line_intersecting_with_one_point_only_1SA_and_1GA(
@@ -311,9 +295,7 @@ class CreatePointAndLineTestCase(TestCase):
         resp = self.authentified_client.get(f"/api/v1/cables/lines/{id}/")
         self.assertEquals(resp.status_code, 200)
         line = resp.json()
-        self.assertEquals(
-            len(line["properties"]["sensitive_area"]["features"]), 1
-        )
+        self.assertEquals(len(line["properties"]["sensitive_area"]), 1)
         self.assertEquals(len(line["properties"]["geo_area"]), 1)
 
     def test_create_and_get_line_list(self):

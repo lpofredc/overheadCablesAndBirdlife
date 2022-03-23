@@ -13,7 +13,14 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/",
-        SensitiveAreaViewSet.as_view({"get": "retrieve"}),
+        SensitiveAreaViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "update",
+                "patch": "partial_update",
+                "delete": "destroy",
+            }
+        ),
         name="sensitivearea-detail",
     ),
 ]
