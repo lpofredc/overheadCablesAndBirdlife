@@ -1,11 +1,6 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-form
-      ref="
-    form"
-      v-model="formValid"
-      class="text-center"
-    >
+    <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
         <v-toolbar-title>{{ $t('support.new_support') }} </v-toolbar-title>
 
@@ -28,7 +23,6 @@
                 ref="lat"
                 v-model="lat"
                 :label="$t('support.latitude')"
-                :disabled="!manualChange"
                 type="number"
                 placeholder="Latitude"
                 :rules="[rules.requiredOrNotValid, rules.latRange]"
@@ -37,10 +31,35 @@
                 outlined
                 dense
               />
+              <!-- <v-text-field
+                ref="lat"
+                v-model="lat"
+                :label="$t('support.latitude')"
+                :disabled="!manualChange"
+                type="number"
+                placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              /> -->
             </v-col>
 
             <v-col cols="12" md="4">
               <v-text-field
+                ref="lng"
+                v-model="lng"
+                :label="$t('support.longitude')"
+                type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              />
+
+              <!-- <v-text-field
                 ref="lng"
                 v-model="lng"
                 :label="$t('support.longitude')"
@@ -51,16 +70,16 @@
                 hide-spin-buttons
                 outlined
                 dense
-              />
+              /> -->
             </v-col>
 
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <v-checkbox
                 v-model="manualChange"
                 dense
                 :label="$t('support.manual-handling')"
               ></v-checkbox>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-container>
         <v-divider></v-divider>
@@ -255,7 +274,7 @@ export default {
   data() {
     return {
       formValid: true,
-      manualChange: false, // boolean to activate manual coordinate change
+      // manualChange: false, // boolean to activate manual coordinate change
       // form values
       newLat: null,
       newLng: null,
@@ -298,7 +317,7 @@ export default {
       rules: {
         required: (v) => !!v || this.$t('valid.required'),
         requiredOrNotValid: (v) =>
-          !!v || this.$t('valid.required_or_not_valid'),
+          v === 0 || !!v || this.$t('valid.required_or_not_valid'),
         latRange: (v) =>
           (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
         lngRange: (v) =>
@@ -322,7 +341,7 @@ export default {
       // on change in v-text-field, value is set to store.
       set(newVal) {
         this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: Number(newVal),
+          lat: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
           lng: this.lng,
         })
       },
@@ -341,7 +360,7 @@ export default {
       set(newVal) {
         this.$store.commit('coordinatesStore/addPointCoord', {
           lat: this.lat,
-          lng: Number(newVal),
+          lng: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
         })
       },
     },
@@ -376,7 +395,7 @@ export default {
      * process.
      */
     async submit() {
-      if (this.formValid) {
+      if (this.$refs.form.validate()) {
         // Case of creation of new Point and associated Diagnosis
         if (!this.support && !this.diagnosis) {
           const pointCreated = await this.createNewPoint()

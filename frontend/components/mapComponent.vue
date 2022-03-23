@@ -137,17 +137,14 @@ export default {
     newPointCoord(newVal) {
       if (this.editMode && this.mode === 'point') {
         if (this.createLayer) {
-          if (newVal && newVal.lat && newVal.lng) {
+          if (newVal && newVal.lat !== null && newVal.lng !== null) {
             this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
           } else {
-            // In fact, set the marker to point [0, 0]
-            this.createLayer.setLatLng(new L.LatLng(null, null))
             this.createLayer.remove()
             this.createLayer = null
           }
         } else {
-          // if (this.map) {
-          if (newVal && newVal.lat && newVal.lng) {
+          if (newVal && newVal.lat !== null && newVal.lng !== null) {
             this.map = this.$refs.map.mapObject
             this.map.on('layeradd', (e) => {
               this.createLayer = e.layer
@@ -165,10 +162,41 @@ export default {
             // in case of remove event, tigger handleRemove() method
             this.createLayer.on('pm:remove', (_e) => this.handleRemove())
           }
-          // }
         }
       }
     },
+    // newPointCoord(newVal) {
+    //   if (this.editMode && this.mode === 'point') {
+    //     if (this.createLayer) {
+    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
+    //         this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
+    //       } else {
+    //         this.createLayer.remove()
+    //         this.createLayer = null
+    //       }
+    //     } else {
+    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
+    //         this.map = this.$refs.map.mapObject
+    //         this.map.on('layeradd', (e) => {
+    //           this.createLayer = e.layer
+    //           this.map.pm.addControls({
+    //             drawMarker: false,
+    //             dragMode: true,
+    //             removalMode: true,
+    //           })
+    //         })
+    //         const layer = new L.Marker([newVal.lat, newVal.lng], {
+    //           pmIgnore: false,
+    //         }).addTo(this.map)
+    //         // set listener on drag event on this layer
+    //         this.handleDrag(this.createLayer)
+    //         // in case of remove event, tigger handleRemove() method
+    //         this.createLayer.on('pm:remove', (_e) => this.handleRemove())
+    //       }
+    //       // }
+    //     }
+    //   }
+    // },
   },
   methods: {
     handleDrag(layer) {
