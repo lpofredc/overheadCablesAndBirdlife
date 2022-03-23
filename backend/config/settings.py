@@ -28,9 +28,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config(
-    "ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv()
-)
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv())
 # DEFAULT_C
 
 # Application definition
@@ -45,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
+    "django.contrib.postgres",
     "fixture_magic",
     "django_filters",
     "djoser",
@@ -113,9 +112,7 @@ DATABASES = {
 }
 
 # Authorized request origins
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv()
-)
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:3000", cast=Csv())
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
@@ -169,9 +166,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
@@ -223,7 +218,6 @@ LOGGING = {
 DEFAULT_LAT = config("DEFAULT_LAT", default=45, cast=float)
 DEFAULT_LON = config("DEFAULT_LON", default=5, cast=float)
 
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SECURE = True
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_SECURE = True

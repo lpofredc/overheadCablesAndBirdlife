@@ -1,11 +1,6 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-form
-      ref="
-    form"
-      v-model="formValid"
-      class="text-center"
-    >
+    <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
         <v-toolbar-title>{{ $t('line.new_segment') }}</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -274,7 +269,7 @@ export default {
      * process.
      */
     async submit() {
-      if (this.formValid) {
+      if (this.$refs.form.validate()) {
         let lineCreated = null
         const mediaIdList = []
         let diagCreated = null

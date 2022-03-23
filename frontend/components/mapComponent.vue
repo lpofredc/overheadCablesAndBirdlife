@@ -75,25 +75,10 @@ export default {
 
   data() {
     return {
+      newLineMarkers: [[45, 7]],
       map: null,
       // creation markers
       createLayer: null,
-      // newPoint: {
-      //   type: 'Feature',
-      //   properties: { id: 1, test: 'test' },
-      //   geometry: null,
-      //   // {
-      //   //   type: 'LineString',
-      //   //   coordinates: [
-      //   //     [2.373047, 47.872144],
-      //   //     [2.109375, 45.706179],
-      //   //     [5.185547, 46.13417],
-      //   //     [4.746094, 47.309034],
-      //   //     [3.911133, 48.312428],
-      //   //   ],
-      //   // },
-      // },
-      // newLineMarkers: [[45, 0]],
       // Map parameters
       bounds: latLngBounds([
         [40, -6],
@@ -106,14 +91,6 @@ export default {
       zoom: 5,
       path: '/images/',
       center: [47.41322, -1.219482],
-      // baseLayers: [
-      //   {
-      //     name: 'OpenStreetMap',
-      //     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      //     attribution:
-      //       '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      //   },
-      // ],
     }
   },
 
@@ -132,18 +109,8 @@ export default {
         layer.bindPopup(
           `ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties.id}`
         )
-        layer.on('pm:update', (e) => {
-          console.log('featureUpdate', e)
-          const newTypeObjects = {
-            Line: L.Polyline,
-            Point: L.Marker,
-            Polygon: L.Polygon,
-          }
-          const newGeoObject = new newTypeObjects[e.shape](e.layer._latlngs)
-          console.log('newPol', newGeoObject.toGeoJSON())
-          console.log('feature', feature)
-          feature.geometry = newGeoObject.toGeoJSON().geometry
-        })
+        // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
+        delete layer.pm
       }
     },
     ...mapGetters({
@@ -170,17 +137,102 @@ export default {
     newPointCoord(newVal) {
       if (this.editMode && this.mode === 'point') {
         if (this.createLayer) {
-          if (newVal && newVal.lat && newVal.lng) {
+          if (newVal && newVal.lat !== null && newVal.lng !== null) {
             this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
           } else {
-            // In fact, set the marker to point [0, 0]
-            this.createLayer.setLatLng(new L.LatLng(null, null))
+            this.createLayer.remove()
+            this.createLayer = null
+          }
+        } else {
+          if (newVal && newVal.lat !== null && newVal.lng !== null) {
+            this.map = this.$refs.map.mapObject
+            this.map.on('layeradd', (e) => {
+              this.createLayer = e.layer
+              this.map.pm.addControls({
+                drawMarker: false,
+                dragMode: true,
+                removalMode: true,
+              })
+            })
+            const layer = new L.Marker([newVal.lat, newVal.lng], {
+              pmIgnore: false,
+            }).addTo(this.map)
+            // set listener on drag event on this layer
+            this.handleDrag(this.createLayer)
+            // in case of remove event, tigger handleRemove() method
+            this.createLayer.on('pm:remove', (_e) => this.handleRemove())
           }
         }
       }
     },
+    // newPointCoord(newVal) {
+    //   if (this.editMode && this.mode === 'point') {
+    //     if (this.createLayer) {
+    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
+    //         this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
+    //       } else {
+    //         this.createLayer.remove()
+    //         this.createLayer = null
+    //       }
+    //     } else {
+    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
+    //         this.map = this.$refs.map.mapObject
+    //         this.map.on('layeradd', (e) => {
+    //           this.createLayer = e.layer
+    //           this.map.pm.addControls({
+    //             drawMarker: false,
+    //             dragMode: true,
+    //             removalMode: true,
+    //           })
+    //         })
+    //         const layer = new L.Marker([newVal.lat, newVal.lng], {
+    //           pmIgnore: false,
+    //         }).addTo(this.map)
+    //         // set listener on drag event on this layer
+    //         this.handleDrag(this.createLayer)
+    //         // in case of remove event, tigger handleRemove() method
+    //         this.createLayer.on('pm:remove', (_e) => this.handleRemove())
+    //       }
+    //       // }
+    //     }
+    //   }
+    // },
   },
   methods: {
+    handleDrag(layer) {
+      layer.on('pm:dragend', (e) => {
+        this.$store.commit('coordinatesStore/addPointCoord', {
+          lng: e.layer.toGeoJSON().geometry.coordinates[0],
+          lat: e.layer.toGeoJSON().geometry.coordinates[1],
+        })
+      })
+    },
+    handleRemove() {
+      this.createLayer = null
+      switch (this.mode) {
+        case 'point':
+          this.$store.commit('coordinatesStore/addPointCoord', {
+            lat: null,
+            lng: null,
+          })
+          this.map.pm.disableGlobalRemovalMode()
+          this.map.pm.addControls({
+            drawMarker: true,
+            dragMode: false,
+            removalMode: false,
+          })
+          break
+
+        case 'line':
+          this.$store.commit('coordinatesStore/addLineCoord', [])
+          this.map.pm.addControls({
+            drawPolyline: true,
+            editMode: false,
+            removalMode: false,
+          })
+          break
+      }
+    },
     // INFO: Passé en computed, onEachFeature devient alors un object
     // (j'avais un message comme quoi le props options attendait un obkjet et non une function)
     // C'est aussi le cas ici: https://vue2-leaflet.netlify.app/examples/geo-json.html
@@ -231,7 +283,6 @@ export default {
     },
     onMapReady() {
       this.map = this.$refs.map.mapObject
-      // console.log('MAP', this.map)
       if (this.editMode) {
         this.map.pm.addControls({
           position: 'topleft',
@@ -243,7 +294,7 @@ export default {
           drawCircle: this.mode === 'circle',
           editMode: false,
           dragMode: false,
-          removalMode: false,
+          removalMode: true,
           cutPolygon: false,
           rotateMode: false,
         })
@@ -281,76 +332,16 @@ export default {
               })
               break
           }
+          // set listener on drag event on this layer
+          this.handleDrag(this.createLayer)
 
-          // Action on Point/Line change by dragging
-          e.layer.on('pm:dragend', (e) => {
-            switch (this.mode) {
-              case 'point':
-                this.$store.commit('coordinatesStore/addPointCoord', {
-                  lng: e.layer.toGeoJSON().geometry.coordinates[0],
-                  lat: e.layer.toGeoJSON().geometry.coordinates[1],
-                })
-                break
-              case 'line':
-                this.$store.commit(
-                  'coordinatesStore/addLineCoord',
-                  e.layer.toGeoJSON().geometry.coordinates
-                )
-                break
-            }
-          })
-
-          // Action on Point/Line change by dragging
-          e.layer.on('pm:edit', (e) => {
-            if (this.mode === 'line')
-              this.$store.commit(
-                'coordinatesStore/addLineCoord',
-                e.layer.toGeoJSON().geometry.coordinates
-              )
-          })
-
-          // Action on Point/Line change on delete
+          // in case of remove event, tigger handleRemove() method
           e.layer.on('pm:remove', (_e) => {
-            switch (this.mode) {
-              case 'point':
-                this.$store.commit('coordinatesStore/addPointCoord', {
-                  lat: null,
-                  lng: null,
-                })
-                this.map.pm.addControls({
-                  drawMarker: true,
-                  dragMode: false,
-                  removalMode: false,
-                })
-                break
-
-              case 'line':
-                this.$store.commit('coordinatesStore/addLineCoord', [])
-                this.map.pm.addControls({
-                  drawPolyline: true,
-                  editMode: false,
-                  removalMode: false,
-                })
-                break
-            }
+            this.handleRemove()
           })
         })
       }
     },
-    // const measureControl = new window.L.Control.Measure({
-    //   position: "topleft",
-    //   activeColor: '#FF0000',
-    //   completedColor: '#FF0000',
-    //   primaryLengthUnit: "meters",
-    //   secondaryLengthUnit: "kilometers",
-    //   primaryAreaUnit: "sqmeters",
-    //   secondaryAreaUnit: "hectares"
-    // });
-    // this.map.addControl(measureControl);
-
-    // listen to events
-    // this.createLayersFromJson();
-    // function to check if it is a Rectangle
   },
 }
 </script>

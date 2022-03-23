@@ -14,20 +14,18 @@
         </v-btn>
       </v-toolbar>
       <v-card-subtitle>
-        Dernier évènement le {{ lastDiag.date }} 
-        
-        <v-chip small :class="[lastDiag.neutralized ? 'success' : 'error']"
-              >{{ lastDiag.neutralized ? 'neutralisé' : 'à neutraliser' }}
-            </v-chip ></v-card-subtitle
-      >
+        Dernier évènement le {{ lastDiag.date }}
 
-      <!-- <v-btn icon @click="update = true"> -->
+        <v-chip small :class="[lastDiag.neutralized ? 'success' : 'error']"
+          >{{ lastDiag.neutralized ? 'neutralisé' : 'à neutraliser' }}
+        </v-chip></v-card-subtitle
+      >
 
       <v-container>
         <v-card class="my-2">
           <v-card-title
             >Info Support <v-spacer></v-spacer>
-            <v-btn icon @click="$router.push('/supports/21/diagnosis/64')">
+            <v-btn icon @click="$router.push('/view')">
               <v-icon color="orange">mdi-pencil</v-icon>
             </v-btn></v-card-title
           >
@@ -40,14 +38,14 @@
               v-for="(ga, index) in data.properties.geo_area"
               :key="index"
             >
-              {{ ga.name }} ({{ga.code}})
+              {{ ga.name }} ({{ ga.code }})
             </v-chip>
-            <p v-if="data.properties.sensitive_area.features.length > 0">
+            <p v-if="data.properties.sensitive_area.length > 0">
               Zones sensibles
             </p>
 
             <v-chip
-              v-for="(sa, index) in data.properties.sensitive_area.features"
+              v-for="(sa, index) in data.properties.sensitive_area"
               :key="index"
             >
               {{ ga.name }}
@@ -59,7 +57,10 @@
             Dernier diagnostique&nbsp;
             <span class="text-font-weight">{{ lastDiag.date }}</span>
             <v-spacer></v-spacer>
-            <v-btn icon @click="$router.push('/supports/21/diagnosis/64')">
+            <v-btn
+              icon
+              @click="$router.push(`/supports/21/diagnosis/${lastDiag.id}`)"
+            >
               <v-icon color="orange">mdi-pencil</v-icon>
             </v-btn>
           </v-card-title>
@@ -68,7 +69,6 @@
               <v-col> </v-col>
             </v-row>
 
-            
             <v-chip :class="[lastDiag.isolation_advice ? 'success' : '']"
               >{{ lastDiag.isolation_advice ? 'à ' : 'ne pas ' }}isoler</v-chip
             >
@@ -80,12 +80,21 @@
               >{{ lastDiag.attraction_advice ? '' : 'ne pas ' }}rendre
               attractif</v-chip
             >
-            <p><h4>Etat</h4> {{ lastDiag.condition.label }}</p>
-
-            <p><h4>attractivité</h4> {{ lastDiag.pole_attractivity.label }}</p>
-            <p><h4>dangerosité</h4> {{ lastDiag.pole_dangerousness.label }}</p>
             <p>
-              <h4>remarque</h4>
+              <span class="font-weight-bold">Etat</span>
+              {{ lastDiag.condition.label }}
+            </p>
+
+            <p>
+              <span class="font-weight-bold">attractivité</span>
+              {{ lastDiag.pole_attractivity.label }}
+            </p>
+            <p>
+              <span class="font-weight-bold">dangerosité</span>
+              {{ lastDiag.pole_dangerousness.label }}
+            </p>
+            <p>
+              <span class="font-weight-bold">remarque</span>
               {{ lastDiag.remark }}
             </p>
           </v-card-text>

@@ -1,12 +1,7 @@
 
 <template>
   <v-app>
-    <v-navigation-drawer
-      :mini-variant="miniVariant"
-      clipped
-      mobile-breakpoint="0"
-      app
-    >
+    <v-navigation-drawer :mini-variant="miniVariant" clipped app>
       <drawer-menu />
     </v-navigation-drawer>
     <v-app-bar clipped-left app dark elevation="0" color="light-blue darken-4">

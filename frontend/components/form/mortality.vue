@@ -1,11 +1,6 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-form
-      ref="
-    form"
-      v-model="formValid"
-      class="text-center"
-    >
+    <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
         <v-toolbar-title>{{ $t('mortality.new_mortality') }}</v-toolbar-title>
 
@@ -28,7 +23,6 @@
                 ref="lat"
                 v-model="lat"
                 :label="$t('support.latitude')"
-                :disabled="!manualChange"
                 type="number"
                 placeholder="Latitude"
                 :rules="[rules.requiredOrNotValid, rules.latRange]"
@@ -37,10 +31,34 @@
                 outlined
                 dense
               />
+              <!-- <v-text-field
+                ref="lat"
+                v-model="lat"
+                :label="$t('support.latitude')"
+                :disabled="!manualChange"
+                type="number"
+                placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              /> -->
             </v-col>
 
             <v-col cols="12" md="4">
               <v-text-field
+                ref="lng"
+                v-model="lng"
+                :label="$t('support.longitude')"
+                type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              />
+              <!-- <v-text-field
                 ref="lng"
                 v-model="lng"
                 :label="$t('support.longitude')"
@@ -51,16 +69,16 @@
                 hide-spin-buttons
                 outlined
                 dense
-              />
+              /> -->
             </v-col>
 
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <v-checkbox
                 v-model="manualChange"
                 dense
                 :label="$t('support.manual-handling')"
               ></v-checkbox>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-container>
         <v-divider></v-divider>
@@ -98,13 +116,17 @@
 
             <v-col cols="12" md="6">
               <v-autocomplete
-                v-model="mortalityData.species"
-                :items="species"
+                v-model="mortalityData.species_id"
+                :items="speciesItems"
+                :loading="isLoading"
+                :search-input.sync="speciesSearch"
+                hide-no-data
+                hide-selected
                 item-text="vernacular_name"
                 item-value="id"
-                :rules="[rules.required]"
-                hide-selected
                 label="Espèce"
+                placeholder="Start typing to Search"
+                required
                 outlined
                 dense
               ></v-autocomplete>
@@ -117,11 +139,24 @@
                 type="string"
                 :placeholder="$t('mortality.observer')"
                 hide-spin-buttons
+                required
                 outlined
                 dense
               />
             </v-col>
-
+            <v-col cols="12" md="6">
+              {{ mortalityData.death_cause_id }}
+              <v-select
+                v-model="mortalityData.death_cause_id"
+                :items="deathCause"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                label="Cause de la mortalité"
+                outlined
+                dense
+              ></v-select>
+            </v-col>
             <v-col cols="12" md="6">
               <v-text-field
                 ref="lat"
@@ -189,7 +224,7 @@ export default {
   data() {
     return {
       formValid: true,
-      manualChange: false, // boolean to activate manual coordinate change
+      // manualChange: false, // boolean to activate manual coordinate change
       // form values
       newLat: null,
       newLng: null,
@@ -212,6 +247,10 @@ export default {
         nb_death: 0, // null,
         death_cause: null,
         data_source: null,
+        geom: {
+          type: 'Point',
+          coordinates: [],
+        },
       },
       // rules for form validation
       rules: {
@@ -225,6 +264,11 @@ export default {
         textLength: (v) =>
           (v || '').length <= 300 || `${this.$t('valid.length')}: 300`,
       },
+      // Species Autocomplete data
+      descriptionLimit: 60,
+      isLoading: false,
+      speciesSearch: null,
+      specieSearchEntries: [],
     }
   },
   computed: {
@@ -241,7 +285,7 @@ export default {
       // on change in v-text-field, value is set to store.
       set(newVal) {
         this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: Number(newVal),
+          lat: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
           lng: this.lng,
         })
       },
@@ -260,7 +304,7 @@ export default {
       set(newVal) {
         this.$store.commit('coordinatesStore/addPointCoord', {
           lat: this.lat,
-          lng: Number(newVal),
+          lng: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
         })
       },
     },
@@ -268,12 +312,53 @@ export default {
     ...mapGetters({
       newPoint: 'coordinatesStore/newPointCoord',
       species: 'speciesStore/getSpecies',
-      riskLevels: 'nomenclaturesStore/getRiskLevels',
+      deathCause: 'nomenclaturesStore/getDeathCause',
     }),
+    speciesFields() {
+      if (!this.mortalityData.species) return []
+
+      return Object.keys(this.mortalityData.species).map((key) => {
+        return {
+          key,
+          value: this.mortalityData.species[key] || 'n/a',
+        }
+      })
+    },
+    speciesItems() {
+      return this.specieSearchEntries.map((entry) => {
+        const vernacular_name =
+          entry.vernacular_name.length > this.descriptionLimit
+            ? entry.vernacular_name.slice(0, this.descriptionLimit) + '...'
+            : entry.vernacular_name
+
+        return Object.assign({}, entry, { vernacular_name })
+      })
+    },
   },
-  mounted() {
-    this.$store.dispatch('speciesStore/loadSpecies')
+  watch: {
+    speciesSearch(val) {
+      // Items have already been loaded
+      if (this.speciesItems.length > 0) return
+
+      // Items have already been requested
+      if (this.isLoading) return
+
+      this.isLoading = true
+
+      // Lazily load input items
+      this.$axios
+        .$get(`species/?search=${val}`)
+        .then((data) => {
+          this.specieSearchEntries = data
+          this.count = data.length
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        .finally(() => (this.isLoading = false))
+    },
   },
+  mounted() {},
   methods: {
     /**
      * back(): Method to get back if cancel Point creation.
@@ -296,10 +381,10 @@ export default {
      * process.
      */
     async submit() {
-      if (this.formValid) {
+      if (this.$refs.form.validate()) {
         // Case of creation of new Point and associated Diagnosis
         if (!this.mortality) {
-          await this.createNewPoint()
+          await this.createNewData()
           // new Point is successfully created
         }
         this.back()
@@ -313,11 +398,13 @@ export default {
      *
      * If process fails, error message is displayed in snackBar through error handling process.
      */
-    async createNewPoint() {
+    async createNewData() {
       try {
-        this.pointData.geom.coordinates = [this.lng, this.lat]
+        this.mortalityData.geom.coordinates = [this.lng, this.lat]
+        console.log('mortalityData', this.mortalityData)
         return await this.$axios.$post('mortality/', this.mortalityData)
       } catch (_err) {
+        console.error(_err)
         const error = {}
         error.code = errorCodes.create_point.code
         error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)

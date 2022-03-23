@@ -18,6 +18,7 @@ export const state = () => ({
   ownerItems: {},
   poleTypeItems: {},
   riskLevelItems: {},
+  deathCauseItems: {},
 })
 
 export const mutations = {
@@ -38,6 +39,9 @@ export const mutations = {
   },
   addRiskLevels(state, data) {
     state.riskLevelItems = data
+  },
+  addDeathCause(state, data) {
+    state.deathCauseItems = data
   },
 }
 
@@ -77,6 +81,15 @@ export const getters = {
    */
   getRiskLevels(state) {
     return state.riskLevelItems
+  },
+  /**
+   * Getter for death cause nomenclature items.
+   *
+   * @param {state} state of this store module
+   * @return {JSON object} returns the list of nomenclature items for risk levels
+   */
+  getDeathCause(state) {
+    return state.deathCauseItems
   },
 }
 
@@ -122,6 +135,18 @@ export const actions = {
       }
       // set "riskLevels" to state value "riskLevelItems"
       commit('addRiskLevels', riskLevels.item_nomenclature)
+
+      // // gather Death cause Items from all Items
+      const deathCause = types.find(
+        (elem) => elem.mnemonic === 'cause_of_death'
+      )
+      console.error('store', types, deathCause)
+      // If no Items is gathered, an Error is thrown
+      if (deathCause === undefined) {
+        throw new Error('deathCause')
+      }
+      // set "riskLevels" to state value "riskLevelItems"
+      commit('addDeathCause', deathCause.item_nomenclature)
 
       // error handling
     } catch (err) {

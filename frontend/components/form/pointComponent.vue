@@ -1,13 +1,8 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-form
-      ref="
-    form"
-      v-model="formValid"
-      class="text-center"
-    >
+    <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
-        <v-toolbar-title>{{ $t('support.new_support') }}</v-toolbar-title>
+        <v-toolbar-title>{{ $t('support.new_support') }} </v-toolbar-title>
 
         <v-spacer></v-spacer>
 
@@ -19,12 +14,24 @@
         <v-container v-if="!diagnosis">
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong>{{ $t('forms.coordinates') }}</strong>
+              <strong>{{ $t('forms.coordinates') }} </strong>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="4">
               <v-text-field
+                ref="lat"
+                v-model="lat"
+                :label="$t('support.latitude')"
+                type="number"
+                placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              />
+              <!-- <v-text-field
                 ref="lat"
                 v-model="lat"
                 :label="$t('support.latitude')"
@@ -36,11 +43,23 @@
                 hide-spin-buttons
                 outlined
                 dense
-              />
+              /> -->
             </v-col>
 
             <v-col cols="12" md="4">
               <v-text-field
+                ref="lng"
+                v-model="lng"
+                :label="$t('support.longitude')"
+                type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                required
+                hide-spin-buttons
+                outlined
+                dense
+              />
+
+              <!-- <v-text-field
                 ref="lng"
                 v-model="lng"
                 :label="$t('support.longitude')"
@@ -51,16 +70,16 @@
                 hide-spin-buttons
                 outlined
                 dense
-              />
+              /> -->
             </v-col>
 
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <v-checkbox
                 v-model="manualChange"
                 dense
                 :label="$t('support.manual-handling')"
               ></v-checkbox>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-container>
         <v-divider></v-divider>
@@ -255,7 +274,7 @@ export default {
   data() {
     return {
       formValid: true,
-      manualChange: false, // boolean to activate manual coordinate change
+      // manualChange: false, // boolean to activate manual coordinate change
       // form values
       newLat: null,
       newLng: null,
@@ -263,30 +282,42 @@ export default {
       pointData: {
         geom: {
           type: 'Point',
-          coordinates: [],
+          coordinates: this.support ? this.support.coordinates : [],
         },
-        owner_id: 1, // null,
+        owner_id: this.support ? this.support.owner_id : null,
       },
       // define data related to Diagnosis
       diagData: {
-        date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
-        remark: null,
-        pole_type_id: [11, 12], // null,
-        neutralized: false,
-        condition_id: 6, // null,
-        attraction_advice: false,
-        dissuasion_advice: false,
-        isolation_advice: false,
-        pole_attractivity_id: 8, // null,
-        pole_dangerousness_id: 8, // null
+        date: this.diagnosis
+          ? this.diagnosis.date
+          : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+              .toISOString()
+              .substr(0, 10),
+        remark: this.diagnosis ? this.diagnosis.remark : null,
+        pole_type_id: this.diagnosis ? this.diagnosis.pole_type : [],
+        neutralized: this.diagnosis ? this.diagnosis.neutralized : false,
+        condition_id: this.diagnosis ? this.diagnosis.condition.id : null,
+        attraction_advice: this.diagnosis
+          ? this.diagnosis.attraction_advice
+          : false,
+        dissuasion_advice: this.diagnosis
+          ? this.diagnosis.dissuasion_advice
+          : false,
+        isolation_advice: this.diagnosis
+          ? this.diagnosis.isolation_advice
+          : false,
+        pole_attractivity_id: this.diagnosis
+          ? this.diagnosis.pole_attractivity.id
+          : null,
+        pole_dangerousness_id: this.diagnosis
+          ? this.diagnosis.pole_dangerousness.id
+          : null,
       },
       // rules for form validation
       rules: {
         required: (v) => !!v || this.$t('valid.required'),
         requiredOrNotValid: (v) =>
-          !!v || this.$t('valid.required_or_not_valid'),
+          v === 0 || !!v || this.$t('valid.required_or_not_valid'),
         latRange: (v) =>
           (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
         lngRange: (v) =>
@@ -310,7 +341,7 @@ export default {
       // on change in v-text-field, value is set to store.
       set(newVal) {
         this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: Number(newVal),
+          lat: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
           lng: this.lng,
         })
       },
@@ -329,7 +360,7 @@ export default {
       set(newVal) {
         this.$store.commit('coordinatesStore/addPointCoord', {
           lat: this.lat,
-          lng: Number(newVal),
+          lng: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
         })
       },
     },
@@ -364,7 +395,7 @@ export default {
      * process.
      */
     async submit() {
-      if (this.formValid) {
+      if (this.$refs.form.validate()) {
         // Case of creation of new Point and associated Diagnosis
         if (!this.support && !this.diagnosis) {
           const pointCreated = await this.createNewPoint()
