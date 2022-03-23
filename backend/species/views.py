@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.filters import SearchFilter
 
 from .models import Species
 from .serializers import SpeciesSerializer
@@ -13,4 +14,14 @@ class SpeciesViewSet(viewsets.ModelViewSet):
 
     serializer_class = SpeciesSerializer
     # permission_classes = [DjangoModelPermissions]
+    filter_backends = [
+        SearchFilter,
+    ]
+    search_fields = [
+        "=code",
+        "scientific_name",
+        "vernacular_name",
+        "@scientific_name",
+        "@vernacular_name",
+    ]
     queryset = Species.objects.all()
