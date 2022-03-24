@@ -211,8 +211,8 @@ export default {
         author: null,
         species: null, // null,
         infrstr: null,
-        nb_death: 0, // null,
-        death_cause: null,
+        nb_death: 1,
+        death_cause_id: null,
         data_source: null,
         geom: {
           type: 'Point',

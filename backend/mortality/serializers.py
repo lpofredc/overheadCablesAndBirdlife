@@ -1,4 +1,5 @@
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
+from sinp_nomenclatures.serializers import NomenclatureSerializer
 
 from species.serializers import SpeciesSerializer
 
@@ -13,6 +14,7 @@ class MortalitySerializer(GeoFeatureModelSerializer):
 
     # Allow to display nested data
     species = SpeciesSerializer(read_only=True)
+    death_cause = NomenclatureSerializer(read_only=True)
 
     class Meta:
         model = Mortality

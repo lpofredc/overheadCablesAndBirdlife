@@ -45,11 +45,8 @@
               Zones sensibles
             </p>
 
-            <v-chip
-              v-for="(sa, index) in data.properties.sensitive_area"
-              :key="index"
-            >
-              {{ ga.name }}
+            <v-chip v-for="sa in data.properties.sensitive_area" :key="sa.id">
+              {{ sa.name }} {{ sa.name }}
             </v-chip>
           </v-card-text>
         </v-card>
