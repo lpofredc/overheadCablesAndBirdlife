@@ -111,6 +111,7 @@ export default {
         )
         // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
         delete layer.pm
+        layer.setStyle({ pmIgnore: false })
       }
     },
     ...mapGetters({
@@ -154,9 +155,7 @@ export default {
                 removalMode: true,
               })
             })
-            const layer = new L.Marker([newVal.lat, newVal.lng], {
-              pmIgnore: false,
-            }).addTo(this.map)
+            const layer = new L.Marker([newVal.lat, newVal.lng]).addTo(this.map)
             // set listener on drag event on this layer
             this.handleDrag(this.createLayer)
             // in case of remove event, tigger handleRemove() method
@@ -294,7 +293,7 @@ export default {
           drawCircle: this.mode === 'circle',
           editMode: false,
           dragMode: false,
-          removalMode: true,
+          removalMode: false,
           cutPolygon: false,
           rotateMode: false,
         })

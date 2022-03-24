@@ -1,7 +1,8 @@
 <template>
   <div>
-    <form-pointUpdateComponent v-if="update" />
-    <v-card v-if="!update">
+    <!-- <form-pointUpdateComponent v-if="update" /> -->
+    <!-- <v-card v-if="!update"> -->
+    <v-card>
       <v-toolbar color="green" dark elevation="0">
         <v-toolbar-title
           >{{ $t('support.support') }}
@@ -65,10 +66,6 @@
             </v-btn>
           </v-card-title>
           <v-card-text>
-            <v-row>
-              <v-col> </v-col>
-            </v-row>
-
             <v-chip :class="[lastDiag.isolation_advice ? 'success' : '']"
               >{{ lastDiag.isolation_advice ? 'à ' : 'ne pas ' }}isoler</v-chip
             >
@@ -84,6 +81,12 @@
               <span class="font-weight-bold">Etat</span>
               {{ lastDiag.condition.label }}
             </p>
+            <p>
+              Description du poteau
+              <v-chip v-for="pt in lastDiag.pole_type" :key="pt.id">{{
+                pt.label
+              }}</v-chip>
+            </p>
 
             <p>
               <span class="font-weight-bold">attractivité</span>
@@ -97,6 +100,25 @@
               <span class="font-weight-bold">remarque</span>
               {{ lastDiag.remark }}
             </p>
+            <v-list>
+              <v-list-item v-for="img in lastDiag.media" :key="img.id">
+                <v-row>
+                  <v-col>
+                    <v-img
+                      :src="img.storage"
+                      max-height="100"
+                      max-width="166"
+                      class="ma-2"
+                    />
+                  </v-col>
+                  <!-- <v-col>date: {{ pictDate }}</v-col>   -->
+                  <v-col></v-col>
+                  <v-col cols="1">
+                    <v-icon small color="red">mdi-trash-can</v-icon>
+                  </v-col>
+                </v-row>
+              </v-list-item>
+            </v-list>
           </v-card-text>
           <v-container v-if="lastOp">
             <h3>OPERATION</h3>
@@ -140,6 +162,10 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
 import { Feature } from 'geojson'
+
+interface Diagnosis {
+  pole_type: Object
+}
 
 export default Vue.extend({
   name: 'SupportDetailComponent',

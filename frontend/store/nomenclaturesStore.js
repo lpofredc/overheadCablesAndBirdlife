@@ -140,7 +140,6 @@ export const actions = {
       const deathCause = types.find(
         (elem) => elem.mnemonic === 'cause_of_death'
       )
-      console.error('store', types, deathCause)
       // If no Items is gathered, an Error is thrown
       if (deathCause === undefined) {
         throw new Error('deathCause')

@@ -46,7 +46,7 @@
         ><v-icon class="pl-2">mdi-github</v-icon></a
       >
     </v-system-bar>
-    <error-snackbar />
+    <error-snackbar centered />
   </v-app>
 </template>
 

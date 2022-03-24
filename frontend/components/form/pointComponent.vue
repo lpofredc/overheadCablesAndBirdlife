@@ -3,9 +3,7 @@
     <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
         <v-toolbar-title>{{ $t('support.new_support') }} </v-toolbar-title>
-
         <v-spacer></v-spacer>
-
         <v-btn icon @click="$router.back()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -14,7 +12,7 @@
         <v-container v-if="!diagnosis">
           <v-row>
             <v-col cols="12" class="text-left">
-              <strong>{{ $t('forms.coordinates') }} </strong>
+              <strong> {{ $t('forms.general-infrastructure') }}</strong>
             </v-col>
           </v-row>
           <v-row>
@@ -31,19 +29,6 @@
                 outlined
                 dense
               />
-              <!-- <v-text-field
-                ref="lat"
-                v-model="lat"
-                :label="$t('support.latitude')"
-                :disabled="!manualChange"
-                type="number"
-                placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              /> -->
             </v-col>
 
             <v-col cols="12" md="4">
@@ -58,39 +43,8 @@
                 outlined
                 dense
               />
-
-              <!-- <v-text-field
-                ref="lng"
-                v-model="lng"
-                :label="$t('support.longitude')"
-                :disabled="!manualChange"
-                type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              /> -->
             </v-col>
-
-            <!-- <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="manualChange"
-                dense
-                :label="$t('support.manual-handling')"
-              ></v-checkbox>
-            </v-col> -->
-          </v-row>
-        </v-container>
-        <v-divider></v-divider>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('forms.general') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="6" v-if="!diagnosis">
+            <v-col cols="12" md="4" v-if="!diagnosis">
               <v-select
                 v-model="pointData.owner_id"
                 :items="networkOwners"
@@ -104,8 +58,17 @@
               >
               </v-select>
             </v-col>
-
-            <v-col cols="12" md="6" v-if="!support">
+          </v-row>
+        </v-container>
+        <v-divider></v-divider>
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-left">
+              <strong>{{ $t('display.diagnosis') }}</strong>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="4" v-if="!support">
               <v-menu
                 :close-on-content-click="false"
                 transition="scale-transition"
@@ -124,27 +87,8 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker v-model="diagData.date" no-title></v-date-picker>
-              </v-menu>
-            </v-col>
-
-            <v-col cols="12" v-if="!support">
-              <v-autocomplete
-                v-model="diagData.pole_type_id"
-                :items="poleTypes"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                hide-selected
-                :label="$t('support.support-type')"
-                multiple
-                deletable-chips
-                small-chips
-                outlined
-                dense
-              ></v-autocomplete>
-            </v-col>
-
-            <v-col cols="12" md="8" v-if="!support">
+              </v-menu> </v-col
+            ><v-col cols="12" md="4" v-if="!support">
               <v-select
                 v-model="diagData.condition_id"
                 :items="conditions"
@@ -164,29 +108,23 @@
                 dense
               ></v-checkbox>
             </v-col>
-            <v-col cols="12">
-              <v-textarea
-                v-model="diagData.remark"
-                clearable
-                clear-icon="mdi-close-circle"
-                :label="$t('app.remark')"
-                :rules="[rules.textLength]"
-                rows="2"
-                counter="300"
+
+            <v-col cols="12" v-if="!support">
+              <v-autocomplete
+                v-model="diagData.pole_type_id"
+                :items="poleTypes"
+                item-text="label"
+                item-value="id"
+                :rules="[rules.required]"
+                hide-selected
+                :label="$t('support.support-type')"
+                multiple
+                deletable-chips
+                small-chips
                 outlined
                 dense
-              ></v-textarea>
+              ></v-autocomplete>
             </v-col>
-          </v-row>
-        </v-container>
-        <v-divider></v-divider>
-        <v-container v-if="!support">
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('support.advice') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
             <v-col cols="12" md="6">
               <v-select
                 v-model="diagData.pole_attractivity_id"
@@ -232,6 +170,20 @@
                 dense
               ></v-checkbox>
             </v-col>
+
+            <v-col cols="12">
+              <v-textarea
+                v-model="diagData.remark"
+                clearable
+                clear-icon="mdi-close-circle"
+                :label="$t('app.remark')"
+                :rules="[rules.textLength]"
+                rows="2"
+                counter="300"
+                outlined
+                dense
+              ></v-textarea>
+            </v-col>
           </v-row>
         </v-container>
         <v-divider></v-divider>
@@ -245,6 +197,27 @@
             <v-col cols="12">
               <utils-picture-component ref="upc" />
             </v-col>
+            <v-container>
+              <v-list v-if="diagnosis">
+                <v-list-item v-for="img in diagnosis.media" :key="img.id">
+                  <v-row>
+                    <v-col>
+                      <v-img
+                        :src="img.storage"
+                        max-height="100"
+                        max-width="166"
+                        class="ma-2"
+                      />
+                    </v-col>
+                    <!-- <v-col>date: {{ pictDate }}</v-col> -->
+                    <v-col></v-col>
+                    <v-col cols="1">
+                      <v-icon small color="red">mdi-trash-can</v-icon>
+                    </v-col>
+                  </v-row>
+                </v-list-item>
+              </v-list></v-container
+            >
           </v-row>
         </v-container>
       </v-card-text>
@@ -278,6 +251,8 @@ export default {
       // form values
       newLat: null,
       newLng: null,
+      // To manage Media
+      newCreatedMediaIdList: [],
       // define data related to Point
       pointData: {
         geom: {
@@ -294,7 +269,9 @@ export default {
               .toISOString()
               .substr(0, 10),
         remark: this.diagnosis ? this.diagnosis.remark : null,
-        pole_type_id: this.diagnosis ? this.diagnosis.pole_type : [],
+        pole_type_id: this.diagnosis
+          ? this.diagnosis.pole_type.map((pt) => pt.id)
+          : [],
         neutralized: this.diagnosis ? this.diagnosis.neutralized : false,
         condition_id: this.diagnosis ? this.diagnosis.condition.id : null,
         attraction_advice: this.diagnosis
@@ -312,6 +289,7 @@ export default {
         pole_dangerousness_id: this.diagnosis
           ? this.diagnosis.pole_dangerousness.id
           : null,
+        media_id: this.diagnosis ? this.diagnosis.media.map((m) => m.id) : [],
       },
       // rules for form validation
       rules: {
@@ -404,6 +382,7 @@ export default {
             // Create Diagnosis
             await this.createNewDiagnosis(pointCreated.properties.id)
           }
+          this.$router.push('/view')
         } else if (this.support) {
           // update of existing Point
           console.log('Update of Support not implemented yet')
@@ -415,16 +394,10 @@ export default {
           // watcher in error-snackbar component
           this.$store.commit('errorStore/setError', error)
         } else if (this.diagnosis) {
-          // update of existing Diagnosis
-          const error = {
-            code: 0,
-            msg: 'Update of Dignosis not implemented yet',
-          }
-          // set error message to errorStore and triggers message display through "err"
-          // watcher in error-snackbar component
-          this.$store.commit('errorStore/setError', error)
+          // Case of update of Diagnosis
+          await this.updateDiagnosis()
+          this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
         }
-        this.back()
       }
     },
 
@@ -453,7 +426,7 @@ export default {
     /**
      * createNewDiagnosis(): Method that create new Diagnosis based on forms data(cf.this.diagData)
      *
-     * @param {BigInt} infrstr_id id of related Insfrastructure (Point)
+     * @param {Number} infrstr_id id of related Insfrastructure (Point)
      *
      * Error handling: A Diagnosis should be created at time of Infrastructure (Point) creation.
      * If Diagnosis creation fails, related Infrastructure (Point) will be deleted.
@@ -472,8 +445,8 @@ export default {
         // If Diagnosis creation fails, related infrastructure(Point) is deleted
         await this.$axios.$delete(`cables/points/${infrstr_id}/`)
         // If Diagnosis creation fails, related Media created are deleted
-        if (mediaIdList) {
-          mediaIdList.forEach(
+        if (this.newCreatedMediaIdList) {
+          this.newCreatedMediaIdList.forEach(
             async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
           )
         }
@@ -488,17 +461,52 @@ export default {
     },
 
     /**
+     * updateDiagnosis(): Method that update Diagnosis based on forms data (cf.this.diagData)
+     *
+     * Error handling: If Diagnosis update fails, new created Media will be deleted.
+     * Finally, error message is displayed in snackBar through error handling process.
+     */
+    async updateDiagnosis() {
+      // Create new Media as selected in component form and get list of Ids of created Media
+      const mediaIdList = await this.createNewMedia()
+      try {
+        this.diagData.infrastructure = this.diagnosis.infrastructure // set Infrastructure (Point) id
+        this.diagData.media_id = mediaIdList // set Media id list
+        // Create Diagnosis
+        return await this.$axios.$put(
+          `cables/diagnosis/${this.diagnosis.id}/`,
+          this.diagData
+        )
+      } catch (_err) {
+        // If Diagnosis creation fails, related Media created are deleted
+        if (this.newCreatedMediaIdList) {
+          this.newCreatedMediaIdList.forEach(
+            async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
+          )
+        }
+        // Error display
+        const error = {}
+        error.code = errorCodes.update_pole_diagnosis.code
+        error.msg = $nuxt.$t(`error.${errorCodes.update_pole_diagnosis.msg}`)
+        // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
+        this.$store.commit('errorStore/setError', error)
+        this.back()
+      }
+    },
+
+    /**
      * createNewMedia(): Method that create new Media based on component forms data and return the
      * list of Ids of created Media
      *
-     * @return {BigInt[]} as new Diagnosis
+     * @return {Number[]} as new Diagnosis
      *
      * If process fails for at least one Media creation, error message is displayed in snackBar
      * through error handling process. Id of Media for which creation did not fail will be return
      * anyway.
      */
     async createNewMedia() {
-      const mediaIdList = []
+      const mediaIdList = this.diagData.media_id
+
       // await all Promises be resolved before returning result
       await Promise.all(
         // upc for "util-picture-component": task on each img file of the map
@@ -519,6 +527,7 @@ export default {
               },
             })
             mediaIdList.push(newImg.id) // set Media id to mediaIdList
+            this.newCreatedMediaIdList.push(newImg.id)
           } catch (_err) {
             const error = {}
             error.code = errorCodes.img_sending.code

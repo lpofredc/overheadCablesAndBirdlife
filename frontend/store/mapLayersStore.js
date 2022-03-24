@@ -22,7 +22,6 @@ export const actions = {
         throw new Error('conditions')
       }
       commit('addBaseLayers', data)
-      console.log('state.baseLayers', state.baseLayers)
     } catch (err) {
       console.error('ERROR', err)
       const error = {}

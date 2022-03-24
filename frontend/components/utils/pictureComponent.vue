@@ -1,5 +1,15 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="border: solid 2px green">
+    <v-file-input
+      ref="pictInput"
+      v-model="newImg"
+      :rules="rules"
+      hide-input
+      accept="image/png, image/jpeg, image/bmp"
+      prepend-icon="mdi-camera"
+      :label="$t('picture.add_file')"
+      @change="displayImage"
+    ></v-file-input>
     <v-list>
       <v-list-item v-for="(img, index) in imgFileContent" :key="index">
         <v-row>
@@ -14,16 +24,6 @@
         </v-row>
       </v-list-item>
     </v-list>
-    <v-file-input
-      ref="pictInput"
-      v-model="newImg"
-      :rules="rules"
-      :clearable="true"
-      accept="image/png, image/jpeg, image/bmp"
-      prepend-icon="mdi-camera"
-      :label="$t('picture.add_file')"
-      @change="displayImage"
-    ></v-file-input>
   </v-container>
 </template>
 
@@ -32,6 +32,10 @@ import * as errorCodes from '~/static/errorConfig.json'
 
 export default {
   name: 'PictureComponent',
+
+  props: {
+    diagId: { type: Number, default: null },
+  },
   data: () => ({
     newImg: null,
     pictDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -40,11 +44,8 @@ export default {
     imgFileContent: [],
     imgFileObject: [],
     showError: false,
+    // TODO test validate and display message in snackbar if issue
     rules: [
-      (value) =>
-        !value ||
-        value.size < 200000 ||
-        `${$nuxt.$t('forms.too_big_file')} 200 Ko`,
       (value) =>
         !value ||
         value.type.startsWith('image/') ||

@@ -22,7 +22,6 @@ export const actions = {
         throw new Error('conditions')
       }
       commit('addSpecies', data)
-      console.log('state.species', state.species)
     } catch (err) {
       console.error('ERROR', err)
       const error = {}

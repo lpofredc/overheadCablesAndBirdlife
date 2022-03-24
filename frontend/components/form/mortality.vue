@@ -31,19 +31,6 @@
                 outlined
                 dense
               />
-              <!-- <v-text-field
-                ref="lat"
-                v-model="lat"
-                :label="$t('support.latitude')"
-                :disabled="!manualChange"
-                type="number"
-                placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              /> -->
             </v-col>
 
             <v-col cols="12" md="4">
@@ -58,27 +45,7 @@
                 outlined
                 dense
               />
-              <!-- <v-text-field
-                ref="lng"
-                v-model="lng"
-                :label="$t('support.longitude')"
-                :disabled="!manualChange"
-                type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              /> -->
             </v-col>
-
-            <!-- <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="manualChange"
-                dense
-                :label="$t('support.manual-handling')"
-              ></v-checkbox>
-            </v-col> -->
           </v-row>
         </v-container>
         <v-divider></v-divider>

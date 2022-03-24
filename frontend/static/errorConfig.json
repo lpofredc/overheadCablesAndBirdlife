@@ -47,6 +47,10 @@
     "code": 804,
     "msg": "create-issue"
   },
+  "update_pole_diagnosis": {
+    "code": 805,
+    "msg": "create-issue"
+  },
   "img_loading": {
     "code": 901,
     "msg": "loading-img-issue"
