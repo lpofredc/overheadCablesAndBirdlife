@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
-
+DEV = config("DEV", default=False, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost, 127.0.0.1, testserver", cast=Csv())
 # DEFAULT_C
 
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.gis",
     "django.contrib.postgres",
-    "fixture_magic",
     "django_filters",
     "djoser",
     "polymorphic",
@@ -63,6 +62,11 @@ INSTALLED_APPS = [
     "map_layers",
 ]
 
+if DEV:
+    INSTALLED_APPS = INSTALLED_APPS + [
+        "django_extensions",
+        "fixture_magic",
+    ]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
