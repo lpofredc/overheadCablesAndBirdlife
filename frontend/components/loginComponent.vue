@@ -70,7 +70,6 @@ export default {
   },
   methods: {
     closeDialog() {
-      console.log('child')
       this.$emit('close-dialog')
     },
     reset() {

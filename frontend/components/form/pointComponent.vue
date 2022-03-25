@@ -198,7 +198,7 @@
               <utils-picture-component ref="upc" />
             </v-col>
             <v-container>
-              <v-list v-if="diagnosis">
+              <v-list v-if="diagnosis && modifyDiag">
                 <v-list-item v-for="img in diagnosis.media" :key="img.id">
                   <v-row>
                     <v-col>
@@ -263,11 +263,12 @@ export default {
       },
       // define data related to Diagnosis
       diagData: {
-        date: this.diagnosis
-          ? this.diagnosis.date
-          : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-              .toISOString()
-              .substr(0, 10),
+        date:
+          this.diagnosis && !this.modifyDiag
+            ? this.diagnosis.date
+            : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .substr(0, 10),
         remark: this.diagnosis ? this.diagnosis.remark : null,
         pole_type_id: this.diagnosis
           ? this.diagnosis.pole_type.map((pt) => pt.id)
@@ -306,6 +307,14 @@ export default {
     }
   },
   computed: {
+    /**
+     * String value (changed to boolean) get from url query param "modifyDiag" indicating a new
+     * Diag is to be created from an existing support. This make diagData initialized as empty.
+     * By default, "modifyDiag" is true (means a new Diagnosis would be added)
+     */
+    modifyDiag() {
+      return this.$route.query.modifyDiag === 'true' ? true : false
+    },
     /**
      * Getter and Setter for "lat" value.
      * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
@@ -377,15 +386,22 @@ export default {
         // Case of creation of new Point and associated Diagnosis
         if (!this.support && !this.diagnosis) {
           const pointCreated = await this.createNewPoint()
-          // new Point is successfully created
+          // new Point (Support) is successfully created
           if (pointCreated) {
             // Create Diagnosis
             await this.createNewDiagnosis(pointCreated.properties.id)
           }
           this.$router.push('/view')
+        } else if (this.diagnosis && this.modifyDiag) {
+          // Case of update of Diagnosis
+          await this.updateDiagnosis()
+          this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
+        } else if (this.diagnosis && !this.modifyDiag) {
+          // Case of creation of new Diagnosis on existing Support
+          await this.addNewDiagnosis()
+          this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
         } else if (this.support) {
           // update of existing Point
-          console.log('Update of Support not implemented yet')
           const error = {
             code: 0,
             msg: 'Update of Support not implemented yet',
@@ -393,10 +409,6 @@ export default {
           // set error message to errorStore and triggers message display through "err"
           // watcher in error-snackbar component
           this.$store.commit('errorStore/setError', error)
-        } else if (this.diagnosis) {
-          // Case of update of Diagnosis
-          await this.updateDiagnosis()
-          this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
         }
       }
     },
@@ -461,6 +473,41 @@ export default {
     },
 
     /**
+     * addNewDiagnosis(): Method that create new Diagnosis based on forms data (cf.this.diagData)
+     * on an existing Support
+     *
+     * Error handling: A Diagnosis should be created at time of Infrastructure (Point) creation.
+     * If Diagnosis creation fails, related Infrastructure (Point) will be deleted.
+     * Related Media will also be deleted in this case.
+     * Finally, error message is displayed in snackBar through error handling process.
+     */
+    async addNewDiagnosis() {
+      // Create Media as selected in component form and get list of Ids of created Media
+      console.log(this.modifyDiag ? 'vrai' : 'faux')
+      const mediaIdList = await this.createNewMedia()
+      try {
+        this.diagData.infrastructure = this.diagnosis.infrastructure // set Infrastructure (Point) id
+        this.diagData.media_id = mediaIdList // set Media id list
+        // Create Diagnosis
+        return await this.$axios.$post('cables/diagnosis/', this.diagData)
+      } catch (_err) {
+        // If Diagnosis creation fails, related Media created are deleted
+        if (this.newCreatedMediaIdList) {
+          this.newCreatedMediaIdList.forEach(
+            async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
+          )
+        }
+        // Error display
+        const error = {}
+        error.code = errorCodes.create_pole_diagnosis.code
+        error.msg = $nuxt.$t(`error.${errorCodes.create_pole_diagnosis.msg}`)
+        // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
+        this.$store.commit('errorStore/setError', error)
+        this.back()
+      }
+    },
+
+    /**
      * updateDiagnosis(): Method that update Diagnosis based on forms data (cf.this.diagData)
      *
      * Error handling: If Diagnosis update fails, new created Media will be deleted.
@@ -505,7 +552,7 @@ export default {
      * anyway.
      */
     async createNewMedia() {
-      const mediaIdList = this.diagData.media_id
+      const mediaIdList = this.modifyDiag ? this.diagData.media_id : []
 
       // await all Promises be resolved before returning result
       await Promise.all(

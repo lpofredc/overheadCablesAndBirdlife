@@ -1,9 +1,9 @@
 {
   "app": {
-    "app-name": "Avifaune & cables aériens",
+    "app-name": "Avifaune & câbles aériens",
     "cancel": "Annuler",
     "data": "Données",
-    "disconnected": "Hors connection",
+    "disconnected": "Hors connexion",
     "id": "Identifiant",
     "map": "Cartographie",
     "remark": "Commentaire",
@@ -19,7 +19,14 @@
     "line": "Ligne",
     "lines": "Lignes",
     "lines-eqmt": "Equipements Lignes",
+    "operation": "Opération",
     "sensitive-areas": "Zones Sensibles"
+  },
+  "diagnosis": {
+    "isolate": "isoler",
+    "last-one": "Dernier diagnostic le ",
+    "make-attractive": "rendre attractif",
+    "make-dissuasive": "rendre dissuasif"
   },
   "forms": {
     "coordinates": "Coordonnées",
@@ -38,6 +45,7 @@
     "attractiveness": "Attractivité",
     "condition": "Etat",
     "dangerousness": "Dangerosité",
+    "history": "Historique",
     "latitude": "Latitude",
     "longitude": "Longitude",
     "manual-handling": "Saisir les coordonnées manuellement",
@@ -48,7 +56,7 @@
     "support": "Support",
     "supports": "Supports",
     "supports-eqmt": "Equipements Support",
-    "support-type": "Type Support"
+    "support-type": "Type de support"
   },
   "line": {
     "buildIntegRisk": "Risque Intégration Bâti",
@@ -67,6 +75,11 @@
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
     "username": "Identifiant"
+  },
+  "operation": {
+    "eqmt-type": "Type d'équipements",
+    "last-one": "Dernière opération le ",
+    "type": "Type d'intervention"
   },
   "picture": {
     "add_file": "Ajouter des Images",
