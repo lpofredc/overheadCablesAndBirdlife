@@ -319,6 +319,7 @@ export default {
           this.specieSearchEntries = data
           this.count = data.length
         })
+        // TODO Manage error
         .catch((err) => {
           console.log(err)
         })
@@ -368,7 +369,6 @@ export default {
     async createNewData() {
       try {
         this.mortalityData.geom.coordinates = [this.lng, this.lat]
-        console.log('mortalityData', this.mortalityData)
         return await this.$axios.$post('mortality/', this.mortalityData)
       } catch (_err) {
         console.error(_err)
