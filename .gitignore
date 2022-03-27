@@ -136,7 +136,7 @@ dmypy.json
 .dccache
 
 # image upload folder
-uploads
+uploads*
 
 # .rest files
 *.rest

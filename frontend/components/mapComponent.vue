@@ -134,7 +134,6 @@ export default {
      * If Marker does not exist, it is created with new value.
      * Map is centered on the new point.
      */
-    // ##################### Works if initial point created with map control ########
     newPointCoord(newVal) {
       if (this.editMode && this.mode === 'point') {
         if (this.createLayer) {

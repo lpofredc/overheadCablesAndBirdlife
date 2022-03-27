@@ -85,9 +85,7 @@
             <!-- <v-col>date: {{ pictDate }}</v-col>   -->
             <v-col></v-col>
             <v-col cols="1">
-              <v-icon small color="red" @click="notImplementedYet"
-                >mdi-trash-can</v-icon
-              >
+              <v-icon small color="red">mdi-trash-can</v-icon>
             </v-col>
           </v-row>
         </v-list-item>

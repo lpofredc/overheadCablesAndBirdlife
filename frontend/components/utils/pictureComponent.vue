@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid style="border: solid 2px green">
+  <v-container fluid>
     <v-file-input
       ref="pictInput"
       v-model="newImg"
