@@ -37,7 +37,7 @@
             </p>
 
             <v-chip v-for="sa in data.properties.sensitive_area" :key="sa.id">
-              {{ sa.name }} {{ sa.name }}
+              {{ sa.name }}
             </v-chip>
           </v-card-text>
         </v-card>

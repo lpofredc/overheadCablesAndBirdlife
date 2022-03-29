@@ -31,19 +31,4 @@ export default {
     }
   },
 }
-
-// },
-// mounted() {
-//   // Loading of Nomenclatures needed to get data to set up the application
-//   // Implemented there as authentification needed.
-//   this.$store.dispatch('nomenclaturesStore/loadNomenclatures')
-// },
-// /**
-//  * Manage opening/closing drawer menu
-//  */
-// methods: {
-//   openDrawer() {
-//     return this.$auth.loggedIn ? this.drawer_opened : false
-//   },
-// },
 </script>

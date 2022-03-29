@@ -1,4 +1,6 @@
-/** Nuxt Point module: coordinatesStore to handle creation of new Point */
+/**
+ * Nuxt Point module: coordinatesStore to handle creation of new Point
+ */
 export const state = () => ({
   newPointCoord: {
     lat: { type: Number, default: null },

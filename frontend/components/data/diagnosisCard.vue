@@ -29,7 +29,11 @@
       </v-btn>
     </v-card-title>
     <v-card-subtitle>
-      {{ $t('diagnosis.last-one') }}{{ diagnosis.date }}</v-card-subtitle
+      {{ $t('diagnosis.last-one') }}{{ diagnosis.date }}
+
+      <v-chip small :class="[diagnosis.neutralized ? 'success' : 'error']"
+        >{{ diagnosis.neutralized ? 'neutralisé' : 'à neutraliser' }}
+      </v-chip></v-card-subtitle
     >
 
     <v-card-text>
@@ -100,10 +104,11 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'DiagnosisCardComponent',
   props: { diagnosis: { type: Object, default: null } },
-  data() {
-    return {
-      newSupport: this.$route.query.newSupport,
-    }
-  },
+  // TODO to be confirmed it is useless
+  // data() {
+  //   return {
+  //     newSupport: this.$route.query.newSupport,
+  //   }
+  // },
 })
 </script>

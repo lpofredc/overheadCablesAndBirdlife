@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       drawer_opened: true, // drawer closed by default
-      miniVariant: true, // wide drawer when opening by default
+      miniVariant: true, // small drawer when opening by default
     }
   },
 }
