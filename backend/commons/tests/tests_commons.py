@@ -26,6 +26,15 @@ def createTestUser(username, password, *perm_codename):
 
 
 def logTestUser(username, password):
+    """Method to log user with given username and password.
+
+    Args:
+        username ([String]): user name
+        password ([String]): password
+
+    Returns:
+        [APIClient]: a client to be used for tests, authentified with given username, password
+    """
     client = APIClient()
 
     resp = client.post(

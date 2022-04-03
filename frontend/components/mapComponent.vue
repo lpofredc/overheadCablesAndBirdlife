@@ -18,7 +18,7 @@
       :attribution="baseLayer.attribution"
       layer-type="base"
     />
-    <!-- Display of existing Pole layer-->
+    <!-- Display of existing Point layer-->
     <l-geo-json
       v-if="pointData"
       name="pointData"
@@ -77,7 +77,7 @@ export default {
     return {
       newLineMarkers: [[45, 7]],
       map: null,
-      // creation markers
+      // creation markers layer
       createLayer: null,
       // Map parameters
       bounds: latLngBounds([
@@ -163,40 +163,14 @@ export default {
         }
       }
     },
-    // newPointCoord(newVal) {
-    //   if (this.editMode && this.mode === 'point') {
-    //     if (this.createLayer) {
-    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
-    //         this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
-    //       } else {
-    //         this.createLayer.remove()
-    //         this.createLayer = null
-    //       }
-    //     } else {
-    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
-    //         this.map = this.$refs.map.mapObject
-    //         this.map.on('layeradd', (e) => {
-    //           this.createLayer = e.layer
-    //           this.map.pm.addControls({
-    //             drawMarker: false,
-    //             dragMode: true,
-    //             removalMode: true,
-    //           })
-    //         })
-    //         const layer = new L.Marker([newVal.lat, newVal.lng], {
-    //           pmIgnore: false,
-    //         }).addTo(this.map)
-    //         // set listener on drag event on this layer
-    //         this.handleDrag(this.createLayer)
-    //         // in case of remove event, tigger handleRemove() method
-    //         this.createLayer.on('pm:remove', (_e) => this.handleRemove())
-    //       }
-    //       // }
-    //     }
-    //   }
-    // },
   },
   methods: {
+    /**
+     * handleDrag(): Method that records new Point coordinates through "coordinatesStore" at the
+     * end of drag event.
+     *
+     * @param {Object} layer the marker belong to.
+     */
     handleDrag(layer) {
       layer.on('pm:dragend', (e) => {
         this.$store.commit('coordinatesStore/addPointCoord', {
@@ -205,6 +179,13 @@ export default {
         })
       })
     },
+    /**
+     * handleRemove(): Method that manages removing of new created layer removal. It refers to
+     * layer "createLayer" defined in the current component.
+     *
+     * It re-initialize coordinates data through "coordinatesStore" and managed access to
+     * appropriate controls, depending geometry type of the ongoing created marker.
+     */
     handleRemove() {
       this.createLayer = null
       switch (this.mode) {
@@ -232,7 +213,7 @@ export default {
       }
     },
     // INFO: Passé en computed, onEachFeature devient alors un object
-    // (j'avais un message comme quoi le props options attendait un obkjet et non une function)
+    // (j'avais un message comme quoi le props options attendait un objet et non une function)
     // C'est aussi le cas ici: https://vue2-leaflet.netlify.app/examples/geo-json.html
     // onEachFeature(_feature, layer) {
     //   layer.bindPopup('coucou', _feature)
@@ -257,21 +238,9 @@ export default {
       })
     },
     styleData(feature) {
-      // const weight = 0.5
-      // const linecolor = 'red'
-      // const opacity = 0.8
-      // function (feature: Feature) {
       if (feature.geometry.type === 'LineString') {
         return {
           color: 'green',
-          // weight,
-          // opacity,
-          // dashArray: '',
-          // lineCap: 'butt',
-          // lineJoin: 'miter',
-          // fillColor: 'rgba(0,0,0,0)',
-          // fillOpacity: '0.0',green
-          // }
         }
       } else {
         return {

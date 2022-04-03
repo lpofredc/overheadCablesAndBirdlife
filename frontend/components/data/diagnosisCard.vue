@@ -104,11 +104,5 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'DiagnosisCardComponent',
   props: { diagnosis: { type: Object, default: null } },
-  // TODO to be confirmed it is useless
-  // data() {
-  //   return {
-  //     newSupport: this.$route.query.newSupport,
-  //   }
-  // },
 })
 </script>
