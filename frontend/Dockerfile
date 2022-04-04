@@ -2,9 +2,9 @@
 FROM node:lts-alpine as builder
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN yarn
+RUN npm install
 COPY . ./
-RUN yarn build
+RUN npm run build
 
 FROM nginx:mainline-alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
