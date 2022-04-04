@@ -1,28 +1,38 @@
 {
   "app": {
-    "app-name": "Avifaune & cables aériens",
+    "app-name": "Avifaune & câbles aériens",
     "cancel": "Annuler",
     "data": "Données",
-    "disconnected": "Hors connection",
+    "disconnected": "Hors connexion",
     "id": "Identifiant",
     "map": "Cartographie",
     "remark": "Commentaire",
     "type": "Type",
-    "valid": "Créer"
+    "valid": "Valider"
   },
   "display": {
     "all": "Tout",
+    "diagnosis": "Diagnostic",
+    "infrastructure": "Infrastructure",
     "infrastructures": "Supports et Lignes",
     "mortality-cases": "Cas de mortalité",
     "line": "Ligne",
     "lines": "Lignes",
     "lines-eqmt": "Equipements Lignes",
+    "operation": "Opération",
     "sensitive-areas": "Zones Sensibles"
+  },
+  "diagnosis": {
+    "isolate": "isoler",
+    "last-one": "Dernier diagnostic le ",
+    "make-attractive": "rendre attractif",
+    "make-dissuasive": "rendre dissuasif"
   },
   "forms": {
     "coordinates": "Coordonnées",
     "datecreate": "Date de création",
     "general": "Informations Générales",
+    "general-infrastructure": "Informations générales de l'infrastructure",
     "risk_assessment": "Evaluation des Risques",
     "too_big_file": "La taille du fichier ne doit pas exéder",
     "not_img_file": "Le fichier sélectionné doit-être une image"
@@ -35,17 +45,18 @@
     "attractiveness": "Attractivité",
     "condition": "Etat",
     "dangerousness": "Dangerosité",
+    "history": "Historique",
     "latitude": "Latitude",
     "longitude": "Longitude",
     "manual-handling": "Saisir les coordonnées manuellement",
-    "network": "Réseau",
+    "network": "Gestionnaire",
     "neutralized": "Neutralisé",
     "new_support": "Nouveau Support",
     "owner": "Propriétaire",
     "support": "Support",
     "supports": "Supports",
     "supports-eqmt": "Equipements Support",
-    "support-type": "Type Support"
+    "support-type": "Type de support"
   },
   "line": {
     "buildIntegRisk": "Risque Intégration Bâti",
@@ -58,12 +69,17 @@
   "login": {
     "application": "Application",
     "admin": "Administration",
-    "home_page": "Acceuil",
+    "home_page": "Accueil",
     "password": "Password",
     "required_pwd_msg": "Le mot de passe est requis",
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",
     "username": "Identifiant"
+  },
+  "operation": {
+    "eqmt-type": "Type d'équipements",
+    "last-one": "Dernière opération le ",
+    "type": "Type d'intervention"
   },
   "picture": {
     "add_file": "Ajouter des Images",
@@ -80,7 +96,8 @@
     "loading-poletypes-issue": "un problème de chargement des options \"type de Poteaux\" est survenu. Vous avez été déconnecté",
     "loading-risklevels-issue": "un problème de chargement des options \"Niveau de Risque\" est survenu. Vous avez été déconnecté",
     "nomenclature_not_found_resource": "Problème Serveur de chargement des données. vous avez été déconnecté",
-    "sending-img-issue": "Une erreur est survenu. Des images peuvent ne pas avoir été sauvegardée dans la base de données. Veuillez vérifier"
+    "sending-img-issue": "Une erreur est survenu. Des images peuvent ne pas avoir été sauvegardée dans la base de données. Veuillez vérifier",
+    "update-issue": "Une erreur inattendue s'est produite lors du processus de mise à jour d'un nouvel élément. Aucune mise à jour n'a été affectuée"
   },
   "valid": {
     "length": "Longueur maximale autorisée: ",

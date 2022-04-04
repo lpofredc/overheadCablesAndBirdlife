@@ -8,7 +8,7 @@
     "map": "Map",
     "remark": "Remarks",
     "type": "Type",
-    "valid": "Create"
+    "valid": "Valid"
   },
   "display": {
     "all": "All",
@@ -23,6 +23,7 @@
     "coordinates": "Coordinates",
     "datecreate": "Creation date",
     "general": "General Information",
+    "general-infrastructure": "Information general infrastructure",
     "risk_assessment": "Risks Assessment",
     "too_big_file": "File size should less than",
     "not_img_file": "Selected file should be an image file"

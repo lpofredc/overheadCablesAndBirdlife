@@ -59,6 +59,9 @@ class Infrastructure(BaseModel, PolymorphicModel):
         help_text=_("Associated Sensitivity Areas"),
     )
 
+    class Meta:
+        ordering = ["-id"]
+
 
 class Point(Infrastructure):
     """Point model inheriting from InfrastructureModel
@@ -121,6 +124,9 @@ class Action(BaseModel, PolymorphicModel):
         _("Last record"),
         default=True,
     )
+
+    class Meta:
+        ordering = ["-date"]
 
 
 class Diagnosis(Action):

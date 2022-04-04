@@ -31,19 +31,6 @@
                 outlined
                 dense
               />
-              <!-- <v-text-field
-                ref="lat"
-                v-model="lat"
-                :label="$t('support.latitude')"
-                :disabled="!manualChange"
-                type="number"
-                placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              /> -->
             </v-col>
 
             <v-col cols="12" md="4">
@@ -58,27 +45,7 @@
                 outlined
                 dense
               />
-              <!-- <v-text-field
-                ref="lng"
-                v-model="lng"
-                :label="$t('support.longitude')"
-                :disabled="!manualChange"
-                type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              /> -->
             </v-col>
-
-            <!-- <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="manualChange"
-                dense
-                :label="$t('support.manual-handling')"
-              ></v-checkbox>
-            </v-col> -->
           </v-row>
         </v-container>
         <v-divider></v-divider>
@@ -244,8 +211,8 @@ export default {
         author: null,
         species: null, // null,
         infrstr: null,
-        nb_death: 0, // null,
-        death_cause: null,
+        nb_death: 1,
+        death_cause_id: null,
         data_source: null,
         geom: {
           type: 'Point',
@@ -352,6 +319,7 @@ export default {
           this.specieSearchEntries = data
           this.count = data.length
         })
+        // TODO Manage error
         .catch((err) => {
           console.log(err)
         })
@@ -401,7 +369,6 @@ export default {
     async createNewData() {
       try {
         this.mortalityData.geom.coordinates = [this.lng, this.lat]
-        console.log('mortalityData', this.mortalityData)
         return await this.$axios.$post('mortality/', this.mortalityData)
       } catch (_err) {
         console.error(_err)

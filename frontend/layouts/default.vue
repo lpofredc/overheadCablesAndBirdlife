@@ -2,7 +2,7 @@
 <template>
   <v-app>
     <v-navigation-drawer :mini-variant="miniVariant" clipped app>
-      <drawer-menu />
+      <utils-drawer-menu />
     </v-navigation-drawer>
     <v-app-bar clipped-left app dark elevation="0" color="light-blue darken-4">
       <v-app-bar-nav-icon @click="miniVariant = !miniVariant" />
@@ -46,7 +46,7 @@
         ><v-icon class="pl-2">mdi-github</v-icon></a
       >
     </v-system-bar>
-    <error-snackbar />
+    <utils-error-snackbar centered />
   </v-app>
 </template>
 
@@ -64,7 +64,6 @@ export default {
   },
   methods: {
     closeDialog() {
-      console.log('close from parent')
       this.dialog = false
     },
     /**

@@ -14,9 +14,9 @@
 FROM node:lts-alpine as builder
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN yarn
+RUN npm install -g npm@latest & npm install
 COPY . ./
-RUN yarn build
+RUN npm run build
 
 # ## Prod
 # FROM node:alpine
