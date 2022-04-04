@@ -6,7 +6,7 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ $t('login.sign-in') }}</v-toolbar-title>
-      </v-toolbar>    Récupération de données:
+      </v-toolbar>
         <v-container id="input-usage" fluid>
           <v-row>
             <v-col cols="12">

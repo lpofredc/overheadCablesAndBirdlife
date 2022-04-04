@@ -102,7 +102,9 @@ export default {
         pointToLayer: this.GeoJsonPointToLayer,
       }
     },
-    // Define code executed for each Feature
+    /**
+     * GeoJsonOnEachFeature(): Method that defines code executed for each Feature
+     */
     GeoJsonOnEachFeature() {
       return (feature, layer) => {
         // TODO To be adapted
@@ -226,6 +228,11 @@ export default {
         })
       }
     },
+    /**
+     * GeoJsonPointToLayer(): Method that defines point appearance as point symbol instead of Maker
+     * symbol
+     */
+    // TODO Style to be reviewed
     GeoJsonPointToLayer(_feature, latlng) {
       return L.circleMarker(latlng, {
         radius: 5,
@@ -237,6 +244,11 @@ export default {
         draggable: true,
       })
     },
+    /**
+     * styleData(feature): Method() that define style of LGeoJson tags (cf. option-style property)
+     *
+     * @param {Feature} feature
+     */
     styleData(feature) {
       if (feature.geometry.type === 'LineString') {
         return {
@@ -248,6 +260,13 @@ export default {
         }
       }
     },
+    /**
+     * onMapReady(): Method triggered whan LMap is ready.
+     *
+     * Actions on "pm" (for polygon management) property of map.
+     * It adds and configures controls, options, and set listener on various events (create, drag,
+     * remove)
+     */
     onMapReady() {
       this.map = this.$refs.map.mapObject
       if (this.editMode) {
@@ -302,7 +321,7 @@ export default {
           // set listener on drag event on this layer
           this.handleDrag(this.createLayer)
 
-          // in case of remove event, tigger handleRemove() method
+          // in case of remove event, trigger handleRemove() method
           e.layer.on('pm:remove', (_e) => {
             this.handleRemove()
           })
