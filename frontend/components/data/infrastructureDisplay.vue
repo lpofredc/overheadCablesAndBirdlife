@@ -13,6 +13,23 @@
       class="elevation-1"
       @click:row="showDetail"
     >
+      <template
+        v-slot:item.properties.actions_infrastructure.0.neutralized="{ item }"
+      >
+        <v-icon
+          :color="
+            [item.properties.actions_infrastructure[0].neutralized] == 'true'
+              ? 'green'
+              : 'red'
+          "
+          dark
+          >{{
+            item.properties.actions_infrastructure[0].neutralized
+              ? 'mdi-check-circle'
+              : 'mdi-checkbox-blank-circle'
+          }}</v-icon
+        >
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -38,8 +55,14 @@ export default {
         { text: this.$t('app.type'), value: 'resourcetype' },
         { text: this.$t('support.owner'), value: 'properties.owner.label' },
         { text: 'Notation', value: 'score' },
-        { text: 'Neutralisé', value: '?' },
-        { text: 'Dernier diagnostic', value: '?' },
+        {
+          text: 'Neutralisé',
+          value: 'properties.actions_infrastructure.0.neutralized',
+        },
+        {
+          text: 'Dernier diagnostic',
+          value: 'properties.actions_infrastructure.0.date',
+        },
       ],
     }
   },
