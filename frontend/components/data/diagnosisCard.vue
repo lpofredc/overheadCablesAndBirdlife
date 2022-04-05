@@ -18,7 +18,11 @@
       </v-btn>
     </v-card-title>
     <v-card-subtitle>
-      {{ $t('diagnosis.last-one') }}{{ diagnosis.date }}</v-card-subtitle
+      {{ $t('diagnosis.last-one') }}{{ diagnosis.date }}
+
+      <v-chip small :class="[diagnosis.neutralized ? 'success' : 'error']"
+        >{{ diagnosis.neutralized ? 'neutralisé' : 'à neutraliser' }}
+      </v-chip></v-card-subtitle
     >
 
     <v-card-text>
@@ -77,9 +81,7 @@
             <!-- <v-col>date: {{ pictDate }}</v-col>   -->
             <v-col></v-col>
             <v-col cols="1">
-              <v-icon small color="red" @click="notImplementedYet"
-                >mdi-trash-can</v-icon
-              >
+              <v-icon small color="red">mdi-trash-can</v-icon>
             </v-col>
           </v-row>
         </v-list-item>

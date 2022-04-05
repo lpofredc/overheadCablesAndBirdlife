@@ -2,7 +2,11 @@
   <v-card elevation="0" class="fill-height">
     <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
-        <v-toolbar-title>{{ $t('support.new_support') }} </v-toolbar-title>
+        <!-- TODO Review title handling and add terms in locales -->
+        <v-toolbar-title
+          >{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
+          {{ diagnosis ? 'Diagnostic' : $t('support.support') }}
+        </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click="$router.back()">
           <v-icon>mdi-close</v-icon>

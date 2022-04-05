@@ -112,7 +112,6 @@
               />
             </v-col>
             <v-col cols="12" md="6">
-              {{ mortalityData.death_cause_id }}
               <v-select
                 v-model="mortalityData.death_cause_id"
                 :items="deathCause"

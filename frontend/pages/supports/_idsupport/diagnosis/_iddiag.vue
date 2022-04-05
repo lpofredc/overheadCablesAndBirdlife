@@ -32,9 +32,9 @@ export default {
   /**
    * asyncData(): Method that gather data before page be created
    *
-   * @param {$axios, params} allow to send request to data through $axios, and params allows to
-   * access the selected diagnosis id
-   * (with page "support/22/diagnosis/2" => "http://path/supports/22/diagnosis/2" => second
+   * @param {$axios, params} $axios allow to send request to data through $axios, and params
+   * allows to access the selected diagnosis id from URL
+   * (with page "supports/22/diagnosis/2" => "https://path/supports/22/diagnosis/2" => second
    * diagnosis (id=2) of the 22nd support = 12)
    */
   async asyncData({ $axios, params }) {
@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       drawer_opened: true, // drawer closed by default
-      miniVariant: true, // wide drawer when opening by default
+      miniVariant: true, // small drawer when opening by default
     }
   },
 }

@@ -33,9 +33,4 @@ export default {
   width: 100px;
   background-color: 'indigo';
 }
-
-/*
-.v-btn {
-  width: 80px;
-} */
 </style>

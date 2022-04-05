@@ -55,19 +55,26 @@ export default {
   name: 'DefaultLayout',
   data() {
     return {
-      miniVariant: true, // small drawer when opening by default
+      miniVariant: true, // small drawer at opening
       dialog: false,
     }
   },
   mounted() {
+    /**
+     * Triggers 'loadBaseLayers' action in mapLayersStore
+     */
     this.$store.dispatch('mapLayersStore/loadBaseLayers')
   },
   methods: {
+    /**
+     * closeDialog(): Method that close the dialog
+     */
     closeDialog() {
       this.dialog = false
     },
     /**
-     * Logout user and redirect to welcome page
+     * logout(): Method that logs out user by calling $auth logout meethod user and redirect to
+     *  welcome page due to nuxt.config.js configuration
      */
     logout() {
       this.$auth.logout()

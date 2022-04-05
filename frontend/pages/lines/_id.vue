@@ -28,9 +28,9 @@ export default {
   /**
    * asyncData(): Method that gather data before page be created
    *
-   * @param {$axios, params} allow to send request to data through $axios, and params allows to
-   * access the "slug"
-   * (with page "support/_id.vue" => "http://path/support/12" => id = 12)
+   * @param {$axios, params} $axios allows to send request to data through $axios, and params
+   * allows to access the selected Line id from URL
+   * (with page "lines/_id.vue" => "https://path/lines/7" => id = 7)
    */
   async asyncData({ $axios, params }) {
     return {
@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       drawer_opened: true, // drawer closed by default
-      miniVariant: true, // wide drawer when opening by default
+      miniVariant: true, // small drawer when opening by default
     }
   },
 }

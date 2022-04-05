@@ -9,9 +9,7 @@ done
 
 echo "PostgreSQL started"
 
-# PGPASSWORD=djangoproject psql --host db --port 5432 --username=code.djangoproject --dbname=code.djangoproject < tracdb/trac.sql
 python manage.py migrate
-# python manage.py collectstatic --no-input --clear
 python manage.py loaddata ./commons/fixtures/*.xml
 python manage.py loaddata ./map_layers/fixtures/base_layers.xml
 

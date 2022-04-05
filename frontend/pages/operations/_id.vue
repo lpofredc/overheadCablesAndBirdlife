@@ -29,9 +29,9 @@ export default {
   /**
    * asyncData(): Method that gather data before page be created
    *
-   * @param {$axios, params} allow to send request to data through $axios, and params allows to
-   * access the "slug"
-   * (with page "support/_id.vue" => "http://path/support/12" => id = 12)
+   * @param {$axios, params} $axios allows to send request to data through $axios, and params
+   * allows to access the selected operation id from URL
+   * (with page "operations/_id.vue" => "https://path/operations/5" => id = 5)
    */
   async asyncData({ $axios, params }) {
     return {

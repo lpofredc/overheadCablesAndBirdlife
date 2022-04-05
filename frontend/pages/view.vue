@@ -59,17 +59,22 @@ export default {
     }
   },
   mounted() {
-    // Loading of Nomenclatures needed to get data to set up the application
-    // Implemented there as authentification needed
+    /**
+     * Call of "loadNomenclatures" action from nomenclaturesStore to load Nomenclatures needed to
+     * get data to set up the application.
+     * Implemented here as authentification needed
+     */
     this.$store.dispatch('nomenclaturesStore/loadNomenclatures')
-    // initialize coordinatesStore with newPointCoord at null
+    /**
+     * Call of "addPointCoord" action from coordinatesStore to linitialize newPointCoord at null
+     */
     this.$store.commit('coordinatesStore/addPointCoord', {
       lat: null,
       lng: null,
     })
   },
   /**
-   * Manage opening/closing drawer menu
+   * openDrawer(): Method to manage opening/closing drawer menu
    */
   methods: {
     openDrawer() {

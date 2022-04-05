@@ -18,7 +18,7 @@
       :attribution="baseLayer.attribution"
       layer-type="base"
     />
-    <!-- Display of existing Pole layer-->
+    <!-- Display of existing Point layer-->
     <l-geo-json
       v-if="pointData"
       name="pointData"
@@ -77,7 +77,7 @@ export default {
     return {
       newLineMarkers: [[45, 7]],
       map: null,
-      // creation markers
+      // creation markers layer
       createLayer: null,
       // Map parameters
       bounds: latLngBounds([
@@ -102,7 +102,9 @@ export default {
         pointToLayer: this.GeoJsonPointToLayer,
       }
     },
-    // Define code executed for each Feature
+    /**
+     * GeoJsonOnEachFeature(): Method that defines code executed for each Feature
+     */
     GeoJsonOnEachFeature() {
       return (feature, layer) => {
         // TODO To be adapted
@@ -134,7 +136,6 @@ export default {
      * If Marker does not exist, it is created with new value.
      * Map is centered on the new point.
      */
-    // ##################### Works if initial point created with map control ########
     newPointCoord(newVal) {
       if (this.editMode && this.mode === 'point') {
         if (this.createLayer) {
@@ -164,40 +165,14 @@ export default {
         }
       }
     },
-    // newPointCoord(newVal) {
-    //   if (this.editMode && this.mode === 'point') {
-    //     if (this.createLayer) {
-    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
-    //         this.createLayer.setLatLng(new L.LatLng(newVal.lat, newVal.lng))
-    //       } else {
-    //         this.createLayer.remove()
-    //         this.createLayer = null
-    //       }
-    //     } else {
-    //       if (newVal && newVal.lat !== null && newVal.lng !== null) {
-    //         this.map = this.$refs.map.mapObject
-    //         this.map.on('layeradd', (e) => {
-    //           this.createLayer = e.layer
-    //           this.map.pm.addControls({
-    //             drawMarker: false,
-    //             dragMode: true,
-    //             removalMode: true,
-    //           })
-    //         })
-    //         const layer = new L.Marker([newVal.lat, newVal.lng], {
-    //           pmIgnore: false,
-    //         }).addTo(this.map)
-    //         // set listener on drag event on this layer
-    //         this.handleDrag(this.createLayer)
-    //         // in case of remove event, tigger handleRemove() method
-    //         this.createLayer.on('pm:remove', (_e) => this.handleRemove())
-    //       }
-    //       // }
-    //     }
-    //   }
-    // },
   },
   methods: {
+    /**
+     * handleDrag(): Method that records new Point coordinates through "coordinatesStore" at the
+     * end of drag event.
+     *
+     * @param {Object} layer the marker belong to.
+     */
     handleDrag(layer) {
       layer.on('pm:dragend', (e) => {
         this.$store.commit('coordinatesStore/addPointCoord', {
@@ -206,6 +181,13 @@ export default {
         })
       })
     },
+    /**
+     * handleRemove(): Method that manages removing of new created layer removal. It refers to
+     * layer "createLayer" defined in the current component.
+     *
+     * It re-initialize coordinates data through "coordinatesStore" and managed access to
+     * appropriate controls, depending geometry type of the ongoing created marker.
+     */
     handleRemove() {
       this.createLayer = null
       switch (this.mode) {
@@ -233,7 +215,7 @@ export default {
       }
     },
     // INFO: Passé en computed, onEachFeature devient alors un object
-    // (j'avais un message comme quoi le props options attendait un obkjet et non une function)
+    // (j'avais un message comme quoi le props options attendait un objet et non une function)
     // C'est aussi le cas ici: https://vue2-leaflet.netlify.app/examples/geo-json.html
     // onEachFeature(_feature, layer) {
     //   layer.bindPopup('coucou', _feature)
@@ -246,6 +228,11 @@ export default {
         })
       }
     },
+    /**
+     * GeoJsonPointToLayer(): Method that defines point appearance as point symbol instead of Maker
+     * symbol
+     */
+    // TODO Style to be reviewed
     GeoJsonPointToLayer(_feature, latlng) {
       return L.circleMarker(latlng, {
         radius: 5,
@@ -257,22 +244,15 @@ export default {
         draggable: true,
       })
     },
+    /**
+     * styleData(feature): Method() that define style of LGeoJson tags (cf. option-style property)
+     *
+     * @param {Feature} feature
+     */
     styleData(feature) {
-      // const weight = 0.5
-      // const linecolor = 'red'
-      // const opacity = 0.8
-      // function (feature: Feature) {
       if (feature.geometry.type === 'LineString') {
         return {
           color: 'green',
-          // weight,
-          // opacity,
-          // dashArray: '',
-          // lineCap: 'butt',
-          // lineJoin: 'miter',
-          // fillColor: 'rgba(0,0,0,0)',
-          // fillOpacity: '0.0',green
-          // }
         }
       } else {
         return {
@@ -280,6 +260,13 @@ export default {
         }
       }
     },
+    /**
+     * onMapReady(): Method triggered whan LMap is ready.
+     *
+     * Actions on "pm" (for polygon management) property of map.
+     * It adds and configures controls, options, and set listener on various events (create, drag,
+     * remove)
+     */
     onMapReady() {
       this.map = this.$refs.map.mapObject
       if (this.editMode) {
@@ -334,7 +321,7 @@ export default {
           // set listener on drag event on this layer
           this.handleDrag(this.createLayer)
 
-          // in case of remove event, tigger handleRemove() method
+          // in case of remove event, trigger handleRemove() method
           e.layer.on('pm:remove', (_e) => {
             this.handleRemove()
           })
