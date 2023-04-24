@@ -8,12 +8,8 @@ from django.contrib.auth.models import (
 )
 
 # Create your models here.
-from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.contrib.gis.db import models
-from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from commons.models import BaseModel
@@ -26,6 +22,7 @@ phone_regex = RegexValidator(
     ),
 )
 
+
 # Create your models here.
 class Organism(BaseModel):
     """Organisms model"""
@@ -36,9 +33,15 @@ class Organism(BaseModel):
         editable=False,
         verbose_name=_("Identifiant unique"),
     )
-    label = models.CharField(max_length=500, unique=True, verbose_name=_("Nom"))
-    short_label = models.CharField(max_length=50, unique=True, verbose_name=_("Nom court"))
-    email = models.EmailField(blank=True, null=True, verbose_name=_("Adresse mail"))
+    label = models.CharField(
+        max_length=500, unique=True, verbose_name=_("Nom")
+    )
+    short_label = models.CharField(
+        max_length=50, unique=True, verbose_name=_("Nom court")
+    )
+    email = models.EmailField(
+        blank=True, null=True, verbose_name=_("Adresse mail")
+    )
     phone_number = models.CharField(
         validators=[phone_regex],
         max_length=17,
@@ -46,8 +49,12 @@ class Organism(BaseModel):
         null=True,
         verbose_name=_("Numéro de téléphone"),
     )
-    url = models.URLField(max_length=200, blank=True, null=True, verbose_name=_("URL"))
-    extra_data = models.JSONField(blank=True, null=True, verbose_name=_("Additional datas"))
+    url = models.URLField(
+        max_length=200, blank=True, null=True, verbose_name=_("URL")
+    )
+    extra_data = models.JSONField(
+        blank=True, null=True, verbose_name=_("Additional datas")
+    )
     logo = models.ImageField(_("Logo"), upload_to=settings.MEDIA_UPLOAD)
 
     class Meta:
@@ -73,7 +80,9 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         verbose_name=_("Numéro de téléphone fixe"),
     )
     address = models.TextField(_("Address"), blank=True, null=True)
-    comment = models.TextField(blank=True, null=True, verbose_name=_("Commentaire"))
+    comment = models.TextField(
+        blank=True, null=True, verbose_name=_("Commentaire")
+    )
     extra_data = models.JSONField(blank=True, null=True)
     default_area = models.ForeignKey(
         "geo_area.GeoArea",
@@ -83,7 +92,11 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         verbose_name=_("Emprise géographique par défaut"),
     )
     organism = models.ForeignKey(
-        "Organism", on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Organisme")
+        "Organism",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Organisme"),
     )
     objects = UserManager()
 

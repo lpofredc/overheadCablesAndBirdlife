@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -17,5 +16,9 @@ class Partners(BaseModel):
     short_name = models.CharField(_("Nom court"), max_length=50)
     url = models.URLField(_("Site internet"), null=True, blank=True)
     logo = models.ImageField(
-        _("Logo"), upload_to="partners/", height_field=None, blank=True, null=True
+        _("Logo"),
+        upload_to="partners/",
+        height_field=None,
+        blank=True,
+        null=True,
     )

@@ -9,5 +9,8 @@ from django.contrib.gis.admin import GISModelAdmin
 # Register your models here.
 class GisModelAdmin(GISModelAdmin):
     gis_widget_kwargs = {
-        "attrs": {"default_lat": settings.DEFAULT_LAT, "default_lon": settings.DEFAULT_LON}
+        "attrs": {
+            "default_lat": settings.DEFAULT_LAT,
+            "default_lon": settings.DEFAULT_LON,
+        }
     }

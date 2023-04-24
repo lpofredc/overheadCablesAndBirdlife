@@ -234,7 +234,6 @@ class OperationSerializer(ModelSerializer):
         """
 
     def create(self, validated_data):
-
         try:
             # define variables to be used in error handling if needed
             newOp = None
