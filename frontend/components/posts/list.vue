@@ -3,11 +3,7 @@
     <v-card-title>News</v-card-title>
     <v-list v-if="posts.length > 0">
       <v-list-item-group>
-        <v-list-item
-          v-for="post in posts"
-          :key="post.id"
-          :to="`/posts/${post.id}`"
-        >
+        <v-list-item v-for="post in posts" :key="post.id" :to="`/posts/${post.id}`">
           <v-list-item-content>
             <v-list-item-title>
               {{ post.title }}

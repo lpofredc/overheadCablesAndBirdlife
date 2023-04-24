@@ -11,7 +11,7 @@
   },
   "vetur.format.defaultFormatter.html": "prettier",
   "[vue]": {
-    "editor.defaultFormatter": "octref.vetur"
+    "editor.defaultFormatter": "Vue.volar"
   },
   "esbonio.sphinx.confDir": ""
 }
