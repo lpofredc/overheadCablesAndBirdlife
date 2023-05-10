@@ -17,7 +17,7 @@ services:
     networks:
       - cablesv2_net
 
-   
+
   frontend:
     ports:
       - 10.0.3.1:9011:80
@@ -35,4 +35,3 @@ networks:
     external: true
   cablesv2_net:
     driver: bridge
-

@@ -23,7 +23,6 @@ export const actions = {
       }
       commit('addSpecies', data)
     } catch (err) {
-      console.error('ERROR', err)
       const error = {}
       if (err.toString().includes('404')) {
         error.code = errorCodes.nomenclature_not_found.code

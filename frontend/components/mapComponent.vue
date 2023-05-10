@@ -1,46 +1,19 @@
 <template>
   <l-map
-    ref="map"
-    class="d-flex align-stretch"
-    :class="editMode ? 'change-map' : 'view-map'"
-    :center="center"
-    :bounds="bounds"
-    :max-bounds="maxBounds"
-    @ready="onMapReady()"
-  >
+    ref="map" class="d-flex align-stretch" :class="editMode ? 'change-map' : 'view-map'" :center="center"
+    :bounds="bounds" :max-bounds="maxBounds" @ready="onMapReady()">
     <l-control-layers position="topright"></l-control-layers>
     <l-tile-layer
-      v-for="baseLayer in baseLayers"
-      :key="baseLayer.id"
-      :name="baseLayer.name"
-      :url="baseLayer.url"
-      :visible="baseLayer.default"
-      :attribution="baseLayer.attribution"
-      layer-type="base"
-    />
+      v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
+      :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
     <!-- Display of existing Point layer-->
     <l-geo-json
-      v-if="pointData"
-      name="pointData"
-      :geojson="pointData"
-      :options-style="styleData"
-      :options="GeojsonOptions"
-    />
+      v-if="pointData" name="pointData" :geojson="pointData" :options-style="styleData"
+      :options="GeojsonOptions" />
     <l-geo-json
-      v-if="cablesData"
-      name="lineStringData"
-      :geojson="lineStringData"
-      :options-style="styleData"
-      :options="GeojsonOptions"
-    />
-    <v-speed-dial
-      class="fab mb-5"
-      absolute
-      bottom
-      right
-      direction="top"
-      transition="slide - y - reverse - transition"
-    >
+      v-if="cablesData" name="lineStringData" :geojson="lineStringData" :options-style="styleData"
+      :options="GeojsonOptions" />
+    <v-speed-dial class="fab mb-5" absolute bottom right direction="top" transition="slide - y - reverse - transition">
       <template v-if="!editMode" #activator>
         <v-btn color="primary darken-2" dark fab>
           <v-icon x-large> + </v-icon>
@@ -145,23 +118,21 @@ export default {
             this.createLayer.remove()
             this.createLayer = null
           }
-        } else {
-          if (newVal && newVal.lat !== null && newVal.lng !== null) {
-            this.map = this.$refs.map.mapObject
-            this.map.on('layeradd', (e) => {
-              this.createLayer = e.layer
-              this.map.pm.addControls({
-                drawMarker: false,
-                dragMode: true,
-                removalMode: true,
-              })
+        } else if (newVal && newVal.lat !== null && newVal.lng !== null) {
+          this.map = this.$refs.map.mapObject
+          this.map.on('layeradd', (e) => {
+            this.createLayer = e.layer
+            this.map.pm.addControls({
+              drawMarker: false,
+              dragMode: true,
+              removalMode: true,
             })
-            const layer = new L.Marker([newVal.lat, newVal.lng]).addTo(this.map)
-            // set listener on drag event on this layer
-            this.handleDrag(this.createLayer)
-            // in case of remove event, tigger handleRemove() method
-            this.createLayer.on('pm:remove', (_e) => this.handleRemove())
-          }
+          })
+          // const layer = new L.Marker([newVal.lat, newVal.lng]).addTo(this.map)
+          // set listener on drag event on this layer
+          this.handleDrag(this.createLayer)
+          // in case of remove event, tigger handleRemove() method
+          this.createLayer.on('pm:remove', (_e) => this.handleRemove())
         }
       }
     },
