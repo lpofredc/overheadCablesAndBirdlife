@@ -235,3 +235,6 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Docker override config
+docker-compose.override.y*ml

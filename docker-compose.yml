@@ -6,9 +6,10 @@ services:
     build:
       context: backend
       dockerfile: ./Dockerfile
+    volumes:
+      - media:/app/uploads
     env_file:
       - .env
-
 
   frontend:
     image: frontend
@@ -19,3 +20,6 @@ services:
       - .env
     environment:
       NODE_ENV: production
+
+volumes:
+  media:
