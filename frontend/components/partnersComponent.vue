@@ -1,15 +1,6 @@
 <template>
   <v-row dense class="justify-center">
-    <v-col
-      v-for="i in partners"
-      :key="i.id"
-      loading
-      cols="12"
-      xs="6"
-      sm="4"
-      md="3"
-      lg="2"
-    >
+    <v-col v-for="i in partners" :key="i.id" loading cols="12" xs="6" sm="4" md="3" lg="2">
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <a :href="i.url" target="_blank" v-bind="attrs" v-on="on">
@@ -24,7 +15,7 @@
 
 <script>
 export default {
-  name: 'WelcomeComponent',
+  name: 'PartnersComponent',
   auth: false,
   data() {
     return {
