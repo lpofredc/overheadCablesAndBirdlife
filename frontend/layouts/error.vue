@@ -9,7 +9,9 @@
     <h2>
       {{ error.message }}
     </h2>
-    <NuxtLink to="/"> Home page </NuxtLink>
+    <NuxtLink to="/">
+      Home page
+    </NuxtLink>
   </v-app>
 </template>
 
@@ -23,22 +25,22 @@ export default {
   props: {
     error: {
       type: Object,
-      default: null,
-    },
-  },
-  data() {
-    return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred',
+      default: null
     }
   },
-  head() {
+  data () {
+    return {
+      pageNotFound: '404 Not Found',
+      otherError: 'An error occurred'
+    }
+  },
+  head () {
     const title =
       this.error.statusCode === 404 ? this.pageNotFound : this.otherError
     return {
-      title,
+      title
     }
-  },
+  }
 }
 </script>
 

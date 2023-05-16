@@ -1,7 +1,7 @@
 // Nuxt Store module: cablesStore for Cables module
 import { defineStore } from "pinia";
 
-export const useCoordinatesStore = defineStore("coordinates", {
+export const useCablesStore = defineStore("cables", {
   state: () => ({
     infstrData: {}, // Infrastructure data
     pointData: {}, // Pole and Pylon data

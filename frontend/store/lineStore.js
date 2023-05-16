@@ -2,7 +2,7 @@
 
 import { defineStore } from "pinia";
 
-export const useLineStore = defineStore("mapLayers", {
+export const useLineStore = defineStore("lines", {
   state: () => ({ newLineCoord: [] }),
   getters: {
     /**

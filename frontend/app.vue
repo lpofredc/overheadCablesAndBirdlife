@@ -1,27 +1,37 @@
 
 <template>
   <v-app>
-    <v-navigation-drawer :mini-variant="miniVariant" clipped app>
+    <v-navigation-drawer :rail="miniVariant">
       <utils-drawer-menu />
     </v-navigation-drawer>
-    <v-app-bar clipped-left app dark elevation="0" color="light-blue darken-4">
+    <v-app-bar elevation="0" color="light-blue-darken-4">
       <v-app-bar-nav-icon @click="miniVariant = !miniVariant" />
-      <v-toolbar-title v-text="$t('app.app-name')" />
-      <v-spacer></v-spacer>
+      <v-toolbar-title>{{ $t('app.app-name') }}</v-toolbar-title>
+      <v-spacer />
       <div v-if="!mdAndDown">
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
-      <v-dialog v-if="!$auth.loggedIn" v-model="dialog" :fullscreen="mdAndDown" hide-overlay
-        transition="dialog-bottom-transition" :width="!mdAndDown ? 500 : '100%'">
-        <template #activator="{ on, attrs }">
-          <v-btn icon class="mr-2" v-bind="attrs" v-on="on">
-            <v-icon large>mdi-login</v-icon>
+      <v-dialog
+        v-if="!$auth.loggedIn"
+        v-model="dialog"
+        :fullscreen="mdAndDown"
+        :scrim="false"
+        transition="dialog-bottom-transition"
+        :width="!mdAndDown ? 500 : '100%'"
+      >
+        <template #activator="{ props }">
+          <v-btn icon class="mr-2" v-bind="props">
+            <v-icon size="large">
+              mdi-login
+            </v-icon>
           </v-btn>
         </template>
         <login-component @close-dialog="closeDialog" />
       </v-dialog>
       <v-btn v-if="$auth.loggedIn" icon class="mr-2" @click="logout">
-        <v-icon large>mdi-logout</v-icon>
+        <v-icon size="large">
+          mdi-logout
+        </v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
@@ -30,11 +40,12 @@
       </v-container>
     </v-main>
     <v-system-bar>
-      <v-spacer></v-spacer>
+      <v-spacer />
       {{ new Date().getFullYear() }} —
       <strong>{{ $t('app.app-name') }}</strong>
       <a href="//github.com/lpoaura/overheadCablesAndBirdlife/" target="_blank" title="Github project repository"><v-icon
-          class="pl-2">mdi-github</v-icon></a>
+        class="pl-2"
+      >mdi-github</v-icon></a>
     </v-system-bar>
     <utils-error-snackbar centered />
   </v-app>
@@ -47,7 +58,7 @@ import { useMapLayersStore } from './store/mapLayersStore'
 
 export default {
   name: 'DefaultLayout',
-  data() {
+  data () {
     return {
       $auth: {
         loggedIn: true,
@@ -56,16 +67,16 @@ export default {
         }
       },
       miniVariant: true, // small drawer at opening
-      dialog: false,
+      dialog: false
     }
   },
   computed: {
-    mdAndDown() {
+    mdAndDown () {
       const { mdAndDown } = useDisplay()
       return mdAndDown
     }
   },
-  mounted() {
+  mounted () {
     /**
      * Triggers 'loadBaseLayers' action in mapLayersStore
      */
@@ -76,21 +87,21 @@ export default {
     /**
      * closeDialog(): Method that close the dialog
      */
-    closeDialog() {
+    closeDialog () {
       this.dialog = false
     },
     /**
      * logout(): Method that logs out user by calling $auth logout meethod user and redirect to
      *  welcome page due to nuxt.config.js configuration
      */
-    logout() {
-      this.$auth.logout()
+    logout () {
+      // this.$auth.logout()
     },
-    loadBaseMapLayers() {
+    loadBaseMapLayers () {
       const mapLayersStore = useMapLayersStore()
       console.log('STORE', mapLayersStore)
       mapLayersStore.loadBaseLayers()
     }
-  },
+  }
 }
 </script>

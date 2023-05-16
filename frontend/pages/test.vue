@@ -8,9 +8,9 @@
       <v-col cols="12" fill-height style="background-color: red">
         <v-card
           class="d-flex pa-2 d-flex align-stretch fill-height"
-          outlined
+          variant="outlined"
           fill-height
-          tile
+          rounded="0"
           style="background-color: green"
         >
           <div>flexbox</div>
@@ -24,6 +24,6 @@
 export default {
   name: 'HelloWorld',
 
-  data: () => ({}),
+  data: () => ({})
 }
 </script>

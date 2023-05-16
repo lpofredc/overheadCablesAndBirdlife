@@ -45,9 +45,9 @@
           <v-row>
             <v-col cols="12" md="4" v-if="!support">
               <v-menu :close-on-content-click="false" transition="scale-transition">
-                <template #activator="{ on, attrs }">
+                <template v-slot:activator="{ props }">
                   <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
-                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="attrs" v-on="on"></v-text-field>
+                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="props"></v-text-field>
                 </template>
                 <v-date-picker v-model="diagData.date" no-title></v-date-picker>
               </v-menu> </v-col><v-col cols="12" md="4" v-if="!support">

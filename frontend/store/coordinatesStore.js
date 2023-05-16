@@ -2,13 +2,13 @@
  * Nuxt Point module: coordinatesStore to handle creation of new Point
  */
 
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useCoordinatesStore = defineStore("coordinates", {
+export const useCoordinatesStore = defineStore('coordinates', {
   state: () => ({
     lat: { type: Number, default: null },
     lng: { type: Number, default: null },
-    default: null,
+    default: null
   }),
   getters: {
     /**
@@ -17,8 +17,8 @@ export const useCoordinatesStore = defineStore("coordinates", {
      * @param {state} state of this store module
      * @return {JSON object} object with latitude and longitude data
      */
-    newPointCoord(state) {
-      return state.newPointCoord;
+    newPointCoord (state) {
+      return state.newPointCoord
     },
     /**
      * Getter for newLineCoord state values
@@ -26,8 +26,8 @@ export const useCoordinatesStore = defineStore("coordinates", {
      * @param {state} state of this store module
      * @return {JSON object} object with Line coordinates data (latitude and longitude)
      */
-    newLineCoord(state) {
-      return state.newLineCoord;
-    },
-  },
-});
+    newLineCoord (state) {
+      return state.newLineCoord
+    }
+  }
+})

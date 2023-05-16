@@ -4,14 +4,14 @@
  * triggers the display of message in snackbar (refer error-snackbar component)
  */
 
-import { defineStore } from "pinia";
+import { defineStore, acceptHMRUpdate } from 'pinia'
 
-export const useErrorsStore = defineStore("errors", {
+export const useErrorsStore = defineStore('errors', {
   state: () => ({
     err: {
       code: { type: Number, default: null },
-      msg: { type: String, default: null },
-    },
+      msg: { type: String, default: null }
+    }
   }),
   getters: {
     /**
@@ -20,12 +20,12 @@ export const useErrorsStore = defineStore("errors", {
      * @param {state} state of this store module
      * @return {JSON object} returns the "err" object
      */
-    err(state) {
-      return state.err;
-    },
-  },
-});
+    err (state) {
+      return state.err
+    }
+  }
+})
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useErrorsStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useErrorsStore, import.meta.hot))
 }

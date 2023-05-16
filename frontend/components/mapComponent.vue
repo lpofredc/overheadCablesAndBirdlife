@@ -37,7 +37,8 @@ import { latLngBounds } from 'leaflet'
 import { mapState } from 'pinia'
 import '@geoman-io/leaflet-geoman-free'
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
-import { useMapLayersStore } from '~/store/lineStore'
+import { useMapLayersStore } from '~/store/mapLayersStore'
+import { useCablesStore } from '~/store/cablesStore'
 
 export default {
   name: 'DataMap',

@@ -14,11 +14,11 @@ export default {
           text: 'ID Zone Sensible',
           align: 'start',
           sortable: true,
-          value: 'id',
+          value: 'id'
         },
         { text: 'Name', value: 'properties.name' },
-        { text: 'Code', value: 'properties.code' },
-      ],
+        { text: 'Code', value: 'properties.code' }
+      ]
     }
   },
   /** Fetch Sensitive Area from backend and record it to Nuxt Store */

@@ -22,6 +22,8 @@
 
 <script>
 import { mapState } from 'pinia'
+import { useCablesStore } from '~/store/cablesStore'
+
 export default {
   name: 'InfrastructureDisplay',
 

@@ -8,7 +8,7 @@ export default defineNuxtConfig({
             },
         ],
         '@invictus.codes/nuxt-vuetify',
-        '@nuxtjs/i18n',
+        '@nuxtjs/i18n'
     ],
     vuetify: {
         /* vuetify options */
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     },
     imports: {
         // Auto-import pinia stores defined in `~/stores`
-        dirs: ["stores"],
+        dirs: ['stores'],
     },
     i18n: {
         locales: [
@@ -46,13 +46,13 @@ export default defineNuxtConfig({
         defaultLocale: 'fr',
         langDir: 'locales',
     },
-    devtools: {
-        // Enable devtools (default: true)
-        enabled: true,
-        // VS Code Server options
-        vscode: {},
-        // ...other options
-    },
+    // devtools: {
+    //     // Enable devtools (default: true)
+    //     enabled: true,
+    //     // VS Code Server options
+    //     vscode: {},
+    //     // ...other options
+    // },
     // routeRules: {
     //     '/api/v1/**': { cors: true, headers: { 'access-control-allow-methods': 'GET' }, proxy: 'http://localhost:8000' }
     // },

@@ -5,7 +5,7 @@
         <map-component :edit-mode="true" mode="point" />
       </v-col>
       <v-col cols="6" class="pa-0" style="background-color: red">
-        <form-mortality />
+        <form-point-component :diagnosis="data" />
       </v-col>
     </v-row>
     <v-tabs v-if="mdAndDown" fixed-tabs bg-color="indigo">
@@ -15,13 +15,17 @@
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>
-        <form-mortality />
+        <form-point-component :diagnosis="data" />
       </v-tab-item>
     </v-tabs>
   </v-container>
 </template>
 
+
 <script setup>
 import { useDisplay } from 'vuetify'
 const { lgAndUp, mdAndDown } = useDisplay()
+
+const route = useRoute()
+const { data: data } = await useFetch(`cables/diagnosis/${route.params.iddiag}`)
 </script>

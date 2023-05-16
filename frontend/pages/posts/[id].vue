@@ -20,7 +20,9 @@
 </template>
 
 <script setup>
-const { data: post } = await useFetch(`/api/v1/custom-content/news/${params.id}`)
+const route = useRoute()
+
+const { data: post } = await useFetch(`/api/v1/custom-content/news/${route.params.id}`)
 </script>
 
 <style scoped>

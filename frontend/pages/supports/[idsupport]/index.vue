@@ -9,13 +9,7 @@
       </v-col>
     </v-row>
 
-    <v-tabs
-      v-if="$vuetify.breakpoint.mdAndDown"
-      fixed-tabs
-      class="fill-height"
-      background-color="indigo"
-      dark
-    >
+    <v-tabs v-if="$vuetify.breakpoint.mdAndDown" fixed-tabs class="fill-height" bg-color="indigo">
       <v-tab> {{ $t('app.map') }} </v-tab>
       <v-tab-item>
         <map-component :edit-mode="false" />
@@ -38,16 +32,16 @@ export default {
    * allows to access the selected support id from URL
    * (with page "supports/_id.vue" => "https://path/supports/12" => id = 12)
    */
-  async asyncData({ $axios, params }) {
+  async asyncData ({ $axios, params }) {
     return {
-      data: await $axios.$get(`cables/infrastructures/${params.idsupport}`),
+      data: await $axios.$get(`cables/infrastructures/${params.idsupport}`)
     }
   },
-  data() {
+  data () {
     return {
       drawer_opened: true, // drawer closed by default
-      miniVariant: true, // small drawer when opening by default
+      miniVariant: true // small drawer when opening by default
     }
-  },
+  }
 }
 </script>

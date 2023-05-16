@@ -2,7 +2,7 @@
 
 import { defineStore } from "pinia";
 
-export const useSensitiveAreasStore = defineStore("species", {
+export const useSensitiveAreasStore = defineStore('sensitive-areas', {
   state: () => ({ SAData: {} }),
   getters: {
     saData(state) {

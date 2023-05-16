@@ -8,12 +8,7 @@
         <form-point-component />
       </v-col>
     </v-row>
-    <v-tabs
-      v-if="$vuetify.breakpoint.mdAndDown"
-      fixed-tabs
-      background-color="indigo"
-      dark
-    >
+    <v-tabs v-if="$vuetify.breakpoint.mdAndDown" fixed-tabs bg-color="indigo">
       <v-tab> {{ $t('app.map') }} </v-tab>
       <v-tab-item>
         <map-component :edit-mode="true" mode="point" />
@@ -29,11 +24,11 @@
 <script>
 export default {
   name: 'NewPointPage',
-  data() {
+  data () {
     return {
       drawer_opened: true, // drawer closed by default
-      miniVariant: true, // small drawer when opening by default
+      miniVariant: true // small drawer when opening by default
     }
-  },
+  }
 }
 </script>
