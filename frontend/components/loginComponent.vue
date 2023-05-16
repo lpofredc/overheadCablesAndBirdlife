@@ -7,37 +7,20 @@
         </v-btn>
         <v-toolbar-title>{{ $t('login.sign-in') }}</v-toolbar-title>
       </v-toolbar>
-        <v-container id="input-usage" fluid>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field
-                v-model="login.username"
-                :rules="nameRules"
-                prepend-icon="mdi-account-circle"
-                type="text"
-                outlined
-                fluid
-                required
-                @keyup.enter="userLogin"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12">
-              <v-text-field
-                v-model="login.password"
-                :rules="pwdRules"
-                prepend-icon="mdi-lock"
-                type="password"
-                outlined
-                required
-                @keyup.enter="userLogin"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" class="justify-center">
-              Mot de passe oublié?</v-col
-            >
-          </v-row>
-        </v-container>
-      </v-card-text>
+      <v-container id="input-usage" fluid>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field v-model="login.username" :rules="nameRules" prepend-icon="mdi-account-circle" type="text"
+              outlined fluid required @keyup.enter="userLogin"></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field v-model="login.password" :rules="pwdRules" prepend-icon="mdi-lock" type="password" outlined
+              required @keyup.enter="userLogin"></v-text-field>
+          </v-col>
+          <v-col cols="12" class="justify-center">
+            Mot de passe oublié?</v-col>
+        </v-row>
+      </v-container>
       <v-card-actions>
         <v-btn color="success" block @click="userLogin" large>
           {{ $t('login.sign-in') }}

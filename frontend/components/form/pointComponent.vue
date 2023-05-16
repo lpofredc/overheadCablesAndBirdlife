@@ -3,8 +3,7 @@
     <v-form ref="form" v-model="formValid" class="text-center">
       <v-toolbar color="pink" dark elevation="0">
         <!-- TODO Review title handling and add terms in locales -->
-        <v-toolbar-title
-          >{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
+        <v-toolbar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
           {{ diagnosis ? 'Diagnostic' : $t('support.support') }}
         </v-toolbar-title>
         <v-spacer></v-spacer>
@@ -21,45 +20,17 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="4">
-              <v-text-field
-                ref="lat"
-                v-model="lat"
-                :label="$t('support.latitude')"
-                type="number"
-                placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              />
+              <v-text-field ref="lat" v-model="lat" :label="$t('support.latitude')" type="number" placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]" required hide-spin-buttons outlined dense />
             </v-col>
 
             <v-col cols="12" md="4">
-              <v-text-field
-                ref="lng"
-                v-model="lng"
-                :label="$t('support.longitude')"
-                type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              />
+              <v-text-field ref="lng" v-model="lng" :label="$t('support.longitude')" type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]" required hide-spin-buttons outlined dense />
             </v-col>
             <v-col cols="12" md="4" v-if="!diagnosis">
-              <v-select
-                v-model="pointData.owner_id"
-                :items="networkOwners"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('support.network')"
-                outlined
-                dense
-                required
-              >
+              <v-select v-model="pointData.owner_id" :items="networkOwners" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.network')" outlined dense required>
               </v-select>
             </v-col>
           </v-row>
@@ -73,120 +44,47 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="4" v-if="!support">
-              <v-menu
-                :close-on-content-click="false"
-                transition="scale-transition"
-              >
+              <v-menu :close-on-content-click="false" transition="scale-transition">
                 <template #activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="diagData.date"
-                    :label="$t('forms.datecreate')"
-                    persistent-hint
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    dense
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
+                  <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
+                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="attrs" v-on="on"></v-text-field>
                 </template>
                 <v-date-picker v-model="diagData.date" no-title></v-date-picker>
-              </v-menu> </v-col
-            ><v-col cols="12" md="4" v-if="!support">
-              <v-select
-                v-model="diagData.condition_id"
-                :items="conditions"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('support.condition')"
-                outlined
-                dense
-              ></v-select>
+              </v-menu> </v-col><v-col cols="12" md="4" v-if="!support">
+              <v-select v-model="diagData.condition_id" :items="conditions" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.condition')" outlined dense></v-select>
             </v-col>
 
             <v-col cols="12" md="4" v-if="!support">
-              <v-checkbox
-                v-model="diagData.neutralized"
-                :label="$t('support.neutralized')"
-                dense
-              ></v-checkbox>
+              <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')" dense></v-checkbox>
             </v-col>
 
             <v-col cols="12" v-if="!support">
-              <v-autocomplete
-                v-model="diagData.pole_type_id"
-                :items="poleTypes"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                hide-selected
-                :label="$t('support.support-type')"
-                multiple
-                deletable-chips
-                small-chips
-                outlined
-                dense
-              ></v-autocomplete>
+              <v-autocomplete v-model="diagData.pole_type_id" :items="poleTypes" item-text="label" item-value="id"
+                :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple deletable-chips
+                small-chips outlined dense></v-autocomplete>
             </v-col>
             <v-col cols="12" md="6">
-              <v-select
-                v-model="diagData.pole_attractivity_id"
-                :items="riskLevels"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('support.attractiveness')"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.attractiveness')" outlined dense></v-select>
             </v-col>
             <v-col cols="12" md="6">
-              <v-select
-                v-model="diagData.pole_dangerousness_id"
-                :items="riskLevels"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('support.dangerousness')"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.dangerousness')" outlined dense></v-select>
             </v-col>
             <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="diagData.isolation_advice"
-                :label="$t('support.advice_isol')"
-                dense
-              ></v-checkbox>
+              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')" dense></v-checkbox>
             </v-col>
             <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="diagData.dissuasion_advice"
-                :label="$t('support.advice_disrupt')"
-                dense
-              ></v-checkbox>
+              <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')" dense></v-checkbox>
             </v-col>
             <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="diagData.attraction_advice"
-                :label="$t('support.advice_attract')"
-                dense
-              ></v-checkbox>
+              <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')" dense></v-checkbox>
             </v-col>
 
             <v-col cols="12">
-              <v-textarea
-                v-model="diagData.remark"
-                clearable
-                clear-icon="mdi-close-circle"
-                :label="$t('app.remark')"
-                :rules="[rules.textLength]"
-                rows="2"
-                counter="300"
-                outlined
-                dense
-              ></v-textarea>
+              <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+                :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
             </v-col>
           </v-row>
         </v-container>
@@ -206,12 +104,7 @@
                 <v-list-item v-for="img in diagnosis.media" :key="img.id">
                   <v-row>
                     <v-col>
-                      <v-img
-                        :src="img.storage"
-                        max-height="100"
-                        max-width="166"
-                        class="ma-2"
-                      />
+                      <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
                     </v-col>
                     <!-- <v-col>date: {{ pictDate }}</v-col> -->
                     <v-col></v-col>
@@ -220,8 +113,7 @@
                     </v-col>
                   </v-row>
                 </v-list-item>
-              </v-list></v-container
-            >
+              </v-list></v-container>
           </v-row>
         </v-container>
       </v-card-text>
@@ -235,7 +127,7 @@
   </v-card>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
 
 // export default Vue.extend({
@@ -271,8 +163,8 @@ export default {
           this.diagnosis && !this.modifyDiag
             ? this.diagnosis.date
             : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .substr(0, 10),
+              .toISOString()
+              .substr(0, 10),
         remark: this.diagnosis ? this.diagnosis.remark : null,
         pole_type_id: this.diagnosis
           ? this.diagnosis.pole_type.map((pt) => pt.id)
@@ -356,12 +248,14 @@ export default {
       },
     },
     // Get values from store
-    ...mapGetters({
-      newPoint: 'coordinatesStore/newPointCoord',
-      conditions: 'nomenclaturesStore/getConditions',
-      networkOwners: 'nomenclaturesStore/getOwners',
-      poleTypes: 'nomenclaturesStore/getPoleTypes',
-      riskLevels: 'nomenclaturesStore/getRiskLevels',
+    ...mapState(useCoordinatesStore, {
+      newPoint: 'newPointCoord',
+    }),
+    ...mapState(useNomenclaturesStore, {
+      conditions: 'getConditions',
+      networkOwners: 'getOwners',
+      poleTypes: 'getPoleTypes',
+      riskLevels: 'getRiskLevels',
     }),
   },
   methods: {

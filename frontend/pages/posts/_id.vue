@@ -10,17 +10,7 @@
         <div v-html="post.body"></div>
 
         <v-fab-transition>
-          <v-btn
-            v-show="!hidden"
-            class="v-btn-back"
-            color="pink"
-            absolute
-            dark
-            bottom
-            right
-            fab
-            @click="$router.back()"
-          >
+          <v-btn v-show="!hidden" class="v-btn-back" color="pink" absolute dark bottom right fab @click="$router.back()">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
         </v-fab-transition>
@@ -29,16 +19,10 @@
   </v-container>
 </template>
 
-<script>
-export default {
-  name: 'Post',
-  auth: false,
-  async asyncData({ $axios, params }) {
-    const post = await $axios.$get(`/custom-content/news/${params.id}`)
-    return { post }
-  },
-}
+<script setup>
+const { data: post } = await useFetch(`/api/v1/custom-content/news/${params.id}`)
 </script>
+
 <style scoped>
 #post .v-btn-back {
   bottom: 0;

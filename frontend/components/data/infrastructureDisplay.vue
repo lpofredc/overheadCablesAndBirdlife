@@ -4,38 +4,24 @@
       <v-row justify="space-around">
         <v-radio :label="$t('display.all')" value="both"></v-radio>
         <v-radio :label="$t('support.supports')" value="poles"></v-radio>
-        <v-radio :label="$t('display.lines')" value="segments"></v-radio
-      ></v-row> </v-radio-group
-    ><v-data-table
-      :headers="tableHeaders"
-      :items="selectedData"
-      :items-per-page="5"
-      class="elevation-1"
-      @click:row="showDetail"
-    >
-      <template
-        v-slot:item.properties.actions_infrastructure.0.neutralized="{ item }"
-      >
-        <v-icon
-          :color="
-            [item.properties.actions_infrastructure[0].neutralized] == 'true'
-              ? 'green'
-              : 'red'
-          "
-          dark
-          >{{
-            item.properties.actions_infrastructure[0].neutralized
-              ? 'mdi-check-circle'
-              : 'mdi-checkbox-blank-circle'
-          }}</v-icon
-        >
+        <v-radio :label="$t('display.lines')" value="segments"></v-radio></v-row> </v-radio-group><v-data-table
+      :headers="tableHeaders" :items="selectedData" :items-per-page="5" class="elevation-1" @click:row="showDetail">
+      <template v-slot:item.properties.actions_infrastructure.0.neutralized="{ item }">
+        <v-icon :color="[item.properties.actions_infrastructure[0].neutralized] == 'true'
+          ? 'green'
+          : 'red'
+          " dark>{{
+    item.properties.actions_infrastructure[0].neutralized
+    ? 'mdi-check-circle'
+    : 'mdi-checkbox-blank-circle'
+  }}</v-icon>
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 export default {
   name: 'InfrastructureDisplay',
 
@@ -67,16 +53,14 @@ export default {
     }
   },
   async fetch() {
-    const data = await this.$axios.$get('cables/infrastructures') // get FeatureCollection
+    const data = await useFetch('/api/v1/cables/infrastructures') // get FeatureCollection
     this.$store.commit('cablesStore/add', data)
     // needed to load data at start
     this.selectedData = this.infstrDataFeatures
   },
-  computed: mapGetters({
-    infstrDataFeatures: 'cablesStore/infstrDataFeatures',
-    pointDataFeatures: 'cablesStore/pointDataFeatures',
-    lineDataFeatures: 'cablesStore/lineDataFeatures',
-  }),
+  computed: {
+    ...mapState(useCablesStore, ['infstrDataFeatures', 'pointDataFeatures', 'lineDataFeatures'])
+  },
   methods: {
     source(choice) {
       switch (choice) {

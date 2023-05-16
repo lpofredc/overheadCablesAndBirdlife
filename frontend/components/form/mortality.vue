@@ -19,32 +19,13 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="4">
-              <v-text-field
-                ref="lat"
-                v-model="lat"
-                :label="$t('support.latitude')"
-                type="number"
-                placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              />
+              <v-text-field ref="lat" v-model="lat" :label="$t('support.latitude')" type="number" placeholder="Latitude"
+                :rules="[rules.requiredOrNotValid, rules.latRange]" required hide-spin-buttons outlined dense />
             </v-col>
 
             <v-col cols="12" md="4">
-              <v-text-field
-                ref="lng"
-                v-model="lng"
-                :label="$t('support.longitude')"
-                type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                required
-                hide-spin-buttons
-                outlined
-                dense
-              />
+              <v-text-field ref="lng" v-model="lng" :label="$t('support.longitude')" type="number"
+                :rules="[rules.requiredOrNotValid, rules.lngRange]" required hide-spin-buttons outlined dense />
             </v-col>
           </v-row>
         </v-container>
@@ -57,97 +38,36 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="6">
-              <v-menu
-                :close-on-content-click="false"
-                transition="scale-transition"
-              >
+              <v-menu :close-on-content-click="false" transition="scale-transition">
                 <template #activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="mortalityData.date"
-                    :label="$t('forms.datecreate')"
-                    persistent-hint
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    dense
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
+                  <v-text-field v-model="mortalityData.date" :label="$t('forms.datecreate')" persistent-hint
+                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="attrs" v-on="on"></v-text-field>
                 </template>
-                <v-date-picker
-                  v-model="mortalityData.date"
-                  no-title
-                ></v-date-picker>
+                <v-date-picker v-model="mortalityData.date" no-title></v-date-picker>
               </v-menu>
             </v-col>
 
             <v-col cols="12" md="6">
-              <v-autocomplete
-                v-model="mortalityData.species_id"
-                :items="speciesItems"
-                :loading="isLoading"
-                :search-input.sync="speciesSearch"
-                hide-no-data
-                hide-selected
-                item-text="vernacular_name"
-                item-value="id"
-                label="Espèce"
-                placeholder="Start typing to Search"
-                required
-                outlined
-                dense
-              ></v-autocomplete>
+              <v-autocomplete v-model="mortalityData.species_id" :items="speciesItems" :loading="isLoading"
+                :search-input.sync="speciesSearch" hide-no-data hide-selected item-text="vernacular_name" item-value="id"
+                label="Espèce" placeholder="Start typing to Search" required outlined dense></v-autocomplete>
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field
-                ref="lat"
-                v-model="mortalityData.author"
-                :label="$t('mortality.observer')"
-                type="string"
-                :placeholder="$t('mortality.observer')"
-                hide-spin-buttons
-                required
-                outlined
-                dense
-              />
+              <v-text-field ref="lat" v-model="mortalityData.author" :label="$t('mortality.observer')" type="string"
+                :placeholder="$t('mortality.observer')" hide-spin-buttons required outlined dense />
             </v-col>
             <v-col cols="12" md="6">
-              <v-select
-                v-model="mortalityData.death_cause_id"
-                :items="deathCause"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                label="Cause de la mortalité"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="mortalityData.death_cause_id" :items="deathCause" item-text="label" item-value="id"
+                :rules="[rules.required]" label="Cause de la mortalité" outlined dense></v-select>
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field
-                ref="lat"
-                v-model="mortalityData.infrstr"
-                label="support/ligne concerné"
-                type="string"
-                placeholder="support/ligne concerné"
-                hide-spin-buttons
-                outlined
-                dense
-              />
+              <v-text-field ref="lat" v-model="mortalityData.infrstr" label="support/ligne concerné" type="string"
+                placeholder="support/ligne concerné" hide-spin-buttons outlined dense />
             </v-col>
 
             <v-col cols="12">
-              <v-textarea
-                v-model="mortalityData.remark"
-                clearable
-                clear-icon="mdi-close-circle"
-                :label="$t('app.remark')"
-                :rules="[rules.textLength]"
-                rows="2"
-                counter="300"
-                outlined
-                dense
-              ></v-textarea>
+              <v-textarea v-model="mortalityData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+                :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
             </v-col>
           </v-row>
         </v-container>
@@ -176,8 +96,10 @@
   </v-card>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
+
+// const speciesStore = useSpeciesStore()
 
 // export default Vue.extend({
 export default {
@@ -238,6 +160,7 @@ export default {
     }
   },
   computed: {
+
     /**
      * Getter and Setter for "lat" value.
      * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
@@ -275,11 +198,9 @@ export default {
       },
     },
     // Get values from store
-    ...mapGetters({
-      newPoint: 'coordinatesStore/newPointCoord',
-      species: 'speciesStore/getSpecies',
-      deathCause: 'nomenclaturesStore/getDeathCause',
-    }),
+    ...mapState(useSpeciesStore, ['species']),
+    ...mapState(useCoordinatesStore, ['newPointCoord']),
+    ...mapState(useNomenclaturesStore, ['deathCause']),
     speciesFields() {
       if (!this.mortalityData.species) return []
 
@@ -325,7 +246,7 @@ export default {
         .finally(() => (this.isLoading = false))
     },
   },
-  mounted() {},
+  mounted() { },
   methods: {
     /**
      * back(): Method to get back if cancel Point creation.

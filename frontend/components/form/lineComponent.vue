@@ -68,61 +68,27 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="4">
-              <v-select
-                v-model="lineData.owner_id"
-                :items="networkOwners"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('support.network')"
-                required
-                dense
-                outlined
-              >
+              <v-select v-model="lineData.owner_id" :items="networkOwners" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('support.network')" required dense outlined>
               </v-select>
             </v-col>
 
             <v-col cols="12" md="4">
-              <v-menu
-                :close-on-content-click="false"
-                transition="scale-transition"
-              >
+              <v-menu :close-on-content-click="false" transition="scale-transition">
                 <template #activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="diagData.date"
-                    :label="$t('forms.datecreate')"
-                    persistent-hint
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    outlined
-                    dense
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
+                  <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
+                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="attrs" v-on="on"></v-text-field>
                 </template>
                 <v-date-picker v-model="diagData.date" no-title></v-date-picker>
               </v-menu>
             </v-col>
 
             <v-col cols="12" md="4">
-              <v-checkbox
-                v-model="diagData.neutralized"
-                :label="$t('support.neutralized')"
-                dense
-              ></v-checkbox>
+              <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')" dense></v-checkbox>
             </v-col>
             <v-col cols="12">
-              <v-textarea
-                v-model="diagData.remark"
-                clearable
-                clear-icon="mdi-close-circle"
-                :label="$t('app.remark')"
-                :rules="[rules.textLength]"
-                rows="2"
-                counter="300"
-                outlined
-                dense
-              ></v-textarea>
+              <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+                :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
             </v-col>
           </v-row>
         </v-container>
@@ -135,53 +101,21 @@
           </v-row>
           <v-row>
             <v-col cols="12" lg="3" md="6">
-              <v-select
-                v-model="diagData.buildIntegRisk"
-                :items="riskLevels"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('line.buildIntegRisk')"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="diagData.buildIntegRisk" :items="riskLevels" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('line.buildIntegRisk')" outlined dense></v-select>
             </v-col>
             <v-col cols="12" lg="3" md="6">
-              <v-select
-                v-model="diagData.movingRisk"
-                :items="riskLevels"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('line.movingRisk')"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="diagData.movingRisk" :items="riskLevels" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('line.movingRisk')" outlined dense></v-select>
             </v-col>
 
             <v-col cols="12" lg="3" md="6">
-              <v-select
-                v-model="diagData.topoIntegRisk"
-                :items="riskLevels"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('line.topoIntegRisk')"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="diagData.topoIntegRisk" :items="riskLevels" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('line.topoIntegRisk')" outlined dense></v-select>
             </v-col>
             <v-col cols="12" lg="3" md="6">
-              <v-select
-                v-model="diagData.vegetIntegRisk"
-                :items="riskLevels"
-                item-text="label"
-                item-value="id"
-                :rules="[rules.required]"
-                :label="$t('line.vegetIntegRisk')"
-                outlined
-                dense
-              ></v-select>
+              <v-select v-model="diagData.vegetIntegRisk" :items="riskLevels" item-text="label" item-value="id"
+                :rules="[rules.required]" :label="$t('line.vegetIntegRisk')" outlined dense></v-select>
             </v-col>
           </v-row>
         </v-container>
@@ -195,8 +129,9 @@
     </v-form>
   </v-card>
 </template>
+
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
 
 export default {
@@ -243,10 +178,12 @@ export default {
   },
   computed: {
     // Get values from store
-    ...mapGetters({
-      newLineCoord: 'coordinatesStore/newLineCoord',
-      networkOwners: 'nomenclaturesStore/getOwners',
-      riskLevels: 'nomenclaturesStore/getRiskLevels',
+    ...mapState(useCoordinatesStore, {
+      newLineCoord: 'newLineCoord',
+    }),
+    ...mapState(useNomenclaturesStore, {
+      networkOwners: 'getOwners',
+      riskLevels: 'getRiskLevels',
     }),
   },
   methods: {

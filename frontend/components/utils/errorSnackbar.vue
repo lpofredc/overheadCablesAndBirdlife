@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useErrorsStore } from '@/store/errorStore'
 export default {
   data() {
     return {
@@ -22,9 +23,7 @@ export default {
     /**
      * Getter for "err" (error Object) from errorStore
      */
-    ...mapGetters({
-      err: 'errorStore/err',
-    }),
+    ...mapState(useErrorsStore, ['err'])
   },
   watch: {
     /**

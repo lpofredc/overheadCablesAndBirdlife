@@ -12,24 +12,6 @@
     </v-col>
   </v-row>
 </template>
-
-<script>
-export default {
-  name: 'PartnersComponent',
-  auth: false,
-  data() {
-    return {
-      partners: [],
-    }
-  },
-  mounted() {
-    this.getPartners()
-  },
-  methods: {
-    async getPartners() {
-      const partners = await this.$axios.$get('custom-content/partners/')
-      this.partners = partners
-    },
-  },
-}
+<script setup>
+const { data: partners } = await useFetch('/api/v1/custom-content/partners/')
 </script>

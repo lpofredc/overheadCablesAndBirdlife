@@ -1,6 +1,5 @@
-
-  <template>
-  <div></div>
+<template>
+  <div>test</div>
   <!-- <v-data-table
     :headers="headers"
     :items="mortalityData"

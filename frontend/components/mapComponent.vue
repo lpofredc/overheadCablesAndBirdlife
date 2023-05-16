@@ -1,46 +1,15 @@
 <template>
-  <l-map
-    ref="map"
-    class="d-flex align-stretch"
-    :class="editMode ? 'change-map' : 'view-map'"
-    :center="center"
-    :bounds="bounds"
-    :max-bounds="maxBounds"
-    @ready="onMapReady()"
-  >
+  <l-map ref="map" class="d-flex align-stretch" :class="editMode ? 'change-map' : 'view-map'" :center="center"
+    :bounds="bounds" :max-bounds="maxBounds" @ready="onMapReady()">
     <l-control-layers position="topright"></l-control-layers>
-    <l-tile-layer
-      v-for="baseLayer in baseLayers"
-      :key="baseLayer.id"
-      :name="baseLayer.name"
-      :url="baseLayer.url"
-      :visible="baseLayer.default"
-      :attribution="baseLayer.attribution"
-      layer-type="base"
-    />
+    <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
+      :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
     <!-- Display of existing Point layer-->
-    <l-geo-json
-      v-if="pointData"
-      name="pointData"
-      :geojson="pointData"
-      :options-style="styleData"
-      :options="GeojsonOptions"
-    />
-    <l-geo-json
-      v-if="cablesData"
-      name="lineStringData"
-      :geojson="lineStringData"
-      :options-style="styleData"
-      :options="GeojsonOptions"
-    />
-    <v-speed-dial
-      class="fab mb-5"
-      absolute
-      bottom
-      right
-      direction="top"
-      transition="slide - y - reverse - transition"
-    >
+    <l-geo-json v-if="pointData" name="pointData" :geojson="pointData" :options-style="styleData"
+      :options="GeojsonOptions" />
+    <l-geo-json v-if="cablesData" name="lineStringData" :geojson="lineStringData" :options-style="styleData"
+      :options="GeojsonOptions" />
+    <v-speed-dial class="fab mb-5" absolute bottom right direction="top" transition="slide - y - reverse - transition">
       <template v-if="!editMode" #activator>
         <v-btn color="primary darken-2" dark fab>
           <v-icon x-large> + </v-icon>
@@ -65,9 +34,10 @@
 
 <script>
 import { latLngBounds } from 'leaflet'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 import '@geoman-io/leaflet-geoman-free'
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
+import { useMapLayersStore } from '~/store/lineStore'
 
 export default {
   name: 'DataMap',
@@ -116,14 +86,13 @@ export default {
         layer.setStyle({ pmIgnore: false })
       }
     },
-    ...mapGetters({
-      cablesData: 'cablesStore/infstrDataFeatures',
-      pointData: 'cablesStore/pointDataFeatures',
-      lineStringData: 'cablesStore/lineDataFeatures',
-      newPointCoord: 'coordinatesStore/newPointCoord',
-      newLineCoord: 'coordinatesStore/newLineCoord',
-      baseLayers: 'mapLayersStore/baseLayers',
+    ...mapState(useCablesStore, {
+      cablesData: 'infstrDataFeatures',
+      pointData: 'pointDataFeatures',
+      lineStringData: 'lineDataFeatures',
     }),
+    ...mapState(useCoordinatesStore, ['newLineCoord', 'newLineCoord']),
+    ...mapState(useMapLayersStore, ['baseLayers']),
   },
 
   watch: {

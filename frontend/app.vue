@@ -8,11 +8,11 @@
       <v-app-bar-nav-icon @click="miniVariant = !miniVariant" />
       <v-toolbar-title v-text="$t('app.app-name')" />
       <v-spacer></v-spacer>
-      <div v-if="!$vuetify.breakpoint.mdAndDown">
+      <div v-if="!mdAndDown">
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
-      <v-dialog v-if="!$auth.loggedIn" v-model="dialog" :fullscreen="$vuetify.breakpoint.mdAndDown" hide-overlay
-        transition="dialog-bottom-transition" :width="!$vuetify.breakpoint.mdAndDown ? 500 : '100%'">
+      <v-dialog v-if="!$auth.loggedIn" v-model="dialog" :fullscreen="mdAndDown" hide-overlay
+        transition="dialog-bottom-transition" :width="!mdAndDown ? 500 : '100%'">
         <template #activator="{ on, attrs }">
           <v-btn icon class="mr-2" v-bind="attrs" v-on="on">
             <v-icon large>mdi-login</v-icon>
@@ -26,7 +26,7 @@
     </v-app-bar>
     <v-main>
       <v-container fluid class="pa-0" fill-height>
-        <Nuxt />
+        <NuxtPage />
       </v-container>
     </v-main>
     <v-system-bar>
@@ -41,20 +41,36 @@
 </template>
 
 <script>
+
+import { useDisplay } from 'vuetify'
+import { useMapLayersStore } from './store/mapLayersStore'
+
 export default {
   name: 'DefaultLayout',
   data() {
     return {
-      $auth: { loggedIn: true },
+      $auth: {
+        loggedIn: true,
+        user: {
+          username: 'John Doe'
+        }
+      },
       miniVariant: true, // small drawer at opening
       dialog: false,
+    }
+  },
+  computed: {
+    mdAndDown() {
+      const { mdAndDown } = useDisplay()
+      return mdAndDown
     }
   },
   mounted() {
     /**
      * Triggers 'loadBaseLayers' action in mapLayersStore
      */
-    this.$store.dispatch('mapLayersStore/loadBaseLayers')
+    // this.$store.dispatch('mapLayersStore/loadBaseLayers')
+    this.loadBaseMapLayers()
   },
   methods: {
     /**
@@ -70,6 +86,11 @@ export default {
     logout() {
       this.$auth.logout()
     },
+    loadBaseMapLayers() {
+      const mapLayersStore = useMapLayersStore()
+      console.log('STORE', mapLayersStore)
+      mapLayersStore.loadBaseLayers()
+    }
   },
 }
 </script>
