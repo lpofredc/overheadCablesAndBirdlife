@@ -16,7 +16,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { useDisplay } from 'vuetify'
 const { lgAndUp, mdAndDown } = useDisplay()

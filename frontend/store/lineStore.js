@@ -1,8 +1,8 @@
 /** Nuxt Line module: lineStore to handle creation of new Line */
 
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useLineStore = defineStore("lines", {
+export const useLineStore = defineStore('lines', {
   state: () => ({ newLineCoord: [] }),
   getters: {
     /**
@@ -11,8 +11,8 @@ export const useLineStore = defineStore("lines", {
      * @param {state} state of this store module
      * @return {JSON object} object with latitude and longitude data
      */
-    newLineCoord(state) {
-      return state.newLineCoord;
-    },
-  },
-});
+    newLineCoord (state) {
+      return state.newLineCoord
+    }
+  }
+})

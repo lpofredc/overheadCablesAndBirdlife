@@ -11,22 +11,16 @@
         <strong>{{ data.properties.owner.label }}</strong>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-chip
-        class="mr-2"
-        dark
-        :class="[lastDiag.neutralized ? 'green' : 'red']"
-        >{{ lastDiag.neutralized ? 'Neutralisé' : 'A neutraliser' }}</v-chip
-      >
+      <v-chip class="mr-2" dark :class="[lastDiag.neutralized ? 'green' : 'red']">{{ lastDiag.neutralized ? 'Neutralisé' :
+        'A neutraliser' }}</v-chip>
     </v-app-bar>
 
     <v-card-text class="overflow-y-auto fill-height">
       <v-card class="my-2">
-        <v-card-title
-          >Info Support <v-spacer></v-spacer>
+        <v-card-title>Info Support <v-spacer></v-spacer>
           <v-btn icon @click="$router.push('/view')">
             <v-icon color="orange">mdi-pencil</v-icon>
-          </v-btn></v-card-title
-        >
+          </v-btn></v-card-title>
         <v-card-text>
           <p class="text-strong" v-if="data.properties.geo_area.length > 0">
             Limites administratives
@@ -46,8 +40,7 @@
       </v-card>
       <data-diagnosis-card :diagnosis="lastDiag" />
       <data-operation-card v-if="lastOp" :operation="lastOp" />
-      <v-card
-        ><v-card-title v-if="previousActions.length" class="font-weight-bold">
+      <v-card><v-card-title v-if="previousActions.length" class="font-weight-bold">
           {{ $t('support.history') }}
         </v-card-title>
         <v-expansion-panels>
@@ -56,17 +49,10 @@
               {{ action.resourcetype }} - {{ action.date }}
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <data-diagnosis-card
-                v-if="action.resourcetype === 'Diagnosis'"
-                :diagnosis="action"
-              /><data-operation-card
-                v-if="action.resourcetype === 'Operation'"
-                :operation="action"
-              />
+              <data-diagnosis-card v-if="action.resourcetype === 'Diagnosis'" :diagnosis="action" /><data-operation-card
+                v-if="action.resourcetype === 'Operation'" :operation="action" />
             </v-expansion-panel-content>
-          </v-expansion-panel> </v-expansion-panels
-      ></v-card> </v-card-text
-  ></v-card>
+          </v-expansion-panel> </v-expansion-panels></v-card> </v-card-text></v-card>
 </template>
 
 <script lang="ts">

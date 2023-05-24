@@ -1,14 +1,14 @@
 // Nuxt Store module: cablesStore for Cables module
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useCablesStore = defineStore("cables", {
+export const useCablesStore = defineStore('cables', {
   state: () => ({
     infstrData: {}, // Infrastructure data
-    pointData: {}, // Pole and Pylon data
-    lineData: {}, // Cable lines data
+    // pointData: {}, // Pole and Pylon data
+    // lineData: {}, // Cable lines data
     opData: [],
     pointOpData: [],
-    lineOpData: [],
+    lineOpData: []
   }),
   getters: {
     // // get FeatureCollection data
@@ -16,50 +16,59 @@ export const useCablesStore = defineStore("cables", {
     //   return state.infstrData
     // },
     // get FeatureCollection array containing data (Json Object)
-    infstrDataFeatures(state) {
-      return state.infstrData.features;
+    getInfstrDatafeatures(state) {
+      return state.infstrData.features
     },
     // pointData(state) {
     //   return state.pointData
     // },
-    pointDataFeatures(state) {
-      return state.pointData.features;
+    getPointDataFeatures(state) {
+      return state.infstrData.features?.filter(
+        elem => elem.resourcetype === 'Point'
+      )
     },
     // lineData(state) {
     //   return state.lineData
     // },
-    lineDataFeatures(state) {
-      return state.lineData.features;
+    getLineDataFeatures(state) {
+      return state.infstrData.features?.filter(
+        elem => elem.resourcetype === 'Line'
+      )
     },
-    opData(state) {
-      return state.opData;
+    getOpData(state) {
+      return state.opData
     },
-    pointOpData(state) {
-      return state.pointOpData;
+    getPointOpData(state) {
+      return state.pointOpData
     },
-    lineOpData(state) {
-      return state.lineOpData;
-    },
+    getLineOpData(state) {
+      return state.lineOpData
+    }
   },
   actions: {
-    add(data) {
-      this.infstrData = data;
+    async getInfrstrData(filter) {
+      await $fetch('/api/v1/cables/infrastructures', filter).then((data) => {
+        this.infstrData = data
+        console.log('DATA', this.infstrData, data)
+      }).catch((error) => { console.error(error) })
+
       // gather Point and Line from fetched infrastructure data
-      this.pointData = JSON.parse(JSON.stringify(data)); // deep copy of data Json Object
       // filter Point objects in data.features and set filtered array to "state.pointData.features"
-      this.pointData.features = this.pointData.features.filter(
-        (elem) => elem.resourcetype === "Point"
-      );
-      this.lineData = JSON.parse(JSON.stringify(data)); // deep copy of data Json Object
-      // filter Line objects in data.features and set filtered array to "state.lineData.features"
-      this.lineData.features = this.lineData.features.filter(
-        (elem) => elem.resourcetype === "Line"
-      );
+      // this.pointData.features = dataCopy.features?.filter(
+      //   elem => elem.resourcetype === 'Point'
+      // )
+      // // filter Line objects in data.features and set filtered array to "state.lineData.features"
+      // this.lineData.features = dataCopy.features?.filter(
+      //   elem => elem.resourcetype === 'Line'
+      // )
+    },
+    setInfrstrData(data) {
+      this.infstrData = data
     },
     addOperation(data) {
-      this.opData = data.all;
-      this.pointOpData = data.point;
-      this.lineOpData = data.line;
-    },
-  },
-});
+      this.opData = data.all
+      this.pointOpData = data.point
+      this.lineOpData = data.line
+    }
+  }
+})

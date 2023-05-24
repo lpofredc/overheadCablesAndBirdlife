@@ -1,6 +1,5 @@
 {
   "editor.formatOnSave": true,
-  "python.pythonPath": "backend/.venv/bin/python",
   "python.formatting.provider": "black",
   "python.formatting.blackArgs": ["--line-length=99"],
   "python.sortImports.args": ["--profile", "black"],
@@ -9,9 +8,13 @@
       "source.organizeImports": true
     }
   },
-  "vetur.format.defaultFormatter.html": "prettier",
   "[vue]": {
     "editor.defaultFormatter": "Vue.volar"
   },
-  "esbonio.sphinx.confDir": ""
+  "esbonio.sphinx.confDir": "",
+  "cSpell.words": [
+    "Nuxt"
+  ],
+  "eslint.format.enable": true,
+  // "tslint.enable": true
 }

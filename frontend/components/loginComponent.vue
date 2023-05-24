@@ -63,10 +63,11 @@ export default {
      */
     async userLogin() {
       try {
+        console.log('THIS.$AUTH', this.$auth, this.login)
         // check theform is validated
         if (this.$refs.form.validate()) {
           await this.$auth.loginWith('local', {
-            data: this.login,
+            body: this.login,
           })
           this.$router.push('/view') // if OK, redirect to "/view"
         }

@@ -1,12 +1,12 @@
 <template>
-  <v-container fill-height fluid class="pa-0">
+  <v-container class="fill-height pa-0">
     <v-row v-if="mdAndUp" class="fill-height">
-      <v-col cols="6" class="pr-0 pt-0 pb-0">
+      <v-col class="pr-0 pt-0 pb-0">
         <!-- <ClientOnly fallback-tag="span" fallback="Loading comments...">
             <map-component :edit-mode="false" />
           </ClientOnly> -->
       </v-col>
-      <v-col cols="6" class="pa-0">
+      <v-col class="pa-0">
         <display-component />
       </v-col>
     </v-row>

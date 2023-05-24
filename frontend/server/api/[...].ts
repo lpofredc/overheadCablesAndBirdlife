@@ -1,38 +1,40 @@
-import { createError, readBody, appendHeader } from 'h3';
+/* global defineEventHandler, useRuntimeConfig */
+/* eslint no-console: ["error", { allow: ["warn","debug","error"] }] */
+
+import { createError, readBody, appendHeader } from 'h3'
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig();
+  const config = useRuntimeConfig()
+  console.debug('API MIDDLEWARE')
+  if (!config.public.apiBase) {
+    throw new Error('Missing `runtimeConfig.apiBase` configuration.')
+  }
+  const { method, url, headers } = event.req
+  const body = method !== 'GET' && method !== 'HEAD' ? await readBody(event) : undefined
+  console.debug('API MIDDLEWARE', { method, url, headers })
 
-    if (!config.apiBaseUrl) {
-        throw new Error('Missing `runtimeConfig.apiBaseUrl` configuration.');
+  try {
+    const response = await $fetch.raw(url, {
+      method,
+      baseURL: config.public.apiBase,
+      headers: {
+        ...headers
+      },
+      body
+    })
+
+    for (const header of ['set-cookie', 'cache-control']) {
+      if (response.headers.has(header)) {
+        appendHeader(event, header, response.headers.get(header))
+      }
     }
 
-    const { method, url, headers } = event.req;
-    const body = method !== 'GET' && method !== 'HEAD' ? await readBody(event) : undefined;
-
-    try {
-        const response = await $fetch.raw(url, {
-            method,
-            baseURL: config.apiBaseUrl,
-            headers: {
-                'content-type': 'application/json',
-                cookie: headers.cookie,
-            },
-            body,
-        });
-
-        for (const header of ['set-cookie', 'cache-control']) {
-            if (response.headers.has(header)) {
-                appendHeader(event, header, response.headers.get(header));
-            }
-        }
-
-        return response._data;
-    } catch (error) {
-        return createError({
-            statusCode: error.response.status,
-            statusMessage: error.message,
-            data: error.data,
-        });
-    }
-});
+    return response._data
+  } catch (error) {
+    return createError({
+      statusCode: error.response.status,
+      statusMessage: error.message,
+      data: error.data
+    })
+  }
+})

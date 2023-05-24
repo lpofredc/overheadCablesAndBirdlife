@@ -39,6 +39,7 @@ import '@geoman-io/leaflet-geoman-free'
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
 import { useMapLayersStore } from '~/store/mapLayersStore'
 import { useCablesStore } from '~/store/cablesStore'
+import { useCoordinatesStore } from '~/store/coordinatesStore'
 
 export default {
   name: 'DataMap',
@@ -115,23 +116,21 @@ export default {
             this.createLayer.remove()
             this.createLayer = null
           }
-        } else {
-          if (newVal && newVal.lat !== null && newVal.lng !== null) {
-            this.map = this.$refs.map.mapObject
-            this.map.on('layeradd', (e) => {
-              this.createLayer = e.layer
-              this.map.pm.addControls({
-                drawMarker: false,
-                dragMode: true,
-                removalMode: true,
-              })
+        } else if (newVal && newVal.lat !== null && newVal.lng !== null) {
+          this.map = this.$refs.map.mapObject
+          this.map.on('layeradd', (e) => {
+            this.createLayer = e.layer
+            this.map.pm.addControls({
+              drawMarker: false,
+              dragMode: true,
+              removalMode: true,
             })
-            const layer = new L.Marker([newVal.lat, newVal.lng]).addTo(this.map)
-            // set listener on drag event on this layer
-            this.handleDrag(this.createLayer)
-            // in case of remove event, tigger handleRemove() method
-            this.createLayer.on('pm:remove', (_e) => this.handleRemove())
-          }
+          })
+          const layer = new L.Marker([newVal.lat, newVal.lng]).addTo(this.map)
+          // set listener on drag event on this layer
+          this.handleDrag(this.createLayer)
+          // in case of remove event, tigger handleRemove() method
+          this.createLayer.on('pm:remove', (_e) => this.handleRemove())
         }
       }
     },
@@ -191,7 +190,7 @@ export default {
     //   layer.bindPopup('coucou', _feature)
     // },
     changePointMarker(_feature, latlng) {
-      if (feature.geometry.type === 'Point') {
+      if (_feature.geometry.type === 'Point') {
         return LCircleMarker(latlng, {
           radius: 2,
           fillOpacity: 0.85,

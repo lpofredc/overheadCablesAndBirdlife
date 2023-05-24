@@ -1,18 +1,18 @@
 /** Nuxt Store module: saStore for Sensible Area module */
 
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 export const useSensitiveAreasStore = defineStore('sensitive-areas', {
   state: () => ({ SAData: {} }),
   getters: {
-    saData(state) {
-      return state.SAData;
+    saData (state) {
+      return state.SAData
     },
-    saDataFeatures(state) {
-      return state.SAData.features;
-    },
-  },
-});
+    saDataFeatures (state) {
+      return state.SAData.features
+    }
+  }
+})
 
 // export const state = () => ({
 //   /** Sensible Area data get from fetch request as geoJson object */
