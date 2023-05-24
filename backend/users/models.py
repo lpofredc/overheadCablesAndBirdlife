@@ -55,13 +55,15 @@ class Organism(BaseModel):
     extra_data = models.JSONField(
         blank=True, null=True, verbose_name=_("Additional datas")
     )
-    logo = models.ImageField(_("Logo"), upload_to=settings.MEDIA_UPLOAD)
+    logo = models.ImageField(
+        _("Logo"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
+    )
 
     class Meta:
         verbose_name_plural = _("organismes")
 
     def __str__(self):
-        return self.short_label
+        return str(self.short_label)
 
 
 class User(BaseModel, AbstractUser, PermissionsMixin):
@@ -98,6 +100,10 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
         blank=True,
         verbose_name=_("Organisme"),
     )
+    avatar = models.ImageField(
+        _("Avatar"), upload_to=settings.MEDIA_UPLOAD, null=True, blank=True
+    )
+
     objects = UserManager()
 
     class Meta:
