@@ -65,11 +65,12 @@ export default defineNuxtConfig({
     },
     auth: {
         // cookie: false,
-        // redirect: {
-        //     login: '/',
-        //     logout: '/',
-        //     home: '/'
-        // },
+        redirect: {
+            login: '/account/login',
+            logout: '/',
+            callback: '/account/login',
+            home: '/'
+        },
         globalMiddleware: true,
         strategies: {
             local: {

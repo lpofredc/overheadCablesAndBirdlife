@@ -1,27 +1,24 @@
 <template>
-  <v-sheet color="grey-lighten-4" class="pa-4">
-    <v-avatar class="mb-4" color="grey-darken-1" size="64" :image="$auth.user?.avatar"></v-avatar>
-    <div>{{ $auth.user?.username || "Not connected" }}</div>
-  </v-sheet>
+  <VSheet color="grey-lighten-4" class="pa-4">
+    <VAvatar class="mb-4" color="grey-darken-1" size="64" :image="$auth.user?.avatar"></VAvatar>
+    <div><a to="/account/">{{ $auth.user?.username || "Not connected" }}</a></div>
+  </VSheet>
 
-  <v-divider></v-divider>
+  <VDivider></VDivider>
 
-  <v-list>
-    <v-list-item v-for="[icon, text, url] in links" :key="icon" link :to="url">
+  <VList>
+    <VListItem v-for="[icon, text, url, loggedIn] in links" v-if="loggedIn || null" :key="icon" link :to="url">
       <template v-slot:prepend>
-        <v-icon>{{ icon }}</v-icon>
       </template>
-
-      <v-list-item-title>{{ text }}</v-list-item-title>
-    </v-list-item>
-    <v-list-item link to="/account/login">
+      <VListItemTitle>{{ text }}</VListItemTitle>
+    </VListItem>
+    <VListItem v-if="!$auth.loggedIn" link to="/account/login">
       <template v-slot:prepend>
-        <v-icon icon="mdi-login"></v-icon>
+        <VIcon icon="mdi-login"></VIcon>
       </template>
-
-      <v-list-item-title>login</v-list-item-title>
-    </v-list-item>
-  </v-list>
+      <VListItemTitle>login</VListItemTitle>
+    </VListItem>
+  </VList>
 </template>
 <script setup>
 
@@ -29,8 +26,8 @@ const $auth = useAuth()
 const { t } = useI18n()
 useRouter()
 const links = ref([
-  ["mdi-home", t('login.home_page'), "/"],
-  ["mdi-map-search", t('login.application'), "/view"],
-  ["mdi-cogs", t('login.admin'), "/admin"],
+  ['mdi-home', t('login.home_page'), '/', null],
+  ['mdi-map-search', t('login.application'), '/view', true],
+  ['mdi-cogs', t('login.admin'), '/admin', true]
 ]);
 </script>
