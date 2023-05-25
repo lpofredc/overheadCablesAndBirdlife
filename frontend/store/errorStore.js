@@ -20,8 +20,13 @@ export const useErrorsStore = defineStore('errors', {
      * @param {state} state of this store module
      * @return {JSON object} returns the "err" object
      */
-    err (state) {
+    getError(state) {
       return state.err
+    }
+  },
+  actions: {
+    setError(error) {
+      this.err = error
     }
   }
 })
