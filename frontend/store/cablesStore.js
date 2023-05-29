@@ -63,6 +63,7 @@ export const useCablesStore = defineStore('cables', {
       // )
     },
     setInfrstrData(data) {
+      console.log('STORE setInfrstrData', data)
       this.infstrData = data
     },
     addOperation(data) {

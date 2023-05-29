@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="SADataFeatures" :items-per-page="5" class="elevation-1"></v-data-table>
+  <v-data-table :headers="headers" :items="SADataFeatures" :items-per-page="5" class="elevation-1" />
 </template>
 
 <script>
@@ -25,10 +25,10 @@ export default {
   },
   /** Fetch Sensitive Area from backend and record it to Nuxt Store */
   async fetch() {
-    const data = await useFetch('/api/v1/sensitive-areas/') // get FeatureCollection
+    const data = await useHttp('/api/v1/sensitive-areas/') // get FeatureCollection
     this.$store.commit('saStore/add', data)
   },
   /** Gather Sensitive Area data from Nuxt Store */
-  computed: { ...mapState(useSensitiveAreasStore, ['SaDataFeature']) },
+  computed: { ...mapState(useSensitiveAreasStore, ['SaDataFeature']) }
 }
 </script>

@@ -8,17 +8,26 @@
       </v-row>
     </v-radio-group>
 
-    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :items-per-page="5" class="elevation-1"
-      @click:row="showDetail">
+    // eslint-disable-next-line vuetify/no-deprecated-components
+    <v-data-table
+      :headers="tableHeaders"
+      :items="dataSource[display]"
+      :items-per-page="5"
+      class="elevation-1"
+      @click:row="showDetail"
+    >
       <template #item.properties.actions_infrastructure.0.neutralized="{ item }">
-        <v-icon :color="[item.properties.actions_infrastructure[0].neutralized] == 'true'
-          ? 'green'
-          : 'red'
-          " dark>
+        <v-icon
+          :color="[item.properties.actions_infrastructure[0].neutralized] == 'true'
+            ? 'green'
+            : 'red'
+          "
+          dark
+        >
           {{
             item.properties.actions_infrastructure[0].neutralized
-            ? 'mdi-check-circle'
-            : 'mdi-checkbox-blank-circle'
+              ? 'mdi-check-circle'
+              : 'mdi-checkbox-blank-circle'
           }}
         </v-icon>
       </template>
@@ -69,13 +78,14 @@ const dataSource = reactive({
 })
 
 const setInfrstrData = async (filter) => {
-  const data = await useFetch('/api/v1/cables/infrastructures', filter)
-  console.log('DATA', data)
+  const { data } = await useHttp('/api/v1/cables/infrastructures', filter)
+  console.log('setInfrstrData DATA', data)
   cableStore.setInfrstrData(data)
 }
 
 onMounted(() => {
   setInfrstrData({})
+  // cableStore.getInfrstrData({})
 })
 
 // const source = (choice) => {

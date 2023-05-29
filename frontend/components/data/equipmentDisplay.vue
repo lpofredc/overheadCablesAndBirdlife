@@ -39,7 +39,7 @@ export default {
     const lineOpData = await this.$axios.$get(
       'cables/operations/?type_model=line'
     )
-    const opData = await useFetch('/api/v1/cables/operations')
+    const opData = await useHttp('/api/v1/cables/operations')
     this.$store.commit('cablesStore/addOperation', {
       all: opData,
       point: pointOpData,

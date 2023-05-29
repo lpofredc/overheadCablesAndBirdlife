@@ -5,7 +5,6 @@ import { createError, readBody, appendHeader } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  console.debug('API MIDDLEWARE')
   if (!config.public.apiBase) {
     throw new Error('Missing `runtimeConfig.apiBase` configuration.')
   }
@@ -17,9 +16,7 @@ export default defineEventHandler(async (event) => {
     const response = await $fetch.raw(url, {
       method,
       baseURL: config.public.apiBase,
-      headers: {
-        ...headers
-      },
+      headers,
       body
     })
 
@@ -28,7 +25,7 @@ export default defineEventHandler(async (event) => {
         appendHeader(event, header, response.headers.get(header))
       }
     }
-
+    console.log(`RESPONSE._data for ${url}`, response._data)
     return response._data
   } catch (error) {
     return createError({

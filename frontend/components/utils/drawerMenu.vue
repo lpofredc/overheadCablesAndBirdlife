@@ -7,7 +7,7 @@
   <VDivider></VDivider>
 
   <VList>
-    <VListItem v-for="[icon, text, url, loggedIn] in links" v-if="loggedIn || null" :key="icon" link :to="url">
+    <VListItem v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :key="icon" link :to="url">
       <template v-slot:prepend>
       </template>
       <VListItemTitle>{{ text }}</VListItemTitle>

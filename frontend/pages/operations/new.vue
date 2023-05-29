@@ -18,5 +18,8 @@
 
 <script setup>
 import { useDisplay } from 'vuetify'
+definePageMeta({
+  auth: true,
+});
 const { lgAndUp, mdAndDown } = useDisplay()
 </script>

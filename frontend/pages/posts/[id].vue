@@ -21,8 +21,10 @@
 
 <script setup>
 const route = useRoute()
-
-const { data: post } = await useFetch(`/api/v1/custom-content/news/${route.params.id}`)
+definePageMeta({
+  auth: true,
+});
+const { data: post } = await useHttp(`/api/v1/custom-content/news/${route.params.id}`)
 </script>
 
 <style scoped>

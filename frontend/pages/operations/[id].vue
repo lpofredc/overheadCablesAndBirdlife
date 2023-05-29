@@ -23,7 +23,9 @@
 <script setup>
 import { useDisplay } from 'vuetify'
 const { lgAndUp, mdAndDown } = useDisplay()
-
+definePageMeta({
+  auth: true,
+});
 const route = useRoute()
-const { data: data } = await useFetch(`cables/operations/${route.params.id}`)
+const { data: data } = await useHttp(`cables/operations/${route.params.id}`)
 </script>

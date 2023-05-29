@@ -17,6 +17,11 @@
 <script setup type="ts">
 import * as errorCodes from '~/static/errorConfig.json'
 import { useErrorsStore } from '~/store/errorStore'
+
+const { t } = useI18n()
+const router = useRoute()
+
+
 const errorStore = useErrorsStore()
 const auth = useAuth()
 // interface Login {
@@ -29,19 +34,19 @@ const login = reactive({
   username: '',
   password: ''
 })
-const nameRules = reactive([v => !!v || this.$t('login.required_username_msg')])
-const pwdRules = reactive([v => !!v || this.$t('login.required_pwd_msg')])
-const { t } = useI18n()
+const nameRules = reactive([v => !!v || t('login.required_username_msg')])
+const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
+
 
 const userLogin = async () => {
   try {
     // check theform is validated
     if (valid) {
-      console.log('isValid', valid ? true : false)
+      console.log('Try Auth', login)
       await auth.loginWith('local', {
-        body: this.login
+        body: login
       })
-      this.$router.push('/view') // if OK, redirect to "/view"
+      router.push('/view') // if OK, redirect to "/view"
     }
   } catch (err) {
     const error = {}

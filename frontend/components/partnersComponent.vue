@@ -1,5 +1,5 @@
 <template>
-  <v-row dense class="justify-center">
+  <v-row id="partners" dense class="justify-center">
     <v-col v-for="i in partners" :key="i.id" loading cols="12" xs="6" sm="4" md="3" lg="2">
       <v-tooltip bottom>
         <template v-slot:activator="{ props }">
@@ -12,6 +12,12 @@
     </v-col>
   </v-row>
 </template>
-<script setup>
-const { data: partners } = await useFetch('/api/v1/custom-content/partners/')
+<script setup lang="ts">
+const { data: partners } = await useHttp('/api/v1/custom-content/partners/')
 </script>
+
+<style scoped>
+#partners {
+  border: 1ps solid red;
+}
+</style>

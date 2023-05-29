@@ -34,6 +34,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
+
+definePageMeta({
+  auth: true,
+});
+
 const tab = ref(null)
 const { mdAndUp } = useDisplay()
 
