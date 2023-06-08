@@ -2,9 +2,9 @@
   <v-container class="fill-height pa-0">
     <v-row v-if="mdAndUp" class="fill-height">
       <v-col class="pr-0 pt-0 pb-0">
-        <!-- <ClientOnly fallback-tag="span" fallback="Loading comments...">
-            <map-component :edit-mode="false" />
-          </ClientOnly> -->
+        <ClientOnly fallback-tag="span" fallback="Loading comments...">
+          <map-component :edit-mode="false" />
+        </ClientOnly>
       </v-col>
       <v-col class="pa-0">
         <display-component />
@@ -36,8 +36,8 @@ import { ref } from 'vue'
 import { useDisplay } from 'vuetify'
 
 definePageMeta({
-  auth: true,
-});
+  auth: true
+})
 
 const tab = ref(null)
 const { mdAndUp } = useDisplay()

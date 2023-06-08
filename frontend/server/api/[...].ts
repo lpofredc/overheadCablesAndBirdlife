@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
   }
   const { method, url, headers } = event.req
   const body = method !== 'GET' && method !== 'HEAD' ? await readBody(event) : undefined
-  console.debug('API MIDDLEWARE', { method, url, headers })
 
   try {
     const response = await $fetch.raw(url, {
@@ -25,7 +24,7 @@ export default defineEventHandler(async (event) => {
         appendHeader(event, header, response.headers.get(header))
       }
     }
-    console.log(`RESPONSE._data for ${url}`, response._data)
+
     return response._data
   } catch (error) {
     return createError({

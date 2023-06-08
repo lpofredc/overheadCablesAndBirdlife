@@ -1,130 +1,120 @@
 <template>
   <v-card class="my-2">
-    <v-card-title>
-      {{ $t('display.diagnosis') }}
-      <v-spacer></v-spacer>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon @click="newDiag">
-            <v-icon v-if="diagnosis.last" color="green"
-              >mdi-eye-plus-outline</v-icon
-            >
-          </v-btn>
-        </template>
-        <span>Ajouter un dignostic</span>
-      </v-tooltip>
-      <v-btn icon @click="updateDiag">
-        <v-icon color="orange">mdi-pencil</v-icon>
-      </v-btn>
-    </v-card-title>
-    <v-card-subtitle>
-      {{ $t('diagnosis.last-one') }}{{ diagnosis.date }}
+    <v-layout>
+      <v-app-bar density="compact" color="blue-grey-lighten-4">
+        <v-app-bar-title>
+          {{ $t('display.diagnosis') }}
+        </v-app-bar-title>
+        <v-spacer />
+        <v-chip small class="mr-2" :color="diagnosis.neutralized ? 'success' : 'error'" variant="elevated">
+          {{ diagnosis.neutralized ? 'neutralisé' : 'à neutraliser' }}
+        </v-chip>
+        <v-btn-toggle rounded="0" density="compact">
+          <v-btn class="mr-2" v-if="diagnosis.last" color="green" density="compact" icon="mdi-eye-plus-outline"
+            @click="newDiag" />
+          <v-btn class="mr-2" variant="elevated" density="compact" icon="mdi-pencil" color=orange @click="updateDiag" />
+        </v-btn-toggle>
+      </v-app-bar>
+      <v-main>
+        <v-card-subtitle class="ma-2">
+          Diagnostic réalisé le {{ diagnosis.date }}
+        </v-card-subtitle>
 
-      <v-chip small :class="[diagnosis.neutralized ? 'success' : 'error']"
-        >{{ diagnosis.neutralized ? 'neutralisé' : 'à neutraliser' }}
-      </v-chip></v-card-subtitle
-    >
+        <v-card-text>
+          <v-layout class="d-flex justify-space-between">
+            <v-chip :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
+              {{ diagnosis.isolation_advice ? '' : 'ne pas '
+              }}{{ $t('diagnosis.isolate') }}
+            </v-chip>
+            <v-chip :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
+              {{ diagnosis.dissuasion_advice ? '' : 'ne pas '
+              }}{{ $t('diagnosis.make-dissuasive') }}
+            </v-chip>
+            <v-chip :class="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
+              {{ diagnosis.attraction_advice ? '' : 'ne pas '
+              }}{{ $t('diagnosis.make-attractive') }}
+            </v-chip>
+          </v-layout>
 
-    <v-card-text>
-      <p>
-        <v-chip :class="[diagnosis.isolation_advice ? 'success' : '']"
-          >{{ diagnosis.isolation_advice ? '' : 'ne pas '
-          }}{{ $t('diagnosis.isolate') }}</v-chip
-        >
-        <v-chip :class="[diagnosis.dissuasion_advice ? 'success' : '']"
-          >{{ diagnosis.dissuasion_advice ? '' : 'ne pas '
-          }}{{ $t('diagnosis.make-dissuasive') }}</v-chip
-        >
-        <v-chip :class="[diagnosis.attraction_advice ? 'success' : '']"
-          >{{ diagnosis.attraction_advice ? '' : 'ne pas '
-          }}{{ $t('diagnosis.make-attractive') }}</v-chip
-        >
-      </p>
-
-      <p>
-        <span class="font-weight-bold">{{ $t('support.condition') }}</span>
-        {{ diagnosis.condition.label }}
-      </p>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.support-type') }}</span>
-        <v-chip v-for="pt in diagnosis.pole_type" :key="pt.id">{{
-          pt.label
-        }}</v-chip>
-      </p>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>
-        <v-chip :color="riskColors[diagnosis.pole_attractivity.code]">{{
-          diagnosis.pole_attractivity.label
-        }}</v-chip>
-      </p>
-      <p>
-        <span class="font-weight-bold">{{ $t('support.dangerousness') }}</span>
-        <v-chip :color="riskColors[diagnosis.pole_dangerousness.code]">{{
-          diagnosis.pole_dangerousness.label
-        }}</v-chip>
-      </p>
-      <p v-if="diagnosis.remark">
-        <span class="font-weight-bold">{{ $t('app.remark') }}</span>
-        {{ diagnosis.remark }}
-      </p>
-      <v-list>
-        <v-list-item v-for="img in diagnosis.media" :key="img.id">
-          <v-row>
-            <v-col>
-              <v-img
-                :src="img.storage"
-                max-height="100"
-                max-width="166"
-                class="ma-2"
-              />
-            </v-col>
-            <!-- <v-col>date: {{ pictDate }}</v-col>   -->
-            <v-col></v-col>
-            <v-col cols="1">
-              <v-icon small color="red">mdi-trash-can</v-icon>
-            </v-col>
-          </v-row>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
+          <p>
+            <span class="font-weight-bold">{{ $t('support.condition') }}</span>
+            {{ diagnosis.condition.label }}
+          </p>
+          <p>
+            <span class="font-weight-bold">{{ $t('support.support-type') }}</span>
+            <v-chip v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
+              {{
+              pt.label
+              }}
+            </v-chip>
+          </p>
+          <p>
+            <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>
+            <v-chip :color="riskColors[diagnosis.pole_attractivity.code]" variant="elevated" class="ma-2">
+              {{
+              diagnosis.pole_attractivity.label
+              }}
+            </v-chip>
+          </p>
+          <p>
+            <span class="font-weight-bold">{{ $t('support.dangerousness') }}</span>
+            <v-chip :color="riskColors[diagnosis.pole_dangerousness.code]" variant="elevated" class="ma-2">
+              {{
+              diagnosis.pole_dangerousness.label
+              }}
+            </v-chip>
+          </p>
+          <p v-if="diagnosis.remark">
+            <span class="font-weight-bold">{{ $t('app.remark') }}</span>
+            <p>
+              {{ diagnosis.remark }}
+            </p>
+          </p>
+          <v-list>
+            <v-list-item v-for="img in diagnosis.media" :key="img.id">
+              <v-row>
+                <v-col>
+                  <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
+                </v-col>
+                <!-- <v-col>date: {{ pictDate }}</v-col>   -->
+                <v-col />
+                <v-col cols="1">
+                  <v-icon size="small" color="red">
+                    mdi-trash-can
+                  </v-icon>
+                </v-col>
+              </v-row>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-main>
+    </v-layout>
   </v-card>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
+<script setup>
 
-export default Vue.extend({
-  name: 'DiagnosisCardComponent',
-  props: { diagnosis: { type: Object, default: null } },
-  data() {
-    return {
-      newSupport: this.$route.query.newSupport,
-      riskColors: {
-        RISK_L: 'light-blue',
-        RISK_M: 'yellow',
-        RISK_H: 'red lighten-1 white--text',
-      },
-    }
-  },
-  mounted() {
-    console.log('diagnosis', this.diagnosis)
-  },
-  methods: {
-    newDiag() {
-      this.$router.push({
-        path: `/supports/${this.diagnosis.infrastructure}/diagnosis/${this.diagnosis.id}`,
-        query: { modifyDiag: 'false' },
-      })
-    },
-    updateDiag() {
-      this.$router.push({
-        path: `/supports/${this.diagnosis.infrastructure}/diagnosis/${this.diagnosis.id}`,
-        query: { modifyDiag: 'true' },
-      })
-    },
-    notImplementedYet() {
-      return null
-    },
-  },
+const props = defineProps(['diagnosis'])
+const router = useRouter()
+
+const riskColors = reactive({
+  RISK_L: 'light-blue',
+  RISK_M: 'yellow',
+  RISK_H: 'red lighten-1 white--text'
 })
+
+const newDiag = () => {
+  console.debug(`/supports/${props.diagnosis.infrastructure}/diagnosis`)
+  router.push({
+    path: `/supports/${props.diagnosis.infrastructure}/diagnosis`,
+    query: { modifyDiag: 'false' }
+  })
+}
+const updateDiag = () => {
+  router.push({
+    path: `/supports/${props.diagnosis.infrastructure}/diagnosis`,
+    query: { modifyDiag: 'true', id_diagnosis: props.diagnosis.id }
+  })
+}
+
 </script>

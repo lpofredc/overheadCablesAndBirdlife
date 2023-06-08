@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
+    '@vite-pwa/nuxt',
     '@nuxt-alt/auth',
     '@nuxt-alt/http',
     '@pinia/nuxt',
@@ -13,6 +14,48 @@ export default defineNuxtConfig({
     '@invictus.codes/nuxt-vuetify',
     '@nuxtjs/i18n'
   ],
+  // ssr: false,
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'Nuxt Vite PWA',
+      short_name: 'NuxtVitePWA',
+      theme_color: '#ffffff',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    client: {
+      installPrompt: true,
+      // you don't need to include this: only for testing purposes
+      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+      periodicSyncForUpdates: 20,
+    },
+    devOptions: {
+      enabled: true,
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+  },
   vuetify: {
     /* vuetify options */
     vuetifyOptions: {
@@ -32,9 +75,8 @@ export default defineNuxtConfig({
     '@mdi/font/css/materialdesignicons.min.css',
     'leaflet/dist/leaflet.css'
   ],
-
   build: {
-    transpile: ['vuetify']
+    transpile: ['vuetify','leaflet-geoman']
   },
   imports: {
     // Auto-import pinia stores defined in `~/stores`

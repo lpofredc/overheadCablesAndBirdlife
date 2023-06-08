@@ -8,7 +8,6 @@
       </v-row>
     </v-radio-group>
 
-    // eslint-disable-next-line vuetify/no-deprecated-components
     <v-data-table
       :headers="tableHeaders"
       :items="dataSource[display]"
@@ -16,16 +15,17 @@
       class="elevation-1"
       @click:row="showDetail"
     >
-      <template #item.properties.actions_infrastructure.0.neutralized="{ item }">
+      <template #item.value.properties.actions_infrastructure.0.neutralized="{ item }">
+        {{ item.value }}
         <v-icon
-          :color="[item.properties.actions_infrastructure[0].neutralized] == 'true'
+          :color="[item.value?.properties.actions_infrastructure[0].neutralized] == 'true'
             ? 'green'
             : 'red'
           "
           dark
         >
           {{
-            item.properties.actions_infrastructure[0].neutralized
+            item.value?.properties.actions_infrastructure[0].neutralized
               ? 'mdi-check-circle'
               : 'mdi-checkbox-blank-circle'
           }}
@@ -40,8 +40,8 @@
 // import { mapState } from 'pinia'
 import { VDataTable } from 'vuetify/labs/VDataTable'
 import { useCablesStore } from '~/store/cablesStore'
-
-const router = useRoute()
+const router = useRouter()
+const { t } = useI18n()
 
 // const singleExpand = ref(false)
 // const expanded = reactive([])
@@ -49,43 +49,36 @@ const display = ref('both')
 const selectedData = reactive([])
 const tableHeaders = reactive([
   {
-    // text: $t('app.id'),
-    text: 'id',
+    title: t('app.id'),
     align: 'start',
     sortable: true,
-    value: 'properties.id'
+    key: 'properties.id'
   },
-  // { text: $t('app.type'), value: 'resourcetype' },
-  { text: 'type', value: 'resourcetype' },
-  // { text: $t('support.owner'), value: 'properties.owner.label' },
-  { text: 'Owner', value: 'properties.owner.label' },
-  { text: 'Notation', value: 'score' },
+  { title: t('app.type'), key: 'resourcetype' },
+  { title: t('support.owner'), key: 'properties.owner.label' },
+  { title: 'Notation', key: 'score' },
   {
-    text: 'Neutralisé',
-    value: 'properties.actions_infrastructure.0.neutralized'
+    title: 'Neutralisé',
+    key: 'properties.actions_infrastructure.0.neutralized'
   },
   {
-    text: 'Dernier diagnostic',
-    value: 'properties.actions_infrastructure.0.date'
+    title: 'Dernier diagnostic',
+    key: 'properties.actions_infrastructure.0.date'
   }
 ])
 
 const cableStore = useCablesStore()
-const dataSource = reactive({
-  both: cableStore.getInfstrDatafeatures,
-  poles: cableStore.getPointDataFeatures,
-  segments: cableStore.getLineDataFeatures
+const dataSource = computed(() => {
+  return {
+    both: cableStore.getInfstrDatafeatures,
+    poles: cableStore.getPointDataFeatures,
+    segments: cableStore.getLineDataFeatures
+  }
 })
 
-const setInfrstrData = async (filter) => {
-  const { data } = await useHttp('/api/v1/cables/infrastructures', filter)
-  console.log('setInfrstrData DATA', data)
-  cableStore.setInfrstrData(data)
-}
-
 onMounted(() => {
-  setInfrstrData({})
-  // cableStore.getInfrstrData({})
+  // setInfrstrData({})
+  cableStore.getInfrstrData({})
 })
 
 // const source = (choice) => {
@@ -103,11 +96,13 @@ onMounted(() => {
 //     // TODO raise an exception and handle it or display message to user
 //   }
 // }
-const showDetail = (evt) => {
-  if (evt.resourcetype === 'Point') {
-    router.push(`/supports/${evt.properties.id}`)
-  } else if (evt.resourcetype === 'Line') {
-    router.push(`/lines/${evt.properties.id}`)
+const showDetail = (_, item) => {
+  const rowData = item.item.columns
+  console.log('showDetail rowItem id', rowData.properties.id)
+  if (rowData.resourcetype === 'Point') {
+    router.push(`/supports/${rowData.properties.id}`)
+  } else if (rowData.resourcetype === 'Line') {
+    router.push(`/lines/${rowData.properties.id}`)
   }
 }
 
@@ -137,7 +132,7 @@ const showDetail = (evt) => {
 //         {
 //           text: 'Dernier diagnostic',
 //           value: 'properties.actions_infrastructure.0.date',
-//         },
+//         },toRaw
 //       ],
 //     }
 //   },

@@ -1,276 +1,243 @@
 <template>
-  <v-card elevation="0" class="fill-height">
-    <v-form ref="form" v-model="formValid" class="text-center">
-      <v-toolbar color="pink" dark elevation="0">
-        <!-- TODO Review title handling and add terms in locales -->
-        <v-toolbar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
-          {{ diagnosis ? 'Diagnostic' : $t('support.support') }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon @click="$router.back()">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-card-text class="overflow-auto">
-        <v-container v-if="!diagnosis">
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong> {{ $t('forms.general-infrastructure') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field ref="lat" v-model="lat" :label="$t('support.latitude')" type="number" placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]" required hide-spin-buttons outlined dense />
-            </v-col>
+  <v-card elevation="0" class="fill-height overflow-auto">
+    <v-layout>
+      <v-form ref="form" v-model="formValid" class="text-center">
+        <v-app-bar color="pink" flat dark density="compact">
+          <template v-slot:prepend>
+            <v-btn icon="mdi-pencil"></v-btn>
+            <v-app-bar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
+              {{ diagnosis ? 'diagnostic' : $t('support.support') }}
+            </v-app-bar-title>
+          </template>
+          <template v-slot:append>
+            <v-btn icon="mdi-close" @click="router.back()" />
+          </template>
+        </v-app-bar>
+        <v-main>
+          <v-card-text>
+            <v-container v-if="!diagnosis">
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <strong> {{ $t('forms.general-infrastructure') }}</strong>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-text-field ref="lat" v-model="lat" :label="$t('support.latitude')" type="number"
+                    placeholder="Latitude" :rules="[rules.requiredOrNotValid, rules.latRange]" required hide-spin-buttons
+                    outlined dense />
+                </v-col>
 
-            <v-col cols="12" md="4">
-              <v-text-field ref="lng" v-model="lng" :label="$t('support.longitude')" type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]" required hide-spin-buttons outlined dense />
-            </v-col>
-            <v-col cols="12" md="4" v-if="!diagnosis">
-              <v-select v-model="pointData.owner_id" :items="networkOwners" item-text="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.network')" outlined dense required>
-              </v-select>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-divider></v-divider>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('display.diagnosis') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="4" v-if="!support">
-              <v-menu :close-on-content-click="false" transition="scale-transition">
-                <template v-slot:activator="{ props }">
-                  <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
-                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="props"></v-text-field>
-                </template>
-                <v-date-picker v-model="diagData.date" no-title></v-date-picker>
-              </v-menu> </v-col><v-col cols="12" md="4" v-if="!support">
-              <v-select v-model="diagData.condition_id" :items="conditions" item-text="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.condition')" outlined dense></v-select>
-            </v-col>
-
-            <v-col cols="12" md="4" v-if="!support">
-              <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')" dense></v-checkbox>
-            </v-col>
-
-            <v-col cols="12" v-if="!support">
-              <v-autocomplete v-model="diagData.pole_type_id" :items="poleTypes" item-text="label" item-value="id"
-                :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple deletable-chips
-                small-chips outlined dense></v-autocomplete>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-text="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.attractiveness')" outlined dense></v-select>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-text="label" item-value="id"
-                :rules="[rules.required]" :label="$t('support.dangerousness')" outlined dense></v-select>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')" dense></v-checkbox>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')" dense></v-checkbox>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')" dense></v-checkbox>
-            </v-col>
-
-            <v-col cols="12">
-              <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-divider></v-divider>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('picture.pictures') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <utils-picture-component ref="upc" />
-            </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field ref="lng" v-model="lng" :label="$t('support.longitude')" type="number"
+                    :rules="[rules.requiredOrNotValid, rules.lngRange]" required hide-spin-buttons outlined dense />
+                </v-col>
+                <v-col cols="12" md="4" v-if="!diagnosis">
+                  <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
+                    :rules="[rules.required]" :label="$t('support.network')" outlined dense required>
+                  </v-select>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-divider></v-divider>
             <v-container>
-              <v-list v-if="diagnosis && modifyDiag">
-                <v-list-item v-for="img in diagnosis.media" :key="img.id">
-                  <v-row>
-                    <v-col>
-                      <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
-                    </v-col>
-                    <!-- <v-col>date: {{ pictDate }}</v-col> -->
-                    <v-col></v-col>
-                    <v-col cols="1">
-                      <v-icon small color="red">mdi-trash-can</v-icon>
-                    </v-col>
-                  </v-row>
-                </v-list-item>
-              </v-list></v-container>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-row class="justify-space-around mb-2">
-          <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn>
-        </v-row>
-      </v-card-actions>
-    </v-form>
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <strong>{{ $t('display.diagnosis') }}</strong>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="4" v-if="!support">
+                  <v-menu :close-on-content-click="false" transition="scale-transition">
+                    <template v-slot:activator="{ props }">
+                      <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
+                        prepend-icon="mdi-calendar" readonly outlined dense v-bind="props"></v-text-field>
+                    </template>
+                    <v-date-picker v-model="diagData.date" no-title></v-date-picker>
+                  </v-menu> </v-col><v-col cols="12" md="4" v-if="!support">
+                  <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
+                    :rules="[rules.required]" :label="$t('support.condition')" outlined dense></v-select>
+                </v-col>
+
+                <v-col cols="12" md="4" v-if="!support">
+                  <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')" dense></v-checkbox>
+                </v-col>
+
+                <v-col cols="12" v-if="!support">
+                  <v-autocomplete v-model="diagData.pole_type_id" :items="poleTypes" item-title="label" item-value="id"
+                    :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple deletable-chips
+                    small-chips outlined dense></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
+                    :rules="[rules.required]" :label="$t('support.attractiveness')" outlined dense></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
+                    item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" outlined
+                    dense></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')" dense></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')"
+                    dense></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
+                    dense></v-checkbox>
+                </v-col>
+
+                <v-col cols="12">
+                  <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+                    :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-divider></v-divider>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <strong>{{ $t('picture.pictures') }}</strong>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <utils-picture-component ref="upc" />
+                </v-col>
+                <v-container>
+                  <v-list v-if="diagnosis && modifyDiag">
+                    <v-list-item v-for="img in diagnosis.media" :key="img.id">
+                      <v-row>
+                        <v-col>
+                          <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
+                        </v-col>
+
+                        <v-col></v-col>
+                        <v-col cols="1">
+                          <v-icon small color="red">mdi-trash-can</v-icon>
+                        </v-col>
+                      </v-row>
+                    </v-list-item>
+                  </v-list></v-container>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-row class="justify-space-around mb-2">
+              <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
+              <v-btn @click="submit">{{ $t('app.valid') }}</v-btn>
+            </v-row>
+          </v-card-actions>
+        </v-main>
+      </v-form>
+    </v-layout>
   </v-card>
 </template>
-<script>
+<script setup lang="ts">
 import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
+import { useCoordinatesStore } from '~/store/coordinatesStore'
+import { useNomenclaturesStore } from '~/store/nomenclaturesStore'
 
-// export default Vue.extend({
-export default {
-  name: 'PointComponent',
+// // init modules
+const { t } = useI18n()
+const router = useRouter()
+const route = useRoute()
 
-  props: {
-    support: { type: Object, default: null },
-    diagnosis: { type: Object, default: null },
-    operation: { type: Object, default: null },
-  },
+// // init Stores
+const coordinatesStore = useCoordinatesStore()
+const nomenclaturesStore = useNomenclaturesStore()
 
-  data() {
-    return {
-      formValid: true,
+// // props
+const props = defineProps(['support','diagnosis','operation'])
+
+console.log('diagnosis', props.diagnosis)
+console.log('support', props.support)
+console.log('operation',props.operation)
+
+
+const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
+// data
+
+const form = ref(null) // used to get form ref from "<v-form ref="form">"
+const formValid = ref(true)
       // manualChange: false, // boolean to activate manual coordinate change
       // form values
-      newLat: null,
-      newLng: null,
+const lat : Ref<null|number> = ref<null | number>(null)
+const lng : Ref<null|number>= ref<null | number>(null)
       // To manage Media
-      newCreatedMediaIdList: [],
+const newCreatedMediaIdList : Array<object> = reactive([])
       // define data related to Point
-      pointData: {
+const pointData = reactive({
         geom: {
           type: 'Point',
-          coordinates: this.support ? this.support.coordinates : [],
+          coordinates: props.support ? props.support.coordinates : [],
         },
-        owner_id: this.support ? this.support.owner_id : null,
-      },
+        owner_id: props.support ? props.support.owner_id : null,
+      })
       // define data related to Diagnosis
-      diagData: {
+      const diagData = reactive({
         date:
-          this.diagnosis && !this.modifyDiag
-            ? this.diagnosis.date
+          props.diagnosis && !modifyDiag
+            ? props.diagnosis.date
             : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
               .toISOString()
               .substr(0, 10),
-        remark: this.diagnosis ? this.diagnosis.remark : null,
-        pole_type_id: this.diagnosis
-          ? this.diagnosis.pole_type.map((pt) => pt.id)
+        remark: props.diagnosis ? props.diagnosis.remark : null,
+        pole_type_id: props.diagnosis
+          ? props.diagnosis.pole_type.map((pt) => pt.id)
           : [],
-        neutralized: this.diagnosis ? this.diagnosis.neutralized : false,
-        condition_id: this.diagnosis ? this.diagnosis.condition.id : null,
-        attraction_advice: this.diagnosis
-          ? this.diagnosis.attraction_advice
+        neutralized: props.diagnosis ? props.diagnosis.neutralized : false,
+        condition_id: props.diagnosis ? props.diagnosis.condition.id : null,
+        attraction_advice: props.diagnosis
+          ? props.diagnosis.attraction_advice
           : false,
-        dissuasion_advice: this.diagnosis
-          ? this.diagnosis.dissuasion_advice
+        dissuasion_advice: props.diagnosis
+          ? props.diagnosis.dissuasion_advice
           : false,
-        isolation_advice: this.diagnosis
-          ? this.diagnosis.isolation_advice
+        isolation_advice: props.diagnosis
+          ? props.diagnosis.isolation_advice
           : false,
-        pole_attractivity_id: this.diagnosis
-          ? this.diagnosis.pole_attractivity.id
+        pole_attractivity_id: props.diagnosis
+          ? props.diagnosis.pole_attractivity.id
           : null,
-        pole_dangerousness_id: this.diagnosis
-          ? this.diagnosis.pole_dangerousness.id
+        pole_dangerousness_id: props.diagnosis
+          ? props.diagnosis.pole_dangerousness.id
           : null,
-        media_id: this.diagnosis ? this.diagnosis.media.map((m) => m.id) : [],
-      },
-      // rules for form validation
-      rules: {
-        required: (v) => !!v || this.$t('valid.required'),
+        media_id: props.diagnosis ? props.diagnosis.media.map((m) => m.id) : [],
+      })
+//       // rules for form validation
+      const rules = reactive({
+        required: (v) => !!v || t('valid.required'),
         requiredOrNotValid: (v) =>
-          v === 0 || !!v || this.$t('valid.required_or_not_valid'),
+          v === 0 || !!v || t('valid.required_or_not_valid'),
         latRange: (v) =>
-          (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
+          (v >= 40 && v <= 52) || `${t('valid.range')}40 : 52`,
         lngRange: (v) =>
-          (v >= -20 && v <= 20) || `${this.$t('valid.range')}-20 : 20`,
+          (v >= -20 && v <= 20) || `${t('valid.range')}-20 : 20`,
         textLength: (v) =>
-          (v || '').length <= 300 || `${this.$t('valid.length')}: 300`,
-      },
-    }
-  },
-  computed: {
-    /**
-     * String value (changed to boolean) get from url query param "modifyDiag" indicating a new
-     * Diag is to be created from an existing support. This make diagData initialized as empty.
-     * By default, "modifyDiag" is true (means a new Diagnosis would be added)
-     */
-    modifyDiag() {
-      return this.$route.query.modifyDiag === 'true' ? true : false
-    },
-    /**
-     * Getter and Setter for "lat" value.
-     * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
-     */
-    lat: {
-      get() {
-        return this.newPoint ? this.newPoint.lat : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
-          lng: this.lng,
-        })
-      },
-    },
-    /**
-     * Getter and Setter for "lng" value.
-     * This longitude value is bind v-text-field "lng", and linked with longitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
-     */
-    lng: {
-      get() {
-        return this.newPoint ? this.newPoint.lng : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: this.lat,
-          lng: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
-        })
-      },
-    },
-    // Get values from store
-    ...mapState(useCoordinatesStore, {
-      newPoint: 'newPointCoord',
-    }),
-    ...mapState(useNomenclaturesStore, {
-      conditions: 'getConditions',
-      networkOwners: 'getOwners',
-      poleTypes: 'getPoleTypes',
-      riskLevels: 'getRiskLevels',
-    }),
-  },
-  methods: {
-    /**
-     * back(): Method to get back if cancel Point creation.
-     *
-     * "newPointCoord" reinitialized with lat and lng set to null
-     */
-    back() {
-      this.$store.commit('coordinatesStore/addPointCoord', {
+          (v || '').length <= 300 || `${t('valid.length')}: 300`,
+      })
+
+
+// Menu items
+const poleTypes = computed(() =>  nomenclaturesStore.poleTypeItems)
+const networkOwners = computed(() => nomenclaturesStore.ownerItems)
+const conditions = computed(() => nomenclaturesStore.conditionItems)
+const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
+
+
+
+    // Methods
+    const back = () => {
+      coordinatesStore.addPointCoord({
         lat: null,
         lng: null,
       })
-      this.$router.back()
-    },
+      router.back()
+    }
 
     /**
      * submit(): Method to submit the form for Point/Diagnosis/Media creation or update
@@ -279,25 +246,25 @@ export default {
      * If process fail at any step, all elements created before are deleted through error handling
      * process.
      */
-    async submit() {
-      if (this.$refs.form.validate()) {
+    const submit = async () => {
+      if (formValid) {
         // Case of creation of new Point and associated Diagnosis
-        if (!this.support && !this.diagnosis) {
-          const pointCreated = await this.createNewPoint()
+        if (!props.support && !props.diagnosis) {
+          const pointCreated = await createNewPoint()
           // new Point (Support) is successfully created
           if (pointCreated) {
             // Create Diagnosis
-            await this.createNewDiagnosis(pointCreated.properties.id)
+            await createNewDiagnosis(pointCreated.properties.id)
           }
-          this.$router.push('/view')
-        } else if (this.diagnosis && this.modifyDiag) {
+          router.push('/view')
+        } else if (props.diagnosis && modifyDiag) {
           // Case of update of Diagnosis
           await this.updateDiagnosis()
-          this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
-        } else if (this.diagnosis && !this.modifyDiag) {
+          router.push(`/supports/${props.diagnosis.infrastructure}`)
+        } else if (props.diagnosis && !modifyDiag) {
           // Case of creation of new Diagnosis on existing Support
           await this.addNewDiagnosis()
-          this.$router.push(`/supports/${this.diagnosis.infrastructure}`)
+          router.push(`/supports/${props.diagnosis.infrastructure}`)
         } else if (this.support) {
           // update of existing Point
           const error = {
@@ -309,7 +276,7 @@ export default {
           this.$store.commit('errorStore/setError', error)
         }
       }
-    },
+    }
 
     /**
      * createNewPoint(): Method that create new Point based on forms data (cf. this.pointData)
@@ -318,20 +285,20 @@ export default {
      *
      * If process fails, error message is displayed in snackBar through error handling process.
      */
-    async createNewPoint() {
+     const createNewPoint = async () => {
       try {
-        this.pointData.geom.coordinates = [this.lng, this.lat]
-        return await this.$axios.$post('cables/points/', this.pointData)
+        pointData.geom.coordinates = [lng, lat]
+        return await useHttp('cables/points/', 'post', pointData)
       } catch (_err) {
         const error = {}
         error.code = errorCodes.create_point.code
-        error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
+        error.msg = t(`error.${errorCodes.create_point.msg}`)
         // set error message to errorStore and triggers message display through "err" watcher in
         // error-snackbar component
-        this.$store.commit('errorStore/setError', error)
-        this.back()
+        errorStore.setError(error)
+        back()
       }
-    },
+    }
 
     /**
      * createNewDiagnosis(): Method that create new Diagnosis based on forms data(cf.this.diagData)
@@ -343,9 +310,9 @@ export default {
      * Related Media will also be deleted in this case.
      * Finally, error message is displayed in snackBar through error handling process.
      */
-    async createNewDiagnosis(infrstr_id) {
+    const createNewDiagnosis = async (infrstr_id) => {
       // Create Media as selected in component form and get list of Ids of created Media
-      const mediaIdList = await this.createNewMedia()
+      const mediaIdList = await createNewMedia()
       try {
         this.diagData.infrastructure = infrstr_id // set Infrastructure (Point) id
         this.diagData.media_id = mediaIdList // set Media id list
@@ -368,7 +335,7 @@ export default {
         this.$store.commit('errorStore/setError', error)
         this.back()
       }
-    },
+    }
 
     /**
      * addNewDiagnosis(): Method that create new Diagnosis based on forms data (cf.this.diagData)
@@ -379,12 +346,12 @@ export default {
      * Related Media will also be deleted in this case.
      * Finally, error message is displayed in snackBar through error handling process.
      */
-    async addNewDiagnosis() {
+    const addNewDiagnosis = async () => {
       // Create Media as selected in component form and get list of Ids of created Media
-      console.log(this.modifyDiag ? 'vrai' : 'faux')
+      console.log(modifyDiag ? 'vrai' : 'faux')
       const mediaIdList = await this.createNewMedia()
       try {
-        this.diagData.infrastructure = this.diagnosis.infrastructure // set Infrastructure (Point) id
+        this.diagData.infrastructure = props.diagnosis.infrastructure // set Infrastructure (Point) id
         this.diagData.media_id = mediaIdList // set Media id list
         // Create Diagnosis
         return await this.$axios.$post('cables/diagnosis/', this.diagData)
@@ -403,7 +370,7 @@ export default {
         this.$store.commit('errorStore/setError', error)
         this.back()
       }
-    },
+    }
 
     /**
      * updateDiagnosis(): Method that update Diagnosis based on forms data (cf.this.diagData)
@@ -411,15 +378,15 @@ export default {
      * Error handling: If Diagnosis update fails, new created Media will be deleted.
      * Finally, error message is displayed in snackBar through error handling process.
      */
-    async updateDiagnosis() {
+    const updateDiagnosis = async () => {
       // Create new Media as selected in component form and get list of Ids of created Media
       const mediaIdList = await this.createNewMedia()
       try {
-        this.diagData.infrastructure = this.diagnosis.infrastructure // set Infrastructure (Point) id
+        this.diagData.infrastructure = props.diagnosis.infrastructure // set Infrastructure (Point) id
         this.diagData.media_id = mediaIdList // set Media id list
         // Create Diagnosis
         return await this.$axios.$put(
-          `cables/diagnosis/${this.diagnosis.id}/`,
+          `cables/diagnosis/${props.diagnosis.id}/`,
           this.diagData
         )
       } catch (_err) {
@@ -437,7 +404,7 @@ export default {
         this.$store.commit('errorStore/setError', error)
         this.back()
       }
-    },
+    }
 
     /**
      * createNewMedia(): Method that create new Media based on component forms data and return the
@@ -449,8 +416,8 @@ export default {
      * through error handling process. Id of Media for which creation did not fail will be return
      * anyway.
      */
-    async createNewMedia() {
-      const mediaIdList = this.modifyDiag ? this.diagData.media_id : []
+    const createNewMedia = async() => {
+      const mediaIdList = modifyDiag ? this.diagData.media_id : []
 
       // await all Promises be resolved before returning result
       await Promise.all(
@@ -484,7 +451,7 @@ export default {
         })
       )
       return mediaIdList
-    },
-  },
-}
+    }
+
+
 </script>

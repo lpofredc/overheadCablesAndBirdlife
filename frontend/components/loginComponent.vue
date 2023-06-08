@@ -1,5 +1,5 @@
 <template>
-  <v-sheet width="600" class="mx-auto">
+  <!-- <v-sheet width="600" class="mx-auto">
     <v-form ref="loginForm" v-model="valid">
       <v-text-field v-model="login.username" :rules="nameRules" prepend-icon="mdi-account-circle" type="text" outlined
         fluid required @keyup.enter="userLogin" />
@@ -11,6 +11,59 @@
         $t('login.sign-in')
       }}</v-btn>
     </v-form>
+  </v-sheet> -->
+  <v-sheet width="100%" max-width="600" class="mx-auto">
+    <v-form ref="loginForm" v-model="valid">
+      <v-container>
+        <v-row>
+          <v-col lg="4"><v-img class="mx-auto mb-10" max-height="100" src="/img/icon.png"></v-img></v-col>
+          <v-col lg="4">
+            <h1>Cable & Avifaune</h1>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-card class="mx-auto pa-12 pb-8" elevation="8" rounded="lg">
+
+        <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+
+        <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
+          variant="outlined" v-model="login.username" :rules="nameRules" @keyup.enter="userLogin"></v-text-field>
+
+        <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+          Password
+
+          <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
+            Forgot login password?</a>
+        </div>
+
+        <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
+          density="compact" placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline" variant="outlined"
+          @click:append-inner="visible = !visible" v-model="login.password" :rules="pwdRules"></v-text-field>
+
+        <!-- <v-card class="mb-12" color="surface-variant" variant="tonal">
+        <v-card-text class="text-medium-emphasis text-caption">
+          Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for three hours. If
+          you must login now, you can also click "Forgot login password?" below to reset the login password.
+        </v-card-text>
+      </v-card> -->
+
+        <v-btn block class="mb-8" color="blue" size="large" variant="tonal" :loading="loading"  :disabled="!valid"
+          @click="userLogin()">
+          {{ $t('login.sign-in') }}
+        </v-btn>
+
+        <!-- <v-card-text class="text-center">
+        <a
+          class="text-blue text-decoration-none"
+          href="#"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
+        </a>
+      </v-card-text> -->
+      </v-card>
+    </v-form>
   </v-sheet>
 </template>
 
@@ -19,7 +72,7 @@ import * as errorCodes from '~/static/errorConfig.json'
 import { useErrorsStore } from '~/store/errorStore'
 
 const { t } = useI18n()
-const router = useRoute()
+const router = useRouter()
 
 
 const errorStore = useErrorsStore()
@@ -30,15 +83,18 @@ const auth = useAuth()
 // }
 const loginForm = ref(null)
 const valid = ref(false)
+const loading = ref(false)
 const login = reactive({
   username: '',
   password: ''
 })
 const nameRules = reactive([v => !!v || t('login.required_username_msg')])
 const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
+const visible = ref(false)
 
 
 const userLogin = async () => {
+  // loading=true
   try {
     // check theform is validated
     if (valid) {
@@ -46,10 +102,11 @@ const userLogin = async () => {
       await auth.loginWith('local', {
         body: login
       })
-      router.push('/view') // if OK, redirect to "/view"
+      router.push('/view')
     }
   } catch (err) {
     const error = {}
+    console.error('ERROR', err)
     // if nuxt error message contains substring '401'
     if (err.toString().includes('401')) {
       error.code = errorCodes.authentication.code
@@ -59,6 +116,7 @@ const userLogin = async () => {
       error.code = errorCodes.login.code
       error.msg = t(`error.${errorCodes.login.msg}`)
     }
+    // loading = false
     // set error message to errorStore and triggers message displyy through "err" watcher in
     // error-snackbar component
     errorStore.setError(error)

@@ -1,11 +1,11 @@
 <template>
- <v-container class="fill-height pa-0">
+<v-container class="fill-height pa-0">
     <v-row v-if="mdAndUp" class="fill-height">
       <v-col class="pr-0 pt-0 pb-0">
-        <map-component :edit-mode="false" />
+        <map-component :edit-mode="true" mode="point" />
       </v-col>
       <v-col class="pa-0">
-        <data-support-detail :data="info.data" />
+        <form-point-component :diagnosis="diag" />
       </v-col>
     </v-row>
 
@@ -17,27 +17,23 @@
 
       <v-tabs-items v-model="tab" class="fill-height">
         <v-tab-item>
-          <map-component :edit-mode="false" />
+          <map-component :edit-mode="true" mode="point" />
         </v-tab-item>
         <v-tab-item>
-          <data-support-detail :data="info.data" />
+          <form-point-component :diagnosis="data" />
         </v-tab-item>
       </v-tabs-items>
     </template>
   </v-container>
-
-
 </template>
+
 
 <script setup>
 import { useDisplay } from 'vuetify'
-
+const { mdAndUp } = useDisplay()
+definePageMeta({
+  auth: true,
+});
 const route = useRoute()
-const {mdAndUp} = useDisplay()
-
-const { data: info } = await useAsyncData(
-  'info',
-  () => useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`)
-)
-console.log('INFO', info)
+const diag = route.query.id_diagnosis ? await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`) : null
 </script>

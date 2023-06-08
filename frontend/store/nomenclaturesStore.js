@@ -15,6 +15,7 @@
 import { defineStore } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
 
+
 export const useNomenclaturesStore = defineStore('nomenclatures', {
   state: () => ({
     conditionItems: {},
@@ -82,9 +83,9 @@ export const useNomenclaturesStore = defineStore('nomenclatures', {
      *
      * @param {context} context object set as destructured form { commit }
      */
-    async loadNomenclatures ({ commit }) {
+    async loadNomenclatures () {
       try {
-        const types = await this.$axios.$get('nomenclature/types/') // get Types list
+        const types = await $http.$get('/api/v1/nomenclature/types/') // get Types list
         // gather Infrastructure Condition Items from all Items
         const conds = types.find(
           elem => elem.mnemonic === 'infrastr_condition'
@@ -119,6 +120,7 @@ export const useNomenclaturesStore = defineStore('nomenclatures', {
         }
         // set "riskLevels" to state value "riskLevelItems"
         this.riskLevelItems = riskLevels.item_nomenclature
+        console.log('this.riskLevelItems',this.riskLevelItems)
 
         // // gather Death cause Items from all Items
         const deathCause = types.find(
@@ -137,33 +139,33 @@ export const useNomenclaturesStore = defineStore('nomenclatures', {
         // if nuxt error message contains substring '404'
         if (err.toString().includes('404')) {
           error.code = errorCodes.nomenclature_not_found.code
-          error.msg = $nuxt.$t(
+          error.msg = useNuxtApp().$i18n.t(
             `error.${errorCodes.nomenclature_not_found.msg}`
           )
           // if nuxt error message contains substring 'conditions'
         } else if (err.toString().includes('conditions')) {
           error.code = errorCodes.get_infrstr_conditions.code
-          error.msg = $nuxt.$t(
+          error.msg = useNuxtApp().$i18n.t(
             `error.${errorCodes.get_infrstr_conditions.msg}`
           )
           // if nuxt error message contains substring 'owners'
         } else if (err.toString().includes('owners')) {
           error.code = errorCodes.get_infrstr_owners.code
-          error.msg = $nuxt.$t(`error.${errorCodes.get_infrstr_owners.msg}`)
+          error.msg = useNuxtApp().$i18n.t(`error.${errorCodes.get_infrstr_owners.msg}`)
           // if nuxt error message contains substring 'poleTypes'
         } else if (err.toString().includes('poleTypes')) {
           error.code = errorCodes.get_infrstr_poletypes.code
-          error.msg = $nuxt.$t(`error.${errorCodes.get_infrstr_poletypes.msg}`)
+          error.msg = useNuxtApp().$i18n.t(`error.${errorCodes.get_infrstr_poletypes.msg}`)
           // if nuxt error message contains substring 'riskLevels'
         } else if (err.toString().includes('riskLevels')) {
           error.code = errorCodes.get_infrstr_risklevels.code
-          error.msg = $nuxt.$t(
+          error.msg = useNuxtApp().$i18n.t(
             `error.${errorCodes.get_infrstr_risklevels.msg}`
           )
           // Default error if not capture above
         } else {
           error.code = errorCodes.loading_whole_nomenclatures.code
-          error.msg = $nuxt.$t(
+          error.msg = useNuxtApp().$i18n.t(
             `error.${errorCodes.loading_whole_nomenclatures.msg}`
           )
         }

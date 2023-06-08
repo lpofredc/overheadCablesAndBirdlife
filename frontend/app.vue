@@ -18,9 +18,9 @@
       <div v-if="!mdAndDown">
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
-      <v-dialog v-if="!$auth.loggedIn" v-model="dialog" :fullscreen="mdAndDown" :scrim="false"
+      <v-dialog v-if="!$auth.loggedIn"  v-model="dialog"
         transition="dialog-bottom-transition" :width="!mdAndDown ? 500 : '100%'">
-        <template #activator="{ props }">
+        <template  v-slot:activator="{ props }">
           <v-btn icon class="mr-2" v-bind="props">
             <v-icon size="large">
               mdi-login
@@ -57,6 +57,7 @@
 import { ref, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useMapLayersStore } from './store/mapLayersStore'
+import { useNomenclaturesStore } from './store/nomenclaturesStore'
 
 const { mdAndDown } = useDisplay()
 const drawer = ref(true)
@@ -70,8 +71,14 @@ const loadBaseMapLayers = () => {
   mapLayersStore.getMapBaseLayers()
 }
 
+const loadNomenclatures = () => {
+  const nomenclaturesStore = useNomenclaturesStore()
+  nomenclaturesStore.loadNomenclatures()
+}
+
 onMounted(() => {
   loadBaseMapLayers()
+  loadNomenclatures()
 })
 
 </script>
