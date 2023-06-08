@@ -1,10 +1,13 @@
 <template>
-  <l-map ref="map" class="d-flex align-stretch" :useGlobalLeaflet="false" :zoom="zoom" :center="center" @ready="mapReady">
-    <l-tile-layer v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name" :url="baseLayer.url"
-      :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
-    <l-control-layers />
-    <l-geo-json :geojson="pointData" :options="geojsonOptions" />
-    <l-geo-json :geojson="lineStringData" :options="geojsonOptions" />
+  <l-map ref="map" class="d-flex align-stretch" :useGlobalLeaflet="false" :zoom="zoom" :center="center"
+    @ready="hookUpDraw">
+    <template v-if="mapReady">
+      <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
+        :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
+      <l-control-layers />
+      <l-geo-json :geojson="pointData" :options="geojsonOptions" />
+      <l-geo-json :geojson="lineStringData" :options="geojsonOptions" />
+    </template>
     <utils-map-actions-menu v-if="!editMode" />
   </l-map>
 </template>
@@ -15,18 +18,14 @@ import { useMapLayersStore } from "~/store/mapLayersStore"
 import { GeoJSON, Feature } from "geojson"
 import { useCablesStore } from "~/store/cablesStore"
 import { StoreGeneric } from "pinia"
-// import L from "leaflet"
-// import '@geoman-io/leaflet-geoman-free'
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
+import type L from "leaflet";
 
-// if (!map.pm) {
-//   await import(/* webpackChunkName: "leaflet-geoman" */ '@geoman-io/leaflet-geoman-free');
-//   L.PM.reInitLayer(map)
-// }
 
 const props = defineProps({ editMode: Boolean, mode: { type: String, default: null } })
 
 const map = ref()
+const mapObject : Ref<null | L.Map> = ref(null)
+const mapReady : Ref<Boolean> = ref(false)
 const cableStore : StoreGeneric  = useCablesStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const zoom : Ref<number> = ref<number>(6);
@@ -45,12 +44,49 @@ const onEachFeature = (feature : Feature, layer : any) => {
       `ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties?.id}`
     )
     // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
-    delete layer.pm
-    layer.setStyle({ pmIgnore: false })
+    console.log('layer', layer)
+    // delete layer.pm
+    // layer.setStyle({ pmIgnore: false })
   }
 
-const pointToLayer = async (_feature: Feature, latlng : any ) => {
+    const geojsonOptions : L.GeoJSONOptions = reactive({
+        onEachFeature,
+      })
+
+    // const mapReady = async () => {
+    //   window.L = map.value.leafletObject;
+    //   // await import("@geoman-io/leaflet-geoman-free");
+    //   // // console.log('L Object', window.L);
+    //   // window.L.pm.addControls({
+    //   //   position: "topleft",
+    //   //   drawCircle: false,
+    //   // });
+    // };
+
+    const hookUpDraw = async () => {
+      console.log('MAP', map)
+      mapObject.value = map.value.leafletObject;
+      mapReady.value = true;
+      console.log(mapObject)
+      mapObject.value.pm.setLang("en_gb");
+      mapObject.value.pm.addControls({
+        position: "topleft",
+        drawCircle: true,
+      });
+      mapObject.value.on("pm:drawstart", ({ workingLayer }) => {
+        workingLayer.on("pm:vertexadded", (e) => {
+          console.log(e);
+          // geofence.value.push(e);
+        });
+      });
+      mapObject.value.on("pm:drawend", () => {
+        console.log('geofence');
+      });
+    };
+
+  onBeforeMount(async () => {
     const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
+    geojsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
     return circleMarker(latlng, {
         radius: 5,
         fillColor: '#ff7800',
@@ -58,36 +94,9 @@ const pointToLayer = async (_feature: Feature, latlng : any ) => {
         weight: 1,
         opacity: 1,
         fillOpacity: 0.8,
-        // draggable: true,
+        draggable: true,
       })}
-      // return L.circleMarker(latlng, {
-      //   radius: 5,
-      //   fillColor: '#ff7800',
-      //   color: '#000',
-      //   weight: 1,
-      //   opacity: 1,
-      //   fillOpacity: 0.8,
-      //   // draggable: true,
-      // })
-    const geojsonOptions = {
-        onEachFeature,
-        pointToLayer
-      }
-    const mapReady = async () => {
-      const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-      window.L = map.value.leafletObject;
-      await import("@geoman-io/leaflet-geoman-free");
-      // console.log('L Object', window.L);
-      // window.L.pm.addControls({
-      //   position: "topleft",
-      //   drawCircle: false,
-      // });
-    };
-// onMounted(() => {
-//     if (!process.server) {
-//         console.log(`MAP`, map)
-//   }
-// })
+  })
 
 </script>
 
