@@ -47,7 +47,7 @@
         </v-card-text>
       </v-card> -->
 
-        <v-btn block class="mb-8" color="blue" size="large" variant="tonal" :loading="loading"  :disabled="!valid"
+        <v-btn block class="mb-8" color="blue" size="large" variant="tonal" :loading="loading" :disabled="!valid"
           @click="userLogin()">
           {{ $t('login.sign-in') }}
         </v-btn>

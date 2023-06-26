@@ -1,5 +1,5 @@
 <template>
-<v-container class="fill-height pa-0">
+  <v-container class="fill-height pa-0">
     <v-row v-if="mdAndUp" class="fill-height">
       <v-col class="pr-0 pt-0 pb-0">
         <map-component :edit-mode="true" mode="point" />

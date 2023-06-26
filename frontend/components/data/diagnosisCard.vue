@@ -23,16 +23,13 @@
         <v-card-text>
           <v-layout class="d-flex justify-space-between">
             <v-chip :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
-              {{ diagnosis.isolation_advice ? '' : 'ne pas '
-              }}{{ $t('diagnosis.isolate') }}
+              {{ diagnosis.isolation_advice ? '' : 'ne pas '                            }}{{ $t('diagnosis.isolate') }}
             </v-chip>
             <v-chip :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
-              {{ diagnosis.dissuasion_advice ? '' : 'ne pas '
-              }}{{ $t('diagnosis.make-dissuasive') }}
+              {{ diagnosis.dissuasion_advice ? '' : 'ne pas '                          }}{{ $t('diagnosis.make-dissuasive') }}
             </v-chip>
             <v-chip :class="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
-              {{ diagnosis.attraction_advice ? '' : 'ne pas '
-              }}{{ $t('diagnosis.make-attractive') }}
+              {{ diagnosis.attraction_advice ? '' : 'ne pas '                        }}{{ $t('diagnosis.make-attractive') }}
             </v-chip>
           </v-layout>
 
@@ -43,32 +40,30 @@
           <p>
             <span class="font-weight-bold">{{ $t('support.support-type') }}</span>
             <v-chip v-for="pt in diagnosis.pole_type" :key="pt.id" class="ma-2">
-              {{
-              pt.label
-              }}
+              {{ pt.label }}
             </v-chip>
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>
             <v-chip :color="riskColors[diagnosis.pole_attractivity.code]" variant="elevated" class="ma-2">
               {{
-              diagnosis.pole_attractivity.label
-              }}
+                                          diagnosis.pole_attractivity.label
+                                          }}
             </v-chip>
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.dangerousness') }}</span>
             <v-chip :color="riskColors[diagnosis.pole_dangerousness.code]" variant="elevated" class="ma-2">
               {{
-              diagnosis.pole_dangerousness.label
-              }}
+                                          diagnosis.pole_dangerousness.label
+                                          }}
             </v-chip>
           </p>
           <p v-if="diagnosis.remark">
             <span class="font-weight-bold">{{ $t('app.remark') }}</span>
-            <p>
-              {{ diagnosis.remark }}
-            </p>
+          <p>
+            {{ diagnosis.remark }}
+          </p>
           </p>
           <v-list>
             <v-list-item v-for="img in diagnosis.media" :key="img.id">
