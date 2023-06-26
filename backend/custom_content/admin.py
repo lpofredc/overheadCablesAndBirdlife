@@ -28,7 +28,13 @@ class PartnersAdmin(admin.ModelAdmin):
 
 
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ("title", "intro", "private", "timestamp_create", "created_by")
+    list_display = (
+        "title",
+        "intro",
+        "private",
+        "timestamp_create",
+        "created_by",
+    )
     list_filter = ("created_by",)
 
 
