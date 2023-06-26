@@ -30,7 +30,8 @@
   "typescript.format.enable": false,
   "typescript.format.insertSpaceAfterCommaDelimiter": false,
   "typescript.format.indentSwitchCase": false,
-  "vue.codeActions.enabled": false
+  "vue.codeActions.enabled": false,
+  "nuxt.isNuxtApp": false
   // "eslint.format.enable": false,
   // "tslint.autoFixOnSave": false,
   // // "tslint.enable": true
