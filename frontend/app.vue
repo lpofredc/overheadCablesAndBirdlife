@@ -18,9 +18,9 @@
       <div v-if="!mdAndDown">
         {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
       </div>
-      <v-dialog v-if="!$auth.loggedIn"  v-model="dialog"
-        transition="dialog-bottom-transition" :width="!mdAndDown ? 500 : '100%'">
-        <template  v-slot:activator="{ props }">
+      <v-dialog v-if="!$auth.loggedIn" v-model="dialog" transition="dialog-bottom-transition"
+        :width="!mdAndDown ? 500 : '100%'">
+        <template v-slot:activator="{ props }">
           <v-btn icon class="mr-2" v-bind="props">
             <v-icon size="large">
               mdi-login
@@ -37,7 +37,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="pa-0 fill-height">
+      <v-container class="pa-0 fill-height fluid">
         <NuxtPage />
       </v-container>
     </v-main>

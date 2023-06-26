@@ -1,7 +1,5 @@
 <template>
-  v
-  <l-map ref="map" class="d-flex align-stretch" :useGlobalLeaflet="false" :zoom="zoom" :center="center"
-    @ready="hookUpDraw">
+  <l-map ref="map" class="d-flex align-stretch" :useGlobalLeaflet="false" :zoom="zoom" :center="center">
     <template v-if="mapReady">
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
@@ -74,6 +72,7 @@ const geojsonOptions : GeoJSONOptions = reactive({
   mapObject.value = map.value.leafletObject;
   mapObject.PM.reInitLayer(map)
 }
+    }
       // console.log('0')
       // console.log('PROCESS', process)
       // if (process.client) {
@@ -110,7 +109,6 @@ const geojsonOptions : GeoJSONOptions = reactive({
       // mapObject.value.on("pm:drawend", () => {
       //   console.log('geofence');
       // });
-    };
 
   onBeforeMount(async () => {
     const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
