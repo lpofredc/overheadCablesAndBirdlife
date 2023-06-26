@@ -12,19 +12,33 @@
     </v-row>
 
     <template v-if="!mdAndUp">
-      <v-tabs v-model="tab" align-tabs="title" fixed-tabs>
-        <v-tab> {{ $t('app.map') }} </v-tab>
-        <v-tab> {{ $t('app.data') }} </v-tab>
-      </v-tabs>
+      <v-card class="fill-height" width="100%">
+        <v-tabs v-model="tab" align-tabs="title" fixed-tabs>
+          <v-tab value="map"> {{ $t('app.map') }} </v-tab>
+          <v-tab value="data"> {{ $t('app.data') }} </v-tab>
+        </v-tabs>
 
-      <v-tabs-items v-model="tab" class="fill-height">
+        <v-card-text class="fill-height pa-0">
+          <v-window v-model="tab" class="fill-height">
+            <v-window-item value="map" class="fill-height">
+              <ClientOnly fallback-tag="span" fallback="Loading comments...">
+                <map-component :edit-mode="false" />
+              </ClientOnly>
+            </v-window-item>
+            <v-window-item value="data">
+              <display-component />
+            </v-window-item>
+          </v-window>
+        </v-card-text>
+      </v-card>
+
+
+      <v-tabs-items v-model="tab">
         <v-tab-item>
-          <!-- <ClientOnly fallback-tag="span" fallback="Loading comments...">
-            <map-component :edit-mode="false" />
-          </ClientOnly> -->
+
         </v-tab-item>
         <v-tab-item>
-          <display-component />
+
         </v-tab-item>
       </v-tabs-items>
     </template>

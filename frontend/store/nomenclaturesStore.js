@@ -87,15 +87,15 @@ export const useNomenclaturesStore = defineStore('nomenclatures', {
       try {
         const types = await $http.$get('/api/v1/nomenclature/types/') // get Types list
         // gather Infrastructure Condition Items from all Items
-        const conds = types.find(
+        const conditions = types.find(
           elem => elem.mnemonic === 'infrastr_condition'
         )
         // If no Items is gathered, an Error is thrown
-        if (conds === undefined) {
+        if (conditions === undefined) {
           throw new Error('conditions')
         }
         // set "conds" to state value "conditionItems"
-        this.conditionItems = conds.item_nomenclature
+        this.conditionItems = conditions.item_nomenclature
         // gather Owner Items from all Items
         const owners = types.find(elem => elem.mnemonic === 'owner')
         // If no Items is gathered, an Error is thrown
@@ -171,7 +171,8 @@ export const useNomenclaturesStore = defineStore('nomenclatures', {
         }
         // set error message to errorStore and triggers message display through "err" watcher in
         // error-snackbar component
-        commit('errorStore/setError', error, { root: true })
+
+        // commit('errorStore/setError', error, { root: true })
         // log out user as application may not be reliable as is
         $nuxt.$auth.logout()
       }
