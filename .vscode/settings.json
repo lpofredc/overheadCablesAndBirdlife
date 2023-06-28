@@ -31,7 +31,13 @@
   "typescript.format.insertSpaceAfterCommaDelimiter": false,
   "typescript.format.indentSwitchCase": false,
   "vue.codeActions.enabled": false,
-  "nuxt.isNuxtApp": false
+  "nuxt.isNuxtApp": false,
+  "vue.autoInsert.dotValue": true,
+  "vue.complete.casing.tags": "autoKebab",
+  "vue.inlayHints.missingProps": true,
+  "vue.inlayHints.optionsWrapper": true,
+  "vue.server.petiteVue.supportHtmlFile": true,
+  "vue.updateImportsOnFileMove.enabled": true
   // "eslint.format.enable": false,
   // "tslint.autoFixOnSave": false,
   // // "tslint.enable": true

@@ -88,14 +88,14 @@ onMounted(() => {
 //     // TODO raise an exception and handle it or display message to user
 //   }
 // }
-const showDetail = (_, {item}) => {
-  const rowData = item.columns
-  console.log('_, item', _, item)
-  console.log('showDetail rowItem id', rowData['properties.id'])
+const showDetail = (_, item) => {
+  const rowData = item.item.columns
+  console.log('showDetail rowItem id', rowData.properties.id)
+  console.log('rowData.resourcetype',rowData.resourcetype)
   if (rowData.resourcetype === 'Point') {
-    router.push(`/supports/${rowData['properties.id']}`)
+    router.push(`/supports/${rowData.properties.id}`)
   } else if (rowData.resourcetype === 'Line') {
-    router.push(`/lines/${rowData['properties.id']}`)
+    router.push(`/lines/${rowData.properties.id}`)
   }
 }
 

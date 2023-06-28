@@ -22,10 +22,11 @@ import { StoreGeneric } from "pinia"
 import type {Map, PointTuple, GeoJSONOptions} from "leaflet";
 // import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+await import("@geoman-io/leaflet-geoman-free");
 
 const props = defineProps({ editMode: Boolean, mode: { type: String, default: null } })
 
-const map : Ref<Map|undefined>= ref<Map|undefined>()
+const map = ref()
 const mapObject : Ref<null | Map> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
 const cableStore : StoreGeneric  = useCablesStore()
@@ -35,7 +36,7 @@ const center : Ref<PointTuple>= ref([46.6423682169416,2.1940236627886227] as Poi
 const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures);
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures);
 
-const baseLayers : ComputedRef<Array<Object>>= computed(() => {
+const baseLayers = computed(() => {
     console.log('mapLayersStore.baseLayer', mapLayersStore.baseLayer)
     return mapLayersStore.baseLayers
 })
@@ -66,10 +67,13 @@ const geojsonOptions : GeoJSONOptions = reactive({
     // };
 
 const hookUpDraw = async () => {
-  // await import("@geoman-io/leaflet-geoman-free");
+  await import("@geoman-io/leaflet-geoman-free");
+  console.log("MAP", map);
   mapObject.value = map.value.leafletObject;
   mapReady.value = true;
-  console.log("mapObject", mapObject.value);
+  console.log("mapObject before", mapObject.value);
+
+  console.log("mapObject after", mapObject.value);
   if (mapObject.value) {
   // mapObject.value.pm.setLang("en_gb");
   mapObject.value.pm.addControls({
