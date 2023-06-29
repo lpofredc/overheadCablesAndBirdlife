@@ -19,20 +19,16 @@ import { LMap, LTileLayer, LGeoJson, LControlLayers } from "@vue-leaflet/vue-lea
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import { StoreGeneric } from "pinia"
-import type {Map, PointTuple, GeoJSONOptions, Polyline, Marker} from "leaflet";
+import type {Map, PointTuple, GeoJSONOptions, Layer} from "leaflet";
 
 await import("@geoman-io/leaflet-geoman-free");
-
-
-
-
 
 const {editMode, mode} = defineProps({ editMode: Boolean, mode: { type: String, default: null } })
 
 const map = ref()
 
 const mapObject : Ref<null | Map> = ref(null)
-const createLayer: Ref<Marker | Polyline |null> = ref(null)
+const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
 const cableStore : StoreGeneric  = useCablesStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
@@ -95,10 +91,10 @@ const hookUpDraw = async () => {
 
           switch (mode) {
             case 'point':
-              console.log('e.layer', e.layer)
+              console.log('createLayer', createLayer.value)
               coordinatesStore.setNewPointCoord({
-                lng: e.layer.toGeoJSON().geometry.coordinates[0],
-                lat: e.layer.toGeoJSON().geometry.coordinates[1],
+                lng: createLayer.value.toGeoJSON().geometry.coordinates[0],
+                lat: createLayer.value.toGeoJSON().geometry.coordinates[1],
               })
               mapObject.value?.pm.disableDraw()
               mapObject.value?.pm.addControls({
@@ -108,7 +104,7 @@ const hookUpDraw = async () => {
               })
               break
             case 'line':
-              coordinatesStore.newLineCoord = e.layer.toGeoJSON().geometry.coordinates
+              coordinatesStore.newLineCoord = createLayer.value.toGeoJSON().geometry.coordinates
               mapObject.value?.pm.addControls({
                 drawPolyline: false,
                 editMode: true,

@@ -24,17 +24,16 @@
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field ref="lat" v-model="lat" :label="$t('support.latitude')" type="number"
-                    placeholder="Latitude" :rules="[rules.requiredOrNotValid, rules.latRange]" required hide-spin-buttons
-                    outlined dense />
+                    placeholder="Latitude" required variant="solo" density="compact"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
                   <v-text-field ref="lng" v-model="lng" :label="$t('support.longitude')" type="number"
-                    :rules="[rules.requiredOrNotValid, rules.lngRange]" required hide-spin-buttons outlined dense />
+                    :rules="[rules.requiredOrNotValid, rules.lngRange]" required variant="solo" density="compact" />
                 </v-col>
                 <v-col cols="12" md="4" v-if="!diagnosis">
                   <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.network')" outlined dense required>
+                    :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required>
                   </v-select>
                 </v-col>
               </v-row>
@@ -51,47 +50,52 @@
                   <v-menu :close-on-content-click="false" transition="scale-transition">
                     <template v-slot:activator="{ props }">
                       <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
-                        prepend-icon="mdi-calendar" readonly outlined dense v-bind="props"></v-text-field>
+                        prepend-icon="mdi-calendar" readonly variant="solo" density="compact"
+                        v-bind="props"></v-text-field>
                     </template>
                     <v-date-picker v-model="diagData.date" no-title></v-date-picker>
                   </v-menu> </v-col><v-col cols="12" md="4" v-if="!support">
                   <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.condition')" outlined dense></v-select>
+                    :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
+                    density="compact"></v-select>
                 </v-col>
 
                 <v-col cols="12" md="4" v-if="!support">
-                  <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')" dense></v-checkbox>
+                  <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')"
+                    density="compact"></v-checkbox>
                 </v-col>
 
                 <v-col cols="12" v-if="!support">
-                  <v-autocomplete v-model="diagData.pole_type_id" :items="poleTypes" item-title="label" item-value="id"
-                    :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple deletable-chips
-                    small-chips outlined dense></v-autocomplete>
+                  <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
+                    item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
+                    deletable-chips variant="solo" density="compact"></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
-                    :rules="[rules.required]" :label="$t('support.attractiveness')" outlined dense></v-select>
+                    :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
+                    density="compact"></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                    item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" outlined
-                    dense></v-select>
+                    item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
+                    density="compact"></v-select>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')" dense></v-checkbox>
+                  <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')"
+                    density="compact"></v-checkbox>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')"
-                    dense></v-checkbox>
+                    density="compact"></v-checkbox>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
-                    dense></v-checkbox>
+                    density="compact"></v-checkbox>
                 </v-col>
 
                 <v-col cols="12">
                   <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                    :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
+                    :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
@@ -136,36 +140,28 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { mapState } from 'pinia'
+import { ComposerTranslation } from '@nuxtjs/i18n/dist/runtime/composables';
 import * as errorCodes from '~/static/errorConfig.json'
-// import { useCoordinatesStore } from '~/store/coordinatesStore'
-// import { useNomenclaturesStore } from '~/store/nomenclaturesStore'
 
-// // init modules
+
+// init modules
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
-// // init Stores
+// init Stores
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 
-// // props
+// props
 const {support, diagnosis, operation} = defineProps(['support','diagnosis','operation'])
 
-console.log('diagnosis', diagnosis)
-console.log('support', support)
-console.log('operation',operation)
-
-
-const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
 // data
-
 const form = ref(null) // used to get form ref from "<v-form ref="form">"
 const formValid = ref(true)
       // manualChange: false, // boolean to activate manual coordinate change
       // form values
-const lat : Ref<null|number> = ref<null | number>(null)
+const lat : Ref<null|number> = ref<null | number>(0)
 const lng : Ref<null|number>= ref<null | number>(null)
       // To manage Media
 const newCreatedMediaIdList : Array<object> = reactive([])
@@ -178,13 +174,15 @@ const pointData = reactive({
         owner_id: support ? support.owner_id : null,
       })
       // define data related to Diagnosis
-      const diagData = reactive({
+
+const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
+
+const diagData = reactive({
         date:
           diagnosis && !modifyDiag
             ? diagnosis.date
             : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-              .toISOString()
-              .substr(0, 10),
+              .toISOString().substr(0, 10),
         remark: diagnosis ? diagnosis.remark : null,
         pole_type_id: diagnosis
           ? diagnosis.pole_type.map((pt) => pt.id)
@@ -209,17 +207,13 @@ const pointData = reactive({
         media_id: diagnosis ? diagnosis.media.map((m) => m.id) : [],
       })
 //       // rules for form validation
-      const rules = reactive({
-        required: (v) => !!v || t('valid.required'),
-        requiredOrNotValid: (v) =>
-          v === 0 || !!v || t('valid.required_or_not_valid'),
-        latRange: (v) =>
-          (v >= 40 && v <= 52) || `${t('valid.range')}40 : 52`,
-        lngRange: (v) =>
-          (v >= -20 && v <= 20) || `${t('valid.range')}-20 : 20`,
-        textLength: (v) =>
-          (v || '').length <= 300 || `${t('valid.length')}: 300`,
-      })
+const rules = reactive({
+  required: (v: string|number) => !!v || t('valid.required'),
+  requiredOrNotValid: (v:string|number) => v === 0 || !!v || t('valid.required_or_not_valid'),
+  latRange: (v: number) => (v >= 40 && v <= 52) || `${t('valid.range')}40 : 52`,
+  lngRange: (v:number) => (v >= -20 && v <= 20) || `${t('valid.range')}-20 : 20`,
+  textLength: (v:string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
+})
 
 
 // Menu items
@@ -227,7 +221,6 @@ const poleTypes = computed(() =>  nomenclaturesStore.poleTypeItems)
 const networkOwners = computed(() => nomenclaturesStore.ownerItems)
 const conditions = computed(() => nomenclaturesStore.conditionItems)
 const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
-
 
 
     // Methods
@@ -291,11 +284,11 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
         return await useHttp('cables/points/', {method: 'post', body: pointData})
       } catch (_err) {
         const error = {}
-        error.code = errorCodes.create_point.code
-        error.msg = t(`error.${errorCodes.create_point.msg}`)
+        // error.code = errorCodes.create_point.code
+        // error.msg = t(`error.${errorCodes.create_point.msg}`)
         // set error message to errorStore and triggers message display through "err" watcher in
         // error-snackbar component
-        errorStore.setError(error)
+        // errorStore.setError(error)
         back()
       }
     }
