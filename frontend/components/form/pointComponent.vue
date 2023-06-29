@@ -138,8 +138,8 @@
 <script setup lang="ts">
 import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
-import { useCoordinatesStore } from '~/store/coordinatesStore'
-import { useNomenclaturesStore } from '~/store/nomenclaturesStore'
+// import { useCoordinatesStore } from '~/store/coordinatesStore'
+// import { useNomenclaturesStore } from '~/store/nomenclaturesStore'
 
 // // init modules
 const { t } = useI18n()
@@ -151,11 +151,11 @@ const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
 
 // // props
-const props = defineProps(['support','diagnosis','operation'])
+const {support, diagnosis, operation} = defineProps(['support','diagnosis','operation'])
 
-console.log('diagnosis', props.diagnosis)
-console.log('support', props.support)
-console.log('operation',props.operation)
+console.log('diagnosis', diagnosis)
+console.log('support', support)
+console.log('operation',operation)
 
 
 const modifyDiag = computed(() => route.query.modifyDiag === 'true' ? true : false)
@@ -173,40 +173,40 @@ const newCreatedMediaIdList : Array<object> = reactive([])
 const pointData = reactive({
         geom: {
           type: 'Point',
-          coordinates: props.support ? props.support.coordinates : [],
+          coordinates: support ? support.coordinates : [],
         },
-        owner_id: props.support ? props.support.owner_id : null,
+        owner_id: support ? support.owner_id : null,
       })
       // define data related to Diagnosis
       const diagData = reactive({
         date:
-          props.diagnosis && !modifyDiag
-            ? props.diagnosis.date
+          diagnosis && !modifyDiag
+            ? diagnosis.date
             : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
               .toISOString()
               .substr(0, 10),
-        remark: props.diagnosis ? props.diagnosis.remark : null,
-        pole_type_id: props.diagnosis
-          ? props.diagnosis.pole_type.map((pt) => pt.id)
+        remark: diagnosis ? diagnosis.remark : null,
+        pole_type_id: diagnosis
+          ? diagnosis.pole_type.map((pt) => pt.id)
           : [],
-        neutralized: props.diagnosis ? props.diagnosis.neutralized : false,
-        condition_id: props.diagnosis ? props.diagnosis.condition.id : null,
-        attraction_advice: props.diagnosis
-          ? props.diagnosis.attraction_advice
+        neutralized: diagnosis ? diagnosis.neutralized : false,
+        condition_id: diagnosis ? diagnosis.condition.id : null,
+        attraction_advice: diagnosis
+          ? diagnosis.attraction_advice
           : false,
-        dissuasion_advice: props.diagnosis
-          ? props.diagnosis.dissuasion_advice
+        dissuasion_advice: diagnosis
+          ? diagnosis.dissuasion_advice
           : false,
-        isolation_advice: props.diagnosis
-          ? props.diagnosis.isolation_advice
+        isolation_advice: diagnosis
+          ? diagnosis.isolation_advice
           : false,
-        pole_attractivity_id: props.diagnosis
-          ? props.diagnosis.pole_attractivity.id
+        pole_attractivity_id: diagnosis
+          ? diagnosis.pole_attractivity.id
           : null,
-        pole_dangerousness_id: props.diagnosis
-          ? props.diagnosis.pole_dangerousness.id
+        pole_dangerousness_id: diagnosis
+          ? diagnosis.pole_dangerousness.id
           : null,
-        media_id: props.diagnosis ? props.diagnosis.media.map((m) => m.id) : [],
+        media_id: diagnosis ? diagnosis.media.map((m) => m.id) : [],
       })
 //       // rules for form validation
       const rules = reactive({
@@ -232,7 +232,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
 
     // Methods
     const back = () => {
-      coordinatesStore.addPointCoord({
+      coordinatesStore.setNewPointCoord({
         lat: null,
         lng: null,
       })
@@ -249,7 +249,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
     const submit = async () => {
       if (formValid) {
         // Case of creation of new Point and associated Diagnosis
-        if (!props.support && !props.diagnosis) {
+        if (!support && !diagnosis) {
           const pointCreated = await createNewPoint()
           // new Point (Support) is successfully created
           if (pointCreated) {
@@ -257,15 +257,15 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
             await createNewDiagnosis(pointCreated.properties.id)
           }
           router.push('/view')
-        } else if (props.diagnosis && modifyDiag) {
+        } else if (diagnosis && modifyDiag) {
           // Case of update of Diagnosis
-          await this.updateDiagnosis()
-          router.push(`/supports/${props.diagnosis.infrastructure}`)
-        } else if (props.diagnosis && !modifyDiag) {
+          await updateDiagnosis()
+          router.push(`/supports/${diagnosis.infrastructure}`)
+        } else if (diagnosis && !modifyDiag) {
           // Case of creation of new Diagnosis on existing Support
-          await this.addNewDiagnosis()
-          router.push(`/supports/${props.diagnosis.infrastructure}`)
-        } else if (this.support) {
+          await addNewDiagnosis()
+          router.push(`/supports/${diagnosis.infrastructure}`)
+        } else if (support) {
           // update of existing Point
           const error = {
             code: 0,
@@ -273,7 +273,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
           }
           // set error message to errorStore and triggers message display through "err"
           // watcher in error-snackbar component
-          this.$store.commit('errorStore/setError', error)
+          // this.$store.commit('errorStore/setError', error)
         }
       }
     }
@@ -288,7 +288,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
      const createNewPoint = async () => {
       try {
         pointData.geom.coordinates = [lng, lat]
-        return await useHttp('cables/points/', 'post', pointData)
+        return await useHttp('cables/points/', {method: 'post', body: pointData})
       } catch (_err) {
         const error = {}
         error.code = errorCodes.create_point.code
@@ -351,7 +351,7 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
       console.log(modifyDiag ? 'vrai' : 'faux')
       const mediaIdList = await this.createNewMedia()
       try {
-        this.diagData.infrastructure = props.diagnosis.infrastructure // set Infrastructure (Point) id
+        this.diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
         this.diagData.media_id = mediaIdList // set Media id list
         // Create Diagnosis
         return await this.$axios.$post('cables/diagnosis/', this.diagData)
@@ -382,11 +382,11 @@ const riskLevels = computed(() => nomenclaturesStore.riskLevelItems)
       // Create new Media as selected in component form and get list of Ids of created Media
       const mediaIdList = await this.createNewMedia()
       try {
-        this.diagData.infrastructure = props.diagnosis.infrastructure // set Infrastructure (Point) id
+        this.diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
         this.diagData.media_id = mediaIdList // set Media id list
         // Create Diagnosis
         return await this.$axios.$put(
-          `cables/diagnosis/${props.diagnosis.id}/`,
+          `cables/diagnosis/${diagnosis.id}/`,
           this.diagData
         )
       } catch (_err) {

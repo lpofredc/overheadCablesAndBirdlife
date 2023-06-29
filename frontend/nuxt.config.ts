@@ -1,47 +1,47 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@vite-pwa/nuxt',
-    '@nuxt-alt/auth',
-    '@nuxt-alt/http',
-    '@pinia/nuxt',
+    "@vite-pwa/nuxt",
+    "@nuxt-alt/auth",
+    "@nuxt-alt/http",
+    "@pinia/nuxt",
     [
-      '@pinia/nuxt',
+      "@pinia/nuxt",
       {
-        autoImports: ['defineStore', 'acceptHMRUpdate']
-      }
+        autoImports: ["defineStore", "acceptHMRUpdate"],
+      },
     ],
-    '@invictus.codes/nuxt-vuetify',
-    '@nuxtjs/i18n'
+    "@invictus.codes/nuxt-vuetify",
+    "@nuxtjs/i18n",
   ],
   ssr: false,
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: "autoUpdate",
     manifest: {
-      name: 'Nuxt Vite PWA',
-      short_name: 'NuxtVitePWA',
-      theme_color: '#ffffff',
+      name: "Nuxt Vite PWA",
+      short_name: "NuxtVitePWA",
+      theme_color: "#ffffff",
       icons: [
         {
-          src: 'pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
+          src: "pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
         },
         {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
         },
         {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'any maskable',
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable",
         },
       ],
     },
     workbox: {
-      navigateFallback: '/',
+      navigateFallback: "/",
       globPatterns: ["**/*.{js,css,html,png,ico}"],
     },
     client: {
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: true,
       navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
+      type: "module",
     },
   },
   vuetify: {
@@ -67,29 +67,30 @@ export default defineNuxtConfig({
       useIconCDN: true,
       /* vite-plugin-vuetify options */
       styles: true,
-      autoImport: true
-    }
+      autoImport: true,
+    },
   },
   css: [
-    'vuetify/lib/styles/main.css',
-    '@mdi/font/css/materialdesignicons.min.css',
-    'leaflet/dist/leaflet.css'
+    "vuetify/lib/styles/main.css",
+    "@mdi/font/css/materialdesignicons.min.css",
+    "leaflet/dist/leaflet.css",
+    "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
   ],
   build: {
-    transpile: ['vuetify','leaflet-geoman']
+    transpile: ["vuetify", "leaflet-geoman"],
   },
   imports: {
     // Auto-import pinia stores defined in `~/stores`
-    dirs: ['stores']
+    dirs: ["store"],
   },
   i18n: {
     locales: [
-      { code: 'en', iso: 'en-US', file: 'en.json' },
-      { code: 'fr', iso: 'fr-FR', file: 'fr.json' }
+      { code: "en", iso: "en-US", file: "en.json" },
+      { code: "fr", iso: "fr-FR", file: "fr.json" },
     ],
 
-    defaultLocale: 'fr',
-    langDir: 'locales'
+    defaultLocale: "fr",
+    langDir: "locales",
   },
   // devtools: {
   //     // Enable devtools (default: true)
@@ -103,54 +104,54 @@ export default defineNuxtConfig({
   // },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000'
-    }
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8000",
+    },
   },
   http: {},
   auth: {
     // cookie: false,
     redirect: {
-      login: '/account/login',
-      logout: '/',
-      callback: '/account/login',
-      home: '/'
+      login: "/account/login",
+      logout: "/",
+      callback: "/account/login",
+      home: "/",
     },
     // globalMiddleware: true,
     strategies: {
       local: {
-        scheme: 'refresh',
+        scheme: "refresh",
         cookie: false,
         token: {
-          property: 'access', // property name of access token get from Back-end
+          property: "access", // property name of access token get from Back-end
           // global: true,
           // required: true,
           maxAge: 1800,
-          type: 'JWT'
+          type: "JWT",
         },
         refreshToken: {
           // it sends request automatically when the access token expires, and its expire time has set on the Back-end
-          property: 'refresh', // property name of refresh token get from Back-end
-          data: 'refresh', // data can be used to set the name of the property you want to send in the request.
-          maxAge: 60 * 60 * 24 * 30
+          property: "refresh", // property name of refresh token get from Back-end
+          data: "refresh", // data can be used to set the name of the property you want to send in the request.
+          maxAge: 60 * 60 * 24 * 30,
         },
         user: {
           property: false,
-          autoFetch: true
+          autoFetch: true,
         },
         endpoints: {
           login: {
-            url: '/api/v1/auth/jwt/create/',
-            method: 'post'
+            url: "/api/v1/auth/jwt/create/",
+            method: "post",
           },
-          refresh: { url: '/api/v1/auth/jwt/refresh', method: 'post' },
+          refresh: { url: "/api/v1/auth/jwt/refresh", method: "post" },
           logout: false, //  there is no endpoint for logout in API. Just remove the token from localstorage
           user: {
-            url: '/api/v1/auth/users/me/',
-            method: 'get',
-            property: true
-          }
-        }
-      }
-    }
-  }
-})
+            url: "/api/v1/auth/users/me/",
+            method: "get",
+            property: true,
+          },
+        },
+      },
+    },
+  },
+});
