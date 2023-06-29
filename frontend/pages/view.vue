@@ -1,10 +1,10 @@
 <template>
   <v-container class="fill-height pa-0">
     <v-row v-if="mdAndUp" class="fill-height">
-      <v-col class="pr-0 pt-0 pb-0">
-          <map-component :edit-mode="false" />
+      <v-col cols="6" class="pr-0 pt-0 pb-0">
+        <map-component :edit-mode="false" />
       </v-col>
-      <v-col class="pa-0">
+      <v-col cols="6" class="pa-0">
         <display-component />
       </v-col>
     </v-row>
@@ -19,7 +19,7 @@
         <v-card-text class="fill-height pa-0">
           <v-window v-model="tab" class="fill-height">
             <v-window-item value="map" class="fill-height">
-                <map-component :edit-mode="false" />
+              <map-component :edit-mode="false" />
             </v-window-item>
             <v-window-item value="data">
               <display-component />
@@ -27,16 +27,6 @@
           </v-window>
         </v-card-text>
       </v-card>
-
-
-      <v-tabs-items v-model="tab">
-        <v-tab-item>
-
-        </v-tab-item>
-        <v-tab-item>
-
-        </v-tab-item>
-      </v-tabs-items>
     </template>
   </v-container>
 </template>
