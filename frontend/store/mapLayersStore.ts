@@ -2,19 +2,20 @@
  * mapLayerStore to handle map layers loading
  */
 
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useMapLayersStore = defineStore('mapLayers', {
-  state: () => ({ baseLayers: [] }),
+export const useMapLayersStore = defineStore("mapLayers", {
+  state: () => ({ baseLayers: [] as BaseLayer[] }),
   actions: {
-    async getMapBaseLayers () {
-      await $fetch(
-        '/api/v1/map-layers/baselayers/'
-      ).then((data) => {
-        this.baseLayers = data
-        console.log('DATA', this.baseLayers, data)
-      }).catch((error) => { console.error(error) })
-
+    async getMapBaseLayers() {
+      await $fetch("/api/v1/map-layers/baselayers/")
+        .then((data) => {
+          this.baseLayers = data;
+          console.debug("this.baseLayers", this.baseLayers, data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       // try {
       //   // gather layers from DB to be loaded with map
 
@@ -32,7 +33,14 @@ export const useMapLayersStore = defineStore('mapLayers', {
       //   // log out user as application may not be reliable as is
       //   // $nuxt.$auth.logout();
       // }
-    }
-  }
+    },
+  },
+});
+
+interface BaseLayer {
+  id: number;
+  url: string;
+  name: string;
+  attribution?: string;
+  default: boolean | undefined;
 }
-)
