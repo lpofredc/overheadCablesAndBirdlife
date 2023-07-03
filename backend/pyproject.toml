@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "backend"
+name = "ocb-backend"
 version = "0.0.1"
 description = "overhead cables and birdlife - backend"
-authors = ["Sylvain Sainnier <sainnier@gmail.com>"]
+authors = ["LPO AuRA <auvergne-rhone-alpes@lpo.fr>"]
 license = "AGPLv3"
 
 [tool.poetry.dependencies]

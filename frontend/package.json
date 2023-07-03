@@ -1,5 +1,8 @@
 {
-  "name": "nuxt-app",
+  "name": "ocb-frontend",
+  "version": "0.0.1",
+  "description": "overhead cables and birdlife - frontend",
+  "author": "LPO AuRA <auvergne-rhone-alpes@lpo.fr>",
   "private": true,
   "type": "module",
   "scripts": {
