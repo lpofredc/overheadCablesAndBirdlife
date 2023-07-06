@@ -37,6 +37,15 @@ class NewsAdmin(admin.ModelAdmin):
     )
     list_filter = ("created_by",)
 
+    def save_model(self, request, obj, form, change):
+        if obj.id is None:
+            obj.created_by = request.user
+            obj.updated_by = request.user
+            super().save_model(request, obj, form, change)
+        else:
+            obj.updated_by = request.user
+            super().save_model(request, obj, form, change)
+
 
 admin.site.register(Partners, PartnersAdmin)
 admin.site.register(News, NewsAdmin)

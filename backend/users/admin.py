@@ -19,6 +19,7 @@ class UserAdmin(BaseUserAdmin):
         "last_login",
         "is_staff",
         "is_superuser",
+        "avatar",
     )
     list_filter = [
         "organism",
