@@ -13,8 +13,8 @@
  * riskLevelItems: list of Items related to Risk Level assessment
  */
 import { defineStore } from "pinia";
-import { Interface } from "readline";
 import * as errorCodes from "~/static/errorConfig.json";
+import { ErrorInfo } from "./errorStore";
 
 export const useNomenclaturesStore = defineStore("nomenclatures", {
   state: () => ({
@@ -140,8 +140,8 @@ export const useNomenclaturesStore = defineStore("nomenclatures", {
         this.deathCauseItems = deathCause.item_nomenclature;
 
         // error handling
-      } catch (err) {
-        const error: Error = {} as Error;
+      } catch (err: unknown) {
+        const error: ErrorInfo = {} as ErrorInfo;
         // if nuxt error message contains substring '404'
         if (err.toString().includes("404")) {
           error.code = errorCodes.nomenclature_not_found.code;
@@ -196,9 +196,4 @@ interface NomenclatureItem {
   label: string;
   mnemonic: string;
   type: number;
-}
-
-interface Error {
-  code: number;
-  msg: string;
 }

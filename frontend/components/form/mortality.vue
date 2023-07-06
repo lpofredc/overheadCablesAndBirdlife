@@ -164,8 +164,8 @@ export default {
     /**
      * Getter and Setter for "lat" value.
      * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
+     * from map.
+     * When value is commited, it is detected by map.vue
      */
     lat: {
       get() {
@@ -182,8 +182,8 @@ export default {
     /**
      * Getter and Setter for "lng" value.
      * This longitude value is bind v-text-field "lng", and linked with longitude of the LMarker
-     * from map-component.
-     * When value is commited, it is detected by map-component.vue
+     * from map.
+     * When value is commited, it is detected by map.vue
      */
     lng: {
       get() {

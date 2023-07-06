@@ -4,7 +4,7 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ props }">
           <a :href="i.url" target="_blank" v-bind="props">
-            <v-img height="50" contain :src="i.logo" :alt="i.name"></v-img>
+            <v-img height="50" contain :src="i.logo" :alt="i.name" :title="i.name"/>
           </a>
         </template>
         <span>{{ i.name }}</span>
@@ -13,11 +13,11 @@
   </v-row>
 </template>
 <script setup lang="ts">
-const { data: partners } = await useHttp('/api/v1/custom-content/partners/')
+const {data: partners} = await useHttp('/api/v1/custom-content/partners/')
 </script>
 
 <style scoped>
 #partners {
-  border: 1ps solid red;
+  border: 1px solid red;
 }
 </style>

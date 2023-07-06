@@ -3,7 +3,7 @@
     <v-row v-if="mdAndUp" class="fill-height">
       <v-col class="pr-0 pt-0 pb-0">
         <ClientOnly fallback-tag="span" fallback="Loading comments...">
-          <map-component :edit-mode="false" />
+          <map-search :edit-mode="false" />
         </ClientOnly>
       </v-col>
       <v-col class="pa-0">
@@ -22,7 +22,7 @@
           <v-window v-model="tab" class="fill-height">
             <v-window-item value="map" class="fill-height">
               <ClientOnly fallback-tag="span" fallback="Loading comments...">
-                <map-component :edit-mode="false" />
+                <map-search :edit-mode="false" />
               </ClientOnly>
             </v-window-item>
             <v-window-item value="data">

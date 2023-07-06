@@ -3,12 +3,21 @@
     "app-name": "Avifaune & câbles aériens",
     "cancel": "Annuler",
     "data": "Données",
-    "disconnected": "Hors connexion",
+    "signin": "Se connecter",
     "id": "Identifiant",
     "map": "Cartographie",
     "remark": "Commentaire",
     "type": "Type",
     "valid": "Valider"
+  },
+  "nav":{
+    "application": "Application",
+    "admin": "Administration",
+    "home_page": "Accueil",
+    "about": "A propos"
+  },
+  "about":{
+    "title":"A propos"
   },
   "display": {
     "all": "Tout",
@@ -67,9 +76,6 @@
     "vegetIntegRisk": "Risque Intégration Vegetation"
   },
   "login": {
-    "application": "Application",
-    "admin": "Administration",
-    "home_page": "Accueil",
     "password": "Password",
     "required_pwd_msg": "Le mot de passe est requis",
     "required_username_msg": "Le nom d'utilisateur est requis",

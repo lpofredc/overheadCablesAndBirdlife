@@ -221,7 +221,7 @@ export default {
           // set error message to errorStore and triggers message display through "err" watcher in
           // error-snackbar component
           this.$store.commit('errorStore/setError', error)
-          // this.$router.push('/view')
+          // this.$router.push('/search')
           this.back()
         }
         // new Line is successfully created
@@ -234,7 +234,7 @@ export default {
               'cables/diagnosis/',
               this.diagData
             )
-            this.$router.push('/view')
+            this.$router.push('/search')
           } catch (_err) {
             // if no new Diagnosis created
             if (!diagCreated) {

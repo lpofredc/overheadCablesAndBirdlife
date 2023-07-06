@@ -2,7 +2,7 @@
   <div>
     <v-row v-if="lgAndUp">
       <v-col width="50%">
-        <map-component />
+        <map />
       </v-col><v-col>
         <data-operation-detail :data="data" />
       </v-col>
@@ -10,7 +10,7 @@
     <v-tabs v-if="mdAndDown" fixed-tabs bg-color="indigo">
       <v-tab> {{ $t('app.map') }} </v-tab>
       <v-tab-item>
-        <map-component />
+        <map />
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>

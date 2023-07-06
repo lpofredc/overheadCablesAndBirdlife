@@ -20,7 +20,7 @@
             <v-layout>
               <v-app-bar density="compact" color="blue-grey-lighten-4">
                 <v-app-bar-title>Info Support </v-app-bar-title><v-spacer />
-                <v-btn density="compact" icon="mdi-pencil" color="orange" @click="$router.push('/view')" />
+                <v-btn density="compact" icon="mdi-pencil" color="orange" @click="$router.push('/search')" />
               </v-app-bar>
               <v-main>
                 <v-card-text>

@@ -3,12 +3,20 @@
  */
 
 import { defineStore } from "pinia";
-import { Interface } from "readline";
+import { Point, LineString } from "geojson";
+
+interface NewPointCoord {
+  lat: number | null;
+  lng: number | null;
+  default?: null;
+}
 
 export const useCoordinatesStore = defineStore("coordinates", {
   state: () => ({
     newPointCoord: {} as NewPointCoord,
     newLineCoord: [],
+    newGeoJSONPoint: { coordinates: [], type: "Point" } as Point,
+    newGeoJSONLine: { coordinates: [], type: "LineString" } as LineString,
   }),
   getters: {
     /**
@@ -37,11 +45,11 @@ export const useCoordinatesStore = defineStore("coordinates", {
     setNewLineCoord(data: []) {
       this.newLineCoord = data;
     },
+    setNewGeoJSONPoint(data: Point) {
+      this.newGeoJSONPoint = data;
+    },
+    setNewGeoJSONLine(data: LineString) {
+      this.newGeoJSONLine = data;
+    },
   },
 });
-
-interface NewPointCoord {
-  lat: number | null;
-  lng: number | null;
-  default?: null;
-}

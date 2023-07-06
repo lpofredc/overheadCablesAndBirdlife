@@ -88,20 +88,19 @@ const hookUpDraw = async () => {
         })
     mapObject.value.on('pm:create', (e) => {
           createLayer.value = e.layer
-
           switch (mode) {
             case 'point':
-              console.log('createLayer', createLayer.value)
-              coordinatesStore.setNewPointCoord({
-                lng: createLayer.value.toGeoJSON().geometry.coordinates[0],
-                lat: createLayer.value.toGeoJSON().geometry.coordinates[1],
-              })
+              console.log('createLayer', createLayer.value.toGeoJSON())
+              if (createLayer.value.toGeoJSON()) {
+              coordinatesStore.setNewGeoJSONPoint(
+                createLayer.value.toGeoJSON().geometry
+              )
               mapObject.value?.pm.disableDraw()
               mapObject.value?.pm.addControls({
                 drawMarker: false,
                 dragMode: true,
                 removalMode: true,
-              })
+              })}
               break
             case 'line':
               coordinatesStore.newLineCoord = createLayer.value.toGeoJSON().geometry.coordinates

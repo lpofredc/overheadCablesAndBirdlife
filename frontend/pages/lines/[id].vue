@@ -2,7 +2,7 @@
   <v-container fill-height fluid class="pa-0">
     <v-row v-if="lgAndUp" class="fill-height">
       <v-col cols="6" class="pr-0 pt-0 pb-0">
-        <map-component :edit-mode="false" />
+        <map :edit-mode="false" />
       </v-col>
       <v-col cols="6" class="pa-0">
         <data-line-detail :data="data" />
@@ -12,7 +12,7 @@
     <v-tabs v-if="mdAndDown" fixed-tabs class="fill-height" bg-color="indigo">
       <v-tab> {{ $t('app.map') }} </v-tab>
       <v-tab-item>
-        <map-component :edit-mode="false" />
+        <map :edit-mode="false" />
       </v-tab-item>
       <v-tab> {{ $t('app.data') }} </v-tab>
       <v-tab-item>

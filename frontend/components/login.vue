@@ -1,28 +1,8 @@
 <template>
-  <!-- <v-sheet width="600" class="mx-auto">
-    <v-form ref="loginForm" v-model="valid">
-      <v-text-field v-model="login.username" :rules="nameRules" prepend-icon="mdi-account-circle" type="text" outlined
-        fluid required @keyup.enter="userLogin" />
-
-      <v-text-field v-model="login.password" :rules="pwdRules" prepend-icon="mdi-lock" type="password" outlined required
-        @keyup.enter="userLogin"></v-text-field>
-
-      <v-btn :disabled="!valid" color="success" class="mt-4" block @click="userLogin()" size="large">{{
-        $t('login.sign-in')
-      }}</v-btn>
-    </v-form>
-  </v-sheet> -->
   <v-sheet width="100%" max-width="600" class="mx-auto">
-    <v-form ref="loginForm" v-model="valid">
-      <v-container>
-        <v-row>
-          <v-col lg="4"><v-img class="mx-auto mb-10" max-height="100" src="/img/icon.png"></v-img></v-col>
-          <v-col lg="4">
-            <h1>Cable & Avifaune</h1>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-card class="mx-auto pa-12 pb-8" elevation="8" rounded="lg">
+    <v-form ref="loginForm" v-model="valid" @keyup.enter="userLogin">
+
+      <v-card class="mx-auto pa-12 pb-8" elevation="0" rounded="lg">
 
         <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
@@ -51,7 +31,6 @@
           @click="userLogin()">
           {{ $t('login.sign-in') }}
         </v-btn>
-
         <!-- <v-card-text class="text-center">
         <a
           class="text-blue text-decoration-none"
@@ -69,7 +48,7 @@
 
 <script setup type="ts">
 import * as errorCodes from '~/static/errorConfig.json'
-import { useErrorsStore } from '~/store/errorStore'
+// import { useErrorsStore } from 'store/errorStore'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -102,7 +81,7 @@ const userLogin = async () => {
       await auth.loginWith('local', {
         body: login
       })
-      router.push('/view')
+      router.push('/search')
     }
   } catch (err) {
     const error = {}

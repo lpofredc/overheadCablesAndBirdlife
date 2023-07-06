@@ -9,16 +9,10 @@
       <v-toolbar-title>{{ $t('app.app-name') }}</v-toolbar-title>
       <v-spacer />
       <div v-if="!mdAndDown">
-        {{ $auth.user ? $auth.user.username : $t('app.disconnected') }}
+        {{ $auth.user ? $auth.user.username : $t('app.signin') }}
       </div>
-      <v-dialog
-        v-if="!$auth.loggedIn"
-        v-model="dialog"
-        :fullscreen="mdAndDown"
-        :scrim="false"
-        transition="dialog-bottom-transition"
-        :width="!mdAndDown ? 500 : '100%'"
-      >
+      <v-dialog v-if="!$auth.loggedIn" v-model="dialog" :fullscreen="mdAndDown" :scrim="false"
+        transition="dialog-bottom-transition" :width="!mdAndDown ? 500 : '100%'">
         <template #activator="{ props }">
           <v-btn icon class="mr-2" v-bind="props">
             <v-icon size="large">
@@ -26,7 +20,7 @@
             </v-icon>
           </v-btn>
         </template>
-        <login-component @close-dialog="closeDialog" />
+        <login @close-dialog="closeDialog" />
       </v-dialog>
       <v-btn v-if="$auth.loggedIn" icon class="mr-2" @click="logout">
         <v-icon size="large">

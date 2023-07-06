@@ -2,10 +2,10 @@
   <v-container class="fill-height pa-0">
     <v-row v-if="mdAndUp" class="fill-height">
       <v-col class="pr-0 pt-0 pb-0">
-        <map-component :edit-mode="true" mode="point" />
+        <map-search :edit-mode="true" mode="point" />
       </v-col>
       <v-col class="pa-0">
-        <form-point-component :diagnosis="diag" />
+        <form-point :diagnosis="diag" />
       </v-col>
     </v-row>
 
@@ -17,10 +17,10 @@
 
       <v-tabs-items v-model="tab" class="fill-height">
         <v-tab-item>
-          <map-component :edit-mode="true" mode="point" />
+          <map-search :edit-mode="true" mode="point" />
         </v-tab-item>
         <v-tab-item>
-          <form-point-component :diagnosis="data" />
+          <form-point :diagnosis="data" />
         </v-tab-item>
       </v-tabs-items>
     </template>
