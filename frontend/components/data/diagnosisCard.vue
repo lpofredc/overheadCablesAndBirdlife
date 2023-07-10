@@ -6,7 +6,8 @@
           {{ $t('display.diagnosis') }}
         </v-app-bar-title>
         <v-spacer />
-        <v-chip small class="mr-2" :color="diagnosis.neutralized ? 'success' : 'error'" variant="elevated">
+        <v-chip :prepend-icon="diagnosis.neutralized ? 'mdi-check-circle-outline': 'mdi-alert-outline'" small class="mr-2"
+          :color="diagnosis.neutralized ? 'success' : 'error'" variant="elevated">
           {{ diagnosis.neutralized ? 'neutralisé' : 'à neutraliser' }}
         </v-chip>
         <v-btn-toggle rounded="0" density="compact">
@@ -23,13 +24,13 @@
         <v-card-text>
           <v-layout class="d-flex justify-space-between">
             <v-chip :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
-              {{ diagnosis.isolation_advice ? '' : 'ne pas '                            }}{{ $t('diagnosis.isolate') }}
+              {{ diagnosis.isolation_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.isolate') }}
             </v-chip>
             <v-chip :color="[diagnosis.dissuasion_advice ? 'warning' : '']" class="ma-2">
-              {{ diagnosis.dissuasion_advice ? '' : 'ne pas '                          }}{{ $t('diagnosis.make-dissuasive') }}
+              {{ diagnosis.dissuasion_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-dissuasive') }}
             </v-chip>
             <v-chip :class="[diagnosis.attraction_advice ? 'warning' : '']" class="ma-2">
-              {{ diagnosis.attraction_advice ? '' : 'ne pas '                        }}{{ $t('diagnosis.make-attractive') }}
+              {{ diagnosis.attraction_advice ? '' : 'ne pas ' }}{{ $t('diagnosis.make-attractive') }}
             </v-chip>
           </v-layout>
 
@@ -47,16 +48,16 @@
             <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>
             <v-chip :color="riskColors[diagnosis.pole_attractivity.code]" variant="elevated" class="ma-2">
               {{
-                                          diagnosis.pole_attractivity.label
-                                          }}
+              diagnosis.pole_attractivity.label
+              }}
             </v-chip>
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.dangerousness') }}</span>
             <v-chip :color="riskColors[diagnosis.pole_dangerousness.code]" variant="elevated" class="ma-2">
               {{
-                                          diagnosis.pole_dangerousness.label
-                                          }}
+              diagnosis.pole_dangerousness.label
+              }}
             </v-chip>
           </p>
           <p v-if="diagnosis.remark">
@@ -93,7 +94,7 @@ const props = defineProps(['diagnosis'])
 const router = useRouter()
 
 const riskColors = reactive({
-  RISK_L: 'light-blue',
+  RISK_L: 'light-green',
   RISK_M: 'yellow',
   RISK_H: 'red lighten-1 white--text'
 })

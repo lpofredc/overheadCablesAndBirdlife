@@ -28,7 +28,7 @@
 </template> -->
 
 <template>
-  <v-tabs v-model="tab" bg-color="deep-purple-accent-4" grow stacked>
+  <v-tabs v-model="tab" bg-color="deep-purple-accent-4" grow>
     <v-tab value="infra"> {{ $t('display.infrastructures') }} </v-tab>
     <v-tab value="support"> {{ $t('support.supports-eqmt') }} </v-tab>
     <v-tab value="sensitivearea">

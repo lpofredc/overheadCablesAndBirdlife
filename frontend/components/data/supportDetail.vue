@@ -7,9 +7,10 @@
           <strong>{{ props.data.properties.owner.label }}</strong>
         </v-app-bar-title>
         <v-spacer />
-        <v-chip small :color="lastDiag.neutralized ? 'success' : 'critical'" variant="elevated">{{ lastDiag.neutralized ?
-          'Neutralisé' :
-          'A neutraliser' }}</v-chip>
+        <v-chip :prepend-icon=" lastDiag.neutralized ? 'mdi-check-circle-outline': 'mdi-alert-outline'" small class="mr-2"
+          :color="lastDiag.neutralized ? 'success' : 'error'" variant="elevated">
+          {{ lastDiag.neutralized ? 'neutralisé' : 'à neutraliser' }}
+        </v-chip>
         <v-app-bar-nav-icon>
           <v-btn density="compact" icon="mdi-close" @click="$router.back()" />
         </v-app-bar-nav-icon>

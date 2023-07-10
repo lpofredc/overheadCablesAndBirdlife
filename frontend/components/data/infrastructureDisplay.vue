@@ -8,8 +8,8 @@
       </v-row>
     </v-radio-group>
 
-    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :items-per-page="5" class="elevation-1"
-      @click:row="showDetail">
+    <v-data-table :headers="tableHeaders" :items="dataSource[display]" :items-per-page="10" class="elevation-1"
+      density="compact" @click:row="showDetail" fixed-header>
       <template #item.value.properties.actions_infrastructure.0.neutralized="{ item }">
         {{ item.value }}
         <v-icon :color="[item.value?.properties.actions_infrastructure[0].neutralized] == 'true'

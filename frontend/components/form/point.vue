@@ -10,7 +10,7 @@
             </v-app-bar-title>
           </template>
           <template v-slot:append>
-            <v-btn icon="mdi-close" @click="router.back()"/>
+            <v-btn icon="mdi-close" @click="router.back()" />
           </template>
         </v-app-bar>
         <v-main>
@@ -24,21 +24,18 @@
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
-                                :label="$t('support.latitude')" type="number" placeholder="Latitude" required
-                                variant="solo"
-                                density="compact"></v-text-field>
+                    :label="$t('support.latitude')" type="number" placeholder="Latitude" required variant="solo"
+                    density="compact"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="4">
                   <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
-                                :label="$t('support.longitude')" type="number"
-                                :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                                required variant="solo" density="compact"/>
+                    :label="$t('support.longitude')" type="number" :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                    required variant="solo" density="compact" />
                 </v-col>
                 <v-col cols="12" md="4" v-if="!diagnosis">
                   <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
-                            :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact"
-                            required>
+                    :rules="[rules.required]" :label="$t('support.network')" variant="solo" density="compact" required>
                   </v-select>
                 </v-col>
               </v-row>
@@ -55,59 +52,54 @@
                   <v-menu :close-on-content-click="false" transition="scale-transition">
                     <template v-slot:activator="{ props }">
                       <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
-                                    prepend-icon="mdi-calendar" readonly variant="solo" density="compact"
-                                    v-bind="props"></v-text-field>
+                        prepend-icon="mdi-calendar" readonly variant="solo" density="compact"
+                        v-bind="props"></v-text-field>
                     </template>
                     <v-date-picker v-model="diagData.date" no-title></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" md="4" v-if="!support">
                   <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
-                            :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
-                            density="compact"></v-select>
+                    :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
+                    density="compact"></v-select>
                 </v-col>
 
                 <v-col cols="12" md="4" v-if="!support">
                   <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')"
-                              density="compact"></v-checkbox>
+                    density="compact"></v-checkbox>
                 </v-col>
 
                 <v-col cols="12" v-if="!support">
                   <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
-                                  item-value="id" :rules="[rules.required]" hide-selected
-                                  :label="$t('support.support-type')" multiple
-                                  deletable-chips variant="solo" density="compact"></v-autocomplete>
+                    item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
+                    deletable-chips variant="solo" density="compact"></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label"
-                            item-value="id"
-                            :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
-                            density="compact"></v-select>
+                  <v-select v-model="diagData.pole_attractivity_id" :items="riskLevels" item-title="label" item-value="id"
+                    :rules="[rules.required]" :label="$t('support.attractiveness')" variant="solo"
+                    density="compact"></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select v-model="diagData.pole_dangerousness_id" :items="riskLevels" item-title="label"
-                            item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')"
-                            variant="solo"
-                            density="compact"></v-select>
+                    item-value="id" :rules="[rules.required]" :label="$t('support.dangerousness')" variant="solo"
+                    density="compact"></v-select>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.isolation_advice" :label="$t('support.advice_isol')"
-                              density="compact"></v-checkbox>
+                    density="compact"></v-checkbox>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.dissuasion_advice" :label="$t('support.advice_disrupt')"
-                              density="compact"></v-checkbox>
+                    density="compact"></v-checkbox>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.attraction_advice" :label="$t('support.advice_attract')"
-                              density="compact"></v-checkbox>
+                    density="compact"></v-checkbox>
                 </v-col>
 
                 <v-col cols="12">
-                  <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle"
-                              :label="$t('app.remark')"
-                              :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
-                              density="compact"></v-textarea>
+                  <v-textarea v-model="diagData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
+                    :rules="[rules.textLength]" rows="2" counter="300" variant="solo" density="compact"></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
@@ -120,14 +112,14 @@
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <utils-picture-component ref="upc"/>
+                  <utils-picture-component ref="upc" />
                 </v-col>
                 <v-container>
                   <v-list v-if="diagnosis && modifyDiag">
                     <v-list-item v-for="img in diagnosis.media" :key="img.id">
                       <v-row>
                         <v-col>
-                          <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2"/>
+                          <v-img :src="img.storage" max-height="100" max-width="166" class="ma-2" />
                         </v-col>
 
                         <v-col></v-col>
@@ -316,10 +308,10 @@ const createNewPoint = async () => {
  */
 const createNewDiagnosis = async (infrstr_id: number) => {
   // Create Media as selected in component form and get list of Ids of created Media
-  const mediaIdList = await createNewMedia()
+  // const mediaIdList = await createNewMedia()
   try {
     diagData.infrastructure = infrstr_id // set Infrastructure (Point) id
-    diagData.media_id = mediaIdList // set Media id list
+    // diagData.media_id = mediaIdList // set Media id list
     const {data} = await useHttp('/api/v1/cables/diagnosis/', {method: 'post', body: diagData})
     return data.value
   } catch (_err) {

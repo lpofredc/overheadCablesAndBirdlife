@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height pa-0">
+  <v-container class="fill-height pa-0" fluid>
     <v-row v-if="mdAndUp" class="fill-height">
       <v-col class="pr-0 pt-0 pb-0">
         <ClientOnly fallback-tag="span" fallback="Loading comments...">
@@ -31,16 +31,6 @@
           </v-window>
         </v-card-text>
       </v-card>
-
-
-      <v-tabs-items v-model="tab">
-        <v-tab-item>
-
-        </v-tab-item>
-        <v-tab-item>
-
-        </v-tab-item>
-      </v-tabs-items>
     </template>
   </v-container>
 </template>
