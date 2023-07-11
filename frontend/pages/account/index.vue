@@ -1,12 +1,12 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 const reveal = ref(false)
-const { user } = $auth()
+const { user, loggedIn } = useAuth()
 </script>
 
 <template>
   <v-card class="mx-auto" width="90%">
-    <v-card-text v-if="user">
+    <v-card-text v-if="loggedIn && user">
       <div>{{ user.email }}</div>
       <p class="text-h4 text--primary">
         {{ user.username }}
@@ -26,7 +26,7 @@ const { user } = $auth()
       <v-card v-if="reveal" class="v-card--reveal" style="height: 100%">
         <v-card-text class="pb-0">
           <p>
-            <pre><code>{{ user }}</code></pre>
+          <pre><code>{{ user }}</code></pre>
           </p>
         </v-card-text>
         <v-card-actions class="pt-0">

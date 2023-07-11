@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" theme="dark">
     <v-list-item :prepend-avatar="'https://randomuser.me/api/portraits/men/85.jpg'"
-      :title="$auth.user?.username || 'Not connected'" nav>
+      :title="$auth.user?.username || 'Not connected'" nav to="/account/">
       <template v-slot:append>
         <v-btn v-if="!rail" variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
       </template>
