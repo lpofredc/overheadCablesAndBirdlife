@@ -15,7 +15,7 @@
         </v-app-bar>
         <v-main>
           <v-card-text>
-            <v-container v-if="!diagnosis">
+            <v-container v-if="!(diagnosis || support) ">
               <v-row>
                 <v-col cols="12" class="text-left">
                   <strong> {{ $t('forms.general-infrastructure') }}</strong>
@@ -23,15 +23,15 @@
               </v-row>
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
-                    :label="$t('support.latitude')" type="number" placeholder="Latitude" required variant="solo"
-                    density="compact"></v-text-field>
+                  <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
+                    :label="$t('support.latitude')" type="number" placeholder="Latitude"
+                    :rules="[rules.requiredOrNotValid, rules.latRange]" required variant="solo" density="compact" />
                 </v-col>
 
                 <v-col cols="12" md="4">
                   <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
-                    :label="$t('support.longitude')" type="number" :rules="[rules.requiredOrNotValid, rules.lngRange]"
-                    required variant="solo" density="compact" />
+                    :label="$t('support.longitude')" type="number" placeholder="Longitude"
+                    :rules="[rules.requiredOrNotValid, rules.lngRange]" required variant="solo" density="compact" />
                 </v-col>
                 <v-col cols="12" md="4" v-if="!diagnosis">
                   <v-select v-model="pointData.owner_id" :items="networkOwners" item-title="label" item-value="id"
@@ -48,28 +48,28 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" md="4" v-if="!support">
-                  <v-menu :close-on-content-click="false" transition="scale-transition">
+                <v-col cols="12" md="4">
+                  <v-menu>
+
                     <template v-slot:activator="{ props }">
                       <v-text-field v-model="diagData.date" :label="$t('forms.datecreate')" persistent-hint
-                        prepend-icon="mdi-calendar" readonly variant="solo" density="compact"
-                        v-bind="props"></v-text-field>
+                        inner-prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props" />
                     </template>
                     <v-date-picker v-model="diagData.date" no-title></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" md="4" v-if="!support">
+                <v-col cols="12" md="4">
                   <v-select v-model="diagData.condition_id" :items="conditions" item-title="label" item-value="id"
                     :rules="[rules.required]" :label="$t('support.condition')" variant="solo"
                     density="compact"></v-select>
                 </v-col>
 
-                <v-col cols="12" md="4" v-if="!support">
+                <v-col cols="12" md="4">
                   <v-checkbox v-model="diagData.neutralized" :label="$t('support.neutralized')"
                     density="compact"></v-checkbox>
                 </v-col>
 
-                <v-col cols="12" v-if="!support">
+                <v-col cols="12">
                   <v-autocomplete chips v-model="diagData.pole_type_id" :items="poleTypes" item-title="label"
                     item-value="id" :rules="[rules.required]" hide-selected :label="$t('support.support-type')" multiple
                     deletable-chips variant="solo" density="compact"></v-autocomplete>
@@ -135,18 +135,22 @@
           </v-card-text>
           <v-card-actions>
             <v-row class="justify-space-around mb-2">
-              <v-btn color="warning" @click="back">{{ $t('app.cancel') }}</v-btn>
-              <v-btn color="success" @click="submit">{{ $t('app.valid') }}</v-btn>
+              <v-btn color="red" variant="elevated" prepend-icon="mdi-close" @click="back">{{ $t('app.cancel')
+                }}</v-btn>
+              <v-btn color="green" variant="elevated" prepend-icon="mdi-check" @click="submit">{{ $t('app.valid')
+                }}</v-btn>
             </v-row>
           </v-card-actions>
+          <pre>{{ support }}</pre>
         </v-main>
       </v-form>
+
     </v-layout>
   </v-card>
 </template>
 <script setup lang="ts">
 import * as errorCodes from '~/static/errorConfig.json'
-
+import { ErrorInfo } from 'store/errorStore';
 
 // init modules
 const {t} = useI18n()
@@ -156,6 +160,7 @@ const route = useRoute()
 // init Stores
 const coordinatesStore = useCoordinatesStore()
 const nomenclaturesStore = useNomenclaturesStore()
+const errorStore = useErrorsStore()
 
 // props
 const {support, diagnosis, operation} = defineProps(['support', 'diagnosis', 'operation'])
@@ -240,9 +245,12 @@ const back = () => {
  * process.
  */
 const submit = async () => {
+  console.log('formValid', formValid.value)
   if (formValid) {
+    console.log('status', support.data, diagnosis, modifyDiag.value)
     // Case of creation of new Point and associated Diagnosis
     if (!support && !diagnosis) {
+      console.log('createNewPoint !support && !diagnosis')
       const pointCreated = await createNewPoint()
       console.log(pointCreated)
       // new Point (Support) is successfully created
@@ -252,14 +260,18 @@ const submit = async () => {
       }
       router.push('/search')
     } else if (diagnosis && modifyDiag) {
+      console.log('updateDiagnosis diagnosis && modifyDiag')
       // Case of update of Diagnosis
       await updateDiagnosis()
       router.push(`/supports/${diagnosis.infrastructure}`)
-    } else if (diagnosis && !modifyDiag) {
+    } else if (support && !diagnosis && !modifyDiag.value) {
       // Case of creation of new Diagnosis on existing Support
-      await addNewDiagnosis()
-      router.push(`/supports/${diagnosis.infrastructure}`)
+      console.log('addNewDiagnosis diagnosis && !modifyDiag')
+      const data = await addNewDiagnosis()
+      console.log('DIAG', data)
+      router.push(`/supports/${data?.value.infrastructure}`)
     } else if (support) {
+      console.log('else ERROR')
       // update of existing Point
       const error = {
         code: 0,
@@ -286,7 +298,11 @@ const createNewPoint = async () => {
     console.log('createNewPoint', data.value)
     return data.value
   } catch (_err) {
-    const error = {}
+    const error : ErrorInfo = {
+      code:errorCodes.create_point.code,
+      msg:t(`error.${errorCodes.create_point.msg}`)
+    }
+    errorStore.setError(error )
     // error.code = errorCodes.create_point.code
     // error.msg = t(`error.${errorCodes.create_point.msg}`)
     // set error message to errorStore and triggers message display through "err" watcher in
@@ -344,26 +360,28 @@ const createNewDiagnosis = async (infrstr_id: number) => {
  */
 const addNewDiagnosis = async () => {
   // Create Media as selected in component form and get list of Ids of created Media
-  console.log(modifyDiag ? 'vrai' : 'faux')
-  const mediaIdList = await createNewMedia()
+  console.log('modifyDiag', modifyDiag ? 'vrai' : 'faux')
+  console.log(diagData, )
+  // const mediaIdList = await createNewMedia()
   try {
-    diagData.infrastructure = diagnosis.infrastructure // set Infrastructure (Point) id
-    diagData.media_id = mediaIdList // set Media id list
+    console.log('support', support.value.properties)
+    diagData.infrastructure = support.value.properties.id // set Infrastructure (Point) id
+    // diagData.media_id = mediaIdList // set Media id list
     // Create Diagnosis
-    return await this.$axios.$post('cables/diagnosis/', diagData)
+    const {data }= await useHttp('/api/v1/cables/diagnosis/', {method:'post', body: diagData})
+    console.log('newDiagData', data)
+    return data
   } catch (_err) {
+    console.error ('error',_err)
     // If Diagnosis creation fails, related Media created are deleted
-    if (newCreatedMediaIdList) {
-      newCreatedMediaIdList.forEach(
-          async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
-      )
-    }
+    // if (newCreatedMediaIdList) {
+    //   newCreatedMediaIdList.forEach(
+    //       async (media_id) => await this.$axios.$delete(`/media/${media_id}/`)
+    //   )
+    // }
     // Error display
-    const error = {}
-    // error.code = errorCodes.create_pole_diagnosis.code
-    // error.msg = $nuxt.$t(`error.${errorCodes.create_pole_diagnosis.msg}`)
-    // // set error message to errorStore and triggers message display through "err" watcher / in error-snackbar component
-    // this.$store.commit('errorStore/setError', error)
+    const error : ErrorInfo = {code : errorCodes.create_pole_diagnosis.code,msg :t(`error.${errorCodes.create_pole_diagnosis.msg}`)}
+    errorStore.setError(error)
     back()
   }
 }

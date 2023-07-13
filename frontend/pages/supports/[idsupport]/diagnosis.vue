@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="view">
     <template #map><map-search :edit-mode="true" mode="point" /></template>
-    <form-point :diagnosis="diag" />
+    <form-point :diagnosis="diagnosis" :support="support" />
   </NuxtLayout>
 </template>
 
@@ -12,5 +12,25 @@ definePageMeta({
   auth: true,
 });
 const route = useRoute()
-const diag = route.query.id_diagnosis ? await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`) : null
+const diagnosis = ref(null)
+const support = ref(null)
+
+watch(support, (_val)=> {
+  console.log('VAL', _val)
+  console.log('support', support)
+})
+
+const getData = async () =>{
+  if (route.query.id_diagnosis) {
+   await useHttp(`/api/v1/cables/diagnosis/${route.query.id_diagnosis}`).then(res => diagnosis.value=res.data)
+  }
+  if (route.params.idsupport) {
+    console.log('route.params.idsupport',route.params.idsupport)
+    await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`).then(res=> support.value=res.data)
+  }
+}
+
+onMounted(()=> {
+  getData()
+})
 </script>

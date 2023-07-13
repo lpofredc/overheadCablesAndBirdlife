@@ -1,283 +1,255 @@
 <template>
   <v-card elevation="0" class="fill-height">
-    <v-form ref="form" v-model="formValid" class="text-center">
-      <v-toolbar color="pink" dark elevation="0">
-        <v-toolbar-title>{{ $t('mortality.new_mortality') }}</v-toolbar-title>
 
-        <v-spacer></v-spacer>
 
-        <v-btn icon @click="$router.back()">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-card-text class="overflow-auto">
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('forms.coordinates') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field ref="lat" v-model="lat" :label="$t('support.latitude')" type="number" placeholder="Latitude"
-                :rules="[rules.requiredOrNotValid, rules.latRange]" required hide-spin-buttons outlined dense />
-            </v-col>
+    <v-layout>
+      <v-form ref="form" v-model="formValid" class="text-center">
+        <v-app-bar color="pink" flat dark density="compact">
+          <template v-slot:prepend>
+            <v-btn icon="mdi-pencil"></v-btn>
+            <v-app-bar-title>{{ modifyDiag ? 'Modifier le' : 'Nouveau' }}
+              {{ $t('mortality.new_mortality') }}
+            </v-app-bar-title>
+          </template>
+          <template v-slot:append>
+            <v-btn icon="mdi-close" @click="router.back()" />
+          </template>
+        </v-app-bar>
+        <v-main>
 
-            <v-col cols="12" md="4">
-              <v-text-field ref="lng" v-model="lng" :label="$t('support.longitude')" type="number"
-                :rules="[rules.requiredOrNotValid, rules.lngRange]" required hide-spin-buttons outlined dense />
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-divider></v-divider>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('forms.general') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-menu :close-on-content-click="false" transition="scale-transition">
-                <template v-slot:activator="{ props }">
-                  <v-text-field v-model="mortalityData.date" :label="$t('forms.datecreate')" persistent-hint
-                    prepend-icon="mdi-calendar" readonly outlined dense v-bind="props"></v-text-field>
-                </template>
-                <v-date-picker v-model="mortalityData.date" no-title></v-date-picker>
-              </v-menu>
-            </v-col>
+          <v-card-text class="overflow-auto">
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <strong>{{ $t('forms.coordinates') }}</strong>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" lg="6">
+                  <v-text-field ref="lat" v-model="coordinatesStore.newGeoJSONPoint.coordinates[1]"
+                    :label="$t('support.latitude')" type="number" :rules="[rules.requiredOrNotValid, rules.latRange]"
+                    placeholder="Latitude" required variant="solo" density="compact" />
+                </v-col>
 
-            <v-col cols="12" md="6">
-              <v-autocomplete v-model="mortalityData.species_id" :items="speciesItems" :loading="isLoading"
-                :search-input.sync="speciesSearch" hide-no-data hide-selected item-text="vernacular_name" item-value="id"
-                label="Espèce" placeholder="Start typing to Search" required outlined dense></v-autocomplete>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field ref="lat" v-model="mortalityData.author" :label="$t('mortality.observer')" type="string"
-                :placeholder="$t('mortality.observer')" hide-spin-buttons required outlined dense />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-select v-model="mortalityData.death_cause_id" :items="deathCause" item-text="label" item-value="id"
-                :rules="[rules.required]" label="Cause de la mortalité" outlined dense></v-select>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field ref="lat" v-model="mortalityData.infrstr" label="support/ligne concerné" type="string"
-                placeholder="support/ligne concerné" hide-spin-buttons outlined dense />
-            </v-col>
+                <v-col cols="12" lg="6">
+                  <v-text-field ref="lng" v-model="coordinatesStore.newGeoJSONPoint.coordinates[0]"
+                    :label="$t('support.longitude')" type="number" :rules="[rules.requiredOrNotValid, rules.lngRange]"
+                    required variant="solo" density="compact" />
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-divider></v-divider>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <strong>{{ $t('forms.general') }}</strong>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-menu :close-on-content-click="false" transition="scale-transition">
+                    <template v-slot:activator="{ props }">
+                      <v-text-field v-model="mortalityData.date" :label="$t('forms.datecreate')" persistent-hint
+                        prepend-icon="mdi-calendar" variant="solo" density="compact" v-bind="props"></v-text-field>
+                    </template>
+                    <v-date-picker v-model="mortalityData.date" no-title></v-date-picker>
+                  </v-menu>
+                </v-col>
 
-            <v-col cols="12">
-              <v-textarea v-model="mortalityData.remark" clearable clear-icon="mdi-close-circle" :label="$t('app.remark')"
-                :rules="[rules.textLength]" rows="2" counter="300" outlined dense></v-textarea>
-            </v-col>
-          </v-row>
-        </v-container>
+                <v-col cols="12" md="6">
+                  <v-autocomplete v-model="mortalityData.species_id" v-model:search="speciesSearch" :loading="isLoading"
+                    :items="specieSearchEntries" item-title="vernacular_name" item-value="id" label="Espèce"
+                    auto-select-first required variant="solo" density="compact" hide-no-data hide-details
+                    :placeholder="$t('Start typing to Search')" />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field ref="lat" v-model="mortalityData.author" :label="$t('mortality.observer')" type="string"
+                    :placeholder="$t('mortality.observer')" hide-spin-buttons required variant="solo" density="compact" />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select v-model="mortalityData.death_cause_id" :items="nomenclaturesStore.deathCauseItems"
+                    item-title="label" item-value="id" :rules="[rules.required]" label="Cause de la mortalité"
+                    variant="solo" density="compact"></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field ref="lat" v-model="mortalityData.infrstr" label="support/ligne concerné" type="string"
+                    placeholder="support/ligne concerné" hide-spin-buttons variant="solo" density="compact" />
+                </v-col>
 
-        <v-divider></v-divider>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-left">
-              <strong>{{ $t('picture.pictures') }}</strong>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <utils-picture-component ref="upc" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-row class="justify-space-around mb-2">
-          <v-btn @click="back">{{ $t('app.cancel') }}</v-btn>
-          <v-btn @click="submit">{{ $t('app.valid') }}</v-btn>
-        </v-row>
-      </v-card-actions>
-    </v-form>
+                <v-col cols="12">
+                  <v-textarea v-model="mortalityData.remark" clearable clear-icon="mdi-close-circle"
+                    :label="$t('app.remark')" :rules="[rules.textLength]" rows="2" counter="300" variant="solo"
+                    density="compact"></v-textarea>
+                </v-col>
+              </v-row>
+            </v-container>
+
+            <v-divider></v-divider>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-left">
+                  <strong>{{ $t('picture.pictures') }}</strong>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <utils-picture-component ref="upc" :loaded-images="loadedImages" />
+                </v-col>
+                in parent {{ loadedImages }}
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-row class="justify-space-around mb-2">
+              <v-btn color="red" variant="elevated" prepend-icon="mdi-close" @click="back">{{ $t('app.cancel')
+                }}</v-btn>
+              <v-btn color="green" variant="elevated" prepend-icon="mdi-check" @click="submit">{{ $t('app.valid')
+                }}</v-btn>
+            </v-row>
+          </v-card-actions>
+        </v-main>
+      </v-form>
+    </v-layout>
   </v-card>
 </template>
-<script>
+
+<script setup lang="ts">
 import { mapState } from 'pinia'
 import * as errorCodes from '~/static/errorConfig.json'
+import { ErrorInfo } from 'store/errorStore';
 
-// const speciesStore = useSpeciesStore()
+const {mortality} = defineProps(['mortality'])
+const {t} = useI18n()
+const router =useRouter()
+const errorStore = useErrorsStore()
 
-// export default Vue.extend({
-export default {
-  name: 'PointComponent',
-
-  props: {
-    mortality: { type: Object, default: null },
-  },
-
-  data() {
-    return {
-      formValid: true,
+const formValid = ref(true)
       // manualChange: false, // boolean to activate manual coordinate change
       // form values
-      newLat: null,
-      newLng: null,
+
       // define data related to Point
-      pointData: {
+const pointData = reactive({
         geom: {
           type: 'Point',
           coordinates: [],
         },
         owner_id: 1, // null,
-      },
+      })
       // define data related to Diagnosis
-      mortalityData: {
+
+      const mortalityData = reactive({
         date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
         author: null,
-        species: null, // null,
+        species_id: null, // null,
         infrstr: null,
         nb_death: 1,
         death_cause_id: null,
         data_source: null,
         geom: {
-          type: 'Point',
-          coordinates: [],
+          type: 'Point' as string,
+          coordinates: [] as number[],
         },
-      },
+      })
       // rules for form validation
-      rules: {
-        required: (v) => !!v || this.$t('valid.required'),
-        requiredOrNotValid: (v) =>
-          !!v || this.$t('valid.required_or_not_valid'),
-        latRange: (v) =>
-          (v >= 40 && v <= 52) || `${this.$t('valid.range')}40 : 52`,
-        lngRange: (v) =>
-          (v >= -20 && v <= 20) || `${this.$t('valid.range')}-20 : 20`,
-        textLength: (v) =>
-          (v || '').length <= 300 || `${this.$t('valid.length')}: 300`,
-      },
+const rules = reactive({
+  required: (v: string | number) => !!v || t('valid.required'),
+  requiredOrNotValid: (v: string | number) => v === 0 || !!v || t('valid.required_or_not_valid'),
+  latRange: (v: number) => (v >= 40 && v <= 52) || `${t('valid.range')}40 : 52`,
+  lngRange: (v: number) => (v >= -20 && v <= 20) || `${t('valid.range')}-20 : 20`,
+  textLength: (v: string) => (v || '').length <= 300 || `${t('valid.length')}: 300`,
+})
       // Species Autocomplete data
-      descriptionLimit: 60,
-      isLoading: false,
-      speciesSearch: null,
-      specieSearchEntries: [],
-    }
-  },
-  computed: {
+     const  descriptionLimit = ref(60)
+      const isLoading = ref(false)
+      const speciesSearch = ref(null)
+      const specieSearchEntries = ref([])
+      const loadedImages = ref([])
 
-    /**
-     * Getter and Setter for "lat" value.
-     * This latitude value is bind v-text-field "lat", and linked with latitude of the LMarker
-     * from map.
-     * When value is commited, it is detected by map.vue
-     */
-    lat: {
-      get() {
-        return this.newPoint ? this.newPoint.lat : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
-          lng: this.lng,
-        })
-      },
-    },
-    /**
-     * Getter and Setter for "lng" value.
-     * This longitude value is bind v-text-field "lng", and linked with longitude of the LMarker
-     * from map.
-     * When value is commited, it is detected by map.vue
-     */
-    lng: {
-      get() {
-        return this.newPoint ? this.newPoint.lng : null // avoid bug if newPoint undefined
-      },
-      // on change in v-text-field, value is set to store.
-      set(newVal) {
-        this.$store.commit('coordinatesStore/addPointCoord', {
-          lat: this.lat,
-          lng: newVal !== '' ? Number(newVal) : null, // prevent Number('') returns 0
-        })
-      },
-    },
-    // Get values from store
-    ...mapState(useSpeciesStore, ['species']),
-    ...mapState(useCoordinatesStore, ['newPointCoord']),
-    ...mapState(useNomenclaturesStore, ['deathCause']),
-    speciesFields() {
-      if (!this.mortalityData.species) return []
 
-      return Object.keys(this.mortalityData.species).map((key) => {
-        return {
-          key,
-          value: this.mortalityData.species[key] || 'n/a',
-        }
-      })
-    },
-    speciesItems() {
-      return this.specieSearchEntries.map((entry) => {
-        const vernacular_name =
-          entry.vernacular_name.length > this.descriptionLimit
-            ? entry.vernacular_name.slice(0, this.descriptionLimit) + '...'
-            : entry.vernacular_name
 
-        return Object.assign({}, entry, { vernacular_name })
-      })
-    },
-  },
-  watch: {
-    speciesSearch(val) {
+      // const speciesStore = useSpeciesStore()
+      const coordinatesStore = useCoordinatesStore()
+      const nomenclaturesStore = useNomenclaturesStore()
+// const speciesStore = useSpeciesStore()
+
+// const speciesFields = computed(() => {
+//       return mortalityData.species ? Object.keys(mortalityData.species).map((key) => {
+//         return {
+//           key: mortalityData.species?[key] || 'n/a'
+//         }
+//       }) : []
+//     })
+
+    // const speciesItems = computed(
+    // () => {
+    //   return specieSearchEntries.value.map((entry) => {
+    //     const vernacular_name =
+    //       entry.vernacular_name.length > descriptionLimit
+    //         ? entry.vernacular_name.slice(0, descriptionLimit) + '...'
+    //         : entry.vernacular_name
+
+    //     return Object.assign({}, entry, { vernacular_name })
+    //   })
+    // })
+
+    watch(speciesSearch , async (val) => {
+      val && val !== mortalityData.species_id && speciesSelection(val)
       // Items have already been loaded
-      if (this.speciesItems.length > 0) return
+      // if (speciesItems.value.length > 0) return
 
-      // Items have already been requested
-      if (this.isLoading) return
+      // // Items have already been requested
+      // if (isLoading.value) return
 
-      this.isLoading = true
+      // isLoading.value = true
 
-      // Lazily load input items
-      this.$axios
-        .$get(`species/?search=${val}`)
-        .then((data) => {
-          this.specieSearchEntries = data
-          this.count = data.length
-        })
-        // TODO Manage error
-        .catch((err) => {
-          console.log(err)
-        })
-        .finally(() => (this.isLoading = false))
-    },
-  },
-  mounted() { },
-  methods: {
-    /**
-     * back(): Method to get back if cancel Point creation.
-     *
-     * "newPointCoord" reinitialized with lat and lng set to null
-     */
-    back() {
-      this.$store.commit('coordinatesStore/addPointCoord', {
-        lat: null,
-        lng: null,
-      })
-      this.$router.back()
-    },
+      // // Lazily load input items
+      // await useHttp(`species/?search=${value}`)
+      //   .then((data) => {
+      //     specieSearchEntries.value = data
+      //   })
+      // // TODO Manage error
+      //   .catch((err) => {
+      //     console.error(err)
+      //   })
+      //   .finally(() => (isLoading.value = false))
+    })
 
-    /**
-     * submit(): Method to submit the form for Point/Diagnosis/Media creation or update
-     * .
-     *
-     * If process fail at any step, all elements created before are deleted through error handling
-     * process.
-     */
-    async submit() {
-      if (this.$refs.form.validate()) {
+const speciesSelection = async (value: string) => {
+        isLoading.value = true
+        // Simulated ajax query
+        const {data} = await useHttp(`/api/v1/species/?search=${value}`)
+        specieSearchEntries.value = data.value
+        isLoading.value = false
+        // setTimeout(() => {
+        //   this.items = this.states.filter(e => {
+        //     return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+        //   })
+        //   this.loading = false
+        // }, 500)
+      }
+
+const back = () => {
+      // this.$store.commit('coordinatesStore/addPointCoord', {
+      //   lat: null,
+      //   lng: null,
+      // })
+      router.back()
+    }
+
+
+
+   const submit =  async () => {
+      if (formValid.value) {
         // Case of creation of new Point and associated Diagnosis
-        if (!this.mortality) {
-          await this.createNewData()
+        if (!mortality) {
+          await createNewData()
           // new Point is successfully created
         }
-        this.back()
+        router.push('/search#morality')
       }
-    },
+    }
 
     /**
      * createNewPoint(): Method that create new Point based on forms data (cf. this.pointData)
@@ -286,21 +258,20 @@ export default {
      *
      * If process fails, error message is displayed in snackBar through error handling process.
      */
-    async createNewData() {
+    const createNewData= async () => {
       try {
-        this.mortalityData.geom.coordinates = [this.lng, this.lat]
-        return await this.$axios.$post('mortality/', this.mortalityData)
+        mortalityData.geom = coordinatesStore.newGeoJSONPoint
+        return await useHttp('/api/v1/mortality/', {method: 'post', body: mortalityData})
       } catch (_err) {
         console.error(_err)
-        const error = {}
-        error.code = errorCodes.create_point.code
-        error.msg = $nuxt.$t(`error.${errorCodes.create_point.msg}`)
-        // set error message to errorStore and triggers message display through "err" watcher in
-        // error-snackbar component
-        this.$store.commit('errorStore/setError', error)
-        this.back()
+        const error: ErrorInfo = {
+          code : errorCodes.create_point.code,
+          msg : t(`error.${errorCodes.create_point.msg}`)
+        }
+        errorStore.setError(error)
+        back()
       }
-    },
+    }
 
     /**
      * createNewDiagnosis(): Method that create new Diagnosis based on forms data(cf.this.mortalityData)
@@ -323,7 +294,7 @@ export default {
      * through error handling process. Id of Media for which creation did not fail will be return
      * anyway.
      */
-    async createNewMedia() {
+   const createNewMedia=   async () => {
       const mediaIdList = []
       // await all Promises be resolved before returning result
       await Promise.all(
@@ -346,17 +317,17 @@ export default {
             })
             mediaIdList.push(newImg.id) // set Media id to mediaIdList
           } catch (_err) {
-            const error = {}
-            error.code = errorCodes.img_sending.code
-            error.msg = $nuxt.$t(`error.${errorCodes.img_sending.msg}`)
-            // set error message to errorStore and triggers message display through "err"
-            // watcher in error-snackbar component
-            this.$store.commit('errorStore/setError', error)
+        console.debug(_err)
+        const error: ErrorInfo = {
+          code : errorCodes.create_point.code,
+          msg : t(`error.${errorCodes.create_point.msg}`)
+        }
+        errorStore.setError(error)
+        back()
           }
         })
       )
       return mediaIdList
-    },
-  },
-}
+    }
+
 </script>

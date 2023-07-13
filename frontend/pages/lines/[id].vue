@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="view">
     <template #map>
-      <map :edit-mode="false" />
+      <map-search :edit-mode="false" />
     </template>
     <data-line-detail :data="data" />
   </NuxtLayout>
