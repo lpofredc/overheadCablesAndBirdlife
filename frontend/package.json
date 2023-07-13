@@ -34,7 +34,7 @@
     "leaflet": "^1.9.3",
     "nuxt": "^3.6.1",
     "pinia": "^2.1.4",
-    "vuetify": "^3.2.5"
+    "vuetify": "^3.3.7"
   },
   "overrides": {
     "vue": "latest"
