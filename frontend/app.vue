@@ -14,11 +14,9 @@
       <v-btn v-if="!$auth.loggedIn" icon="mdi-login" @click="router.push('/account/login')" class="mr-2" />
     </v-app-bar>
     <v-main>
-      <v-container class="pa-0 fill-height" fluid>
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
-      </v-container>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
     </v-main>
     <utils-error-snackbar centered />
   </v-app>
