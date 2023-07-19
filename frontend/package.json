@@ -14,6 +14,7 @@
     "lint": "eslint . --fix"
   },
   "devDependencies": {
+    "@capacitor/cli": "^5.2.1",
     "@geoman-io/leaflet-geoman-free": "^2.14.2",
     "@invictus.codes/nuxt-vuetify": "^0.2.20",
     "@mdi/font": "^7.2.96",
@@ -47,5 +48,10 @@
       "plugin:vue/base",
       "plugin:vuetify/base"
     ]
+  },
+  "dependencies": {
+    "@capacitor/android": "^5.2.1",
+    "@capacitor/core": "^5.2.1",
+    "@capacitor/ios": "^5.2.1"
   }
 }

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Overhead cables and birdlife</string>
+    <string name="title_activity_main">Overhead cables and birdlife</string>
+    <string name="package_name">cables.dev.lpo.fr</string>
+    <string name="custom_url_scheme">cables.dev.lpo.fr</string>
+</resources>

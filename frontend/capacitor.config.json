@@ -1,0 +1,8 @@
+{
+  "appId": "cables.dev.lpo.fr",
+  "appName": "Overhead cables and birdlife",
+  "webDir": ".output/public",
+  "server": {
+    "androidScheme": "https"
+  }
+}
