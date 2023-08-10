@@ -14,13 +14,14 @@
 
 <script setup lang="ts">
 import "leaflet";
-import { circleMarker } from "leaflet";
+import { circleMarker, geoJSON } from "leaflet";
 import { LMap, LTileLayer, LGeoJson, LControlLayers } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import { StoreGeneric } from "pinia"
 import type {Map, PointTuple, GeoJSONOptions, Layer} from "leaflet";
+import { useCoordinatesStore } from "../store/coordinatesStore";
 
 await import("@geoman-io/leaflet-geoman-free");
 
@@ -34,8 +35,12 @@ const mapReady : Ref<Boolean> = ref(false)
 const cableStore : StoreGeneric  = useCablesStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
-const zoom : Ref<number> = ref<number>(6);
-const center : Ref<PointTuple>= ref([46.6423682169416,2.1940236627886227] as PointTuple);
+
+const zoom : ComputedRef<number> = computed(() => coordinatesStore.zoom)
+// const zoom : Ref<number> = ref<number>(() => coordinatesStore.zoom)
+const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesStore.center)
+// const center : Ref<PointTuple>= ref([46.6423682169416,2.1940236627886227] as PointTuple);
+
 const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures);
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures);
 
@@ -43,6 +48,7 @@ const baseLayers = computed(() => mapLayersStore.baseLayers)
 
 const newPointCoord = computed(() => coordinatesStore.newPointCoord)
 const newLineCoord = computed(() => coordinatesStore.newLineCoord)
+const selectedFeature = computed(() => coordinatesStore.selectedFeature)
 
 const onEachFeature = (feature : Feature, layer : any) => {
   // TODO To be adapted
@@ -59,6 +65,25 @@ const geojsonOptions : GeoJSONOptions = reactive({
   onEachFeature,
 })
 
+
+watch(selectedFeature, (newVal, oldVal) => {
+  if (JSON.stringify(newVal) === JSON.stringify(oldVal)) {
+    const geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+
+    geoJSON(newVal, {
+        pointToLayer: function (feature, latlng) {
+            return circleMarker(latlng, geojsonMarkerOptions);
+        }
+    }).addTo(mapObject.value);
+  }
+})
 
 const hookUpDraw = async () => {
   mapObject.value = map.value?.leafletObject;
@@ -148,6 +173,8 @@ onBeforeMount(async () => {
     // draggable: true,
   })}
 })
+
+
 
 </script>
 

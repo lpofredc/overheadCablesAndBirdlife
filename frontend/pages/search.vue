@@ -13,11 +13,10 @@ definePageMeta({
   auth: true
 })
 
-const tab = ref(null)
 const {mdAndUp} = useDisplay()
 
 onMounted (() => {
-  console.log(`the component is now mounted. mdAndUp`, mdAndUp.value)
+  console.debug(`the component is now mounted. mdAndUp`, mdAndUp.value)
 })
 
 </script>

@@ -6,7 +6,7 @@
                     <map-search :edit-mode="false" />
                 </slot>
             </v-col>
-            <v-col cols="6" class="pa-0">
+            <v-col cols="6" class="pa-0 fill-height">
                 <slot />
             </v-col>
         </v-row>
@@ -39,4 +39,9 @@
 import { useDisplay } from 'vuetify'
 const tab=ref('map')
 const {mdAndUp} = useDisplay()
+
+onMounted (() => {
+    // TODO fix reactive value
+    mdAndUp.value=true
+})
 </script>

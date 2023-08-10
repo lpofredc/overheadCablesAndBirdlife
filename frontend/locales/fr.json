@@ -68,6 +68,7 @@
     "support-type": "Type de support"
   },
   "line": {
+    "line":"Ligne",
     "buildIntegRisk": "Risque Intégration Bâti",
     "create_line": "Vous devez créer un tronçon sur la carte",
     "movingRisk": "Risque Déplacement",
@@ -76,7 +77,7 @@
     "vegetIntegRisk": "Risque Intégration Vegetation"
   },
   "login": {
-    "password": "Password",
+    "password": "Mot de passe",
     "required_pwd_msg": "Le mot de passe est requis",
     "required_username_msg": "Le nom d'utilisateur est requis",
     "sign-in": "Se connecter",

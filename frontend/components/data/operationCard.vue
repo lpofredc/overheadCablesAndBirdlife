@@ -3,10 +3,7 @@
     <v-card-title>
       {{ $t('display.operation') }}
       <v-spacer />
-      <v-btn
-        icon="mdi-pencil"
-        @click="$router.push(`/supports/21/operation/${props.operation.id}`)"
-       />
+      <v-btn icon="mdi-pencil" @click="$router.push(`/supports/21/operation/${props.operation.id}`)" />
     </v-card-title>
     <v-card-subtitle>
       {{ $t('operation.last-one') }}{{ props.operation.date }}
@@ -19,7 +16,7 @@
         <span class="font-weight-bold">{{ $t('operation.eqmt-type') }}</span>
         <v-chip v-for="et in props.operation.eqmt_type" :key="et.id">
           {{
-            et.label
+          et.label
           }}
         </v-chip>
       </p>

@@ -6,8 +6,8 @@
 
         <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
-        <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
-          variant="outlined" v-model="login.username" :rules="nameRules" @keyup.enter="userLogin"></v-text-field>
+        <v-text-field density="compact" placeholder="Usename" prepend-inner-icon="mdi-account-outline" variant="outlined"
+          v-model="login.username" :rules="nameRules" @keyup.enter="userLogin" autofocus></v-text-field>
 
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
           Password
@@ -59,6 +59,8 @@ const nameRules = reactive([v => !!v || t('login.required_username_msg')])
 const pwdRules = reactive([v => !!v || t('login.required_pwd_msg')])
 const visible = ref(false)
 
+const error = ref(null)
+
 
 const userLogin = async () => {
   // loading=true
@@ -72,16 +74,15 @@ const userLogin = async () => {
       router.push('/search')
     }
   } catch (err) {
-    const error = {}
-    console.error('ERROR', err)
+
     // if nuxt error message contains substring '401'
     if (err.toString().includes('401')) {
-      error.code = errorCodes.authentication.code
-      error.msg = t(`error.${errorCodes.authentication.msg}`)
+      error.value.code = errorCodes.authentication.code
+      error.value.msg = t(`error.${errorCodes.authentication.msg}`)
     } else {
       // for other login errors
-      error.code = errorCodes.login.code
-      error.msg = t(`error.${errorCodes.login.msg}`)
+      error.value.code = errorCodes.login.code
+      error.value.msg = t(`error.${errorCodes.login.msg}`)
     }
     // loading = false
     // set error message to errorStore and triggers message displyy through "err" watcher in

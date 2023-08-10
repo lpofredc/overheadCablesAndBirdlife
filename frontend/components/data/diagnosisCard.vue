@@ -20,7 +20,6 @@
         <v-card-subtitle class="ma-2">
           Diagnostic réalisé le {{ diagnosis.date }}
         </v-card-subtitle>
-
         <v-card-text>
           <v-layout class="d-flex justify-space-between">
             <v-chip :color="[diagnosis.isolation_advice ? 'warning' : '']" class="ma-2">
@@ -36,7 +35,7 @@
 
           <p>
             <span class="font-weight-bold">{{ $t('support.condition') }}</span>
-            {{ diagnosis.condition.label }}
+            {{ diagnosis.condition?.label | '-' }}
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.support-type') }}</span>
@@ -46,9 +45,10 @@
           </p>
           <p>
             <span class="font-weight-bold">{{ $t('support.attractiveness') }}</span>
-            <v-chip :color="riskColors[diagnosis.pole_attractivity.code]" variant="elevated" class="ma-2">
+            <v-chip :color="diagnosis?.pole_attractivity ? riskColors[diagnosis?.pole_attractivity.code]:'grey'"
+              variant="elevated" class="ma-2">
               {{
-              diagnosis.pole_attractivity.label
+              diagnosis?.pole_attractivity.label
               }}
             </v-chip>
           </p>
@@ -90,7 +90,7 @@
 
 <script setup>
 
-const props = defineProps(['diagnosis'])
+const {diagnosis} = defineProps(['diagnosis'])
 const router = useRouter()
 
 const riskColors = reactive({
@@ -100,17 +100,21 @@ const riskColors = reactive({
 })
 
 const newDiag = () => {
-  console.debug(`/supports/${props.diagnosis.infrastructure}/diagnosis`)
+  console.debug(`/supports/${diagnosis.infrastructure}/diagnosis`)
   router.push({
-    path: `/supports/${props.diagnosis.infrastructure}/diagnosis`,
+    path: `/supports/${diagnosis.infrastructure}/diagnosis`,
     query: { modifyDiag: 'false' }
   })
 }
 const updateDiag = () => {
   router.push({
-    path: `/supports/${props.diagnosis.infrastructure}/diagnosis`,
-    query: { modifyDiag: 'true', id_diagnosis: props.diagnosis.id }
+    path: `/supports/${diagnosis.infrastructure}/diagnosis`,
+    query: { modifyDiag: 'true', id_diagnosis: diagnosis.id }
   })
 }
+
+onMounted(()=>{
+  console.log('diagnosis',diagnosis)
+})
 
 </script>

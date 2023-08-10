@@ -1,6 +1,6 @@
 <template>
   <v-data-table v-model:items-per-page="itemsPerPage" :headers="headers" :items="mortalityStore.getMortalityFeatures"
-    item-value="name" class="elevation-1"></v-data-table>
+    item-value="name" class="elevation-1" density="compact"></v-data-table>
 </template>
 
 <script setup lang="ts">
