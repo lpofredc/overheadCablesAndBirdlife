@@ -5,8 +5,10 @@
       <l-tile-layer v-if="mapReady" v-for="baseLayer in baseLayers" :key="baseLayer.id" :name="baseLayer.name"
         :url="baseLayer.url" :visible="baseLayer.default" :attribution="baseLayer.attribution" layer-type="base" />
       <l-control-layers />
-      <l-geo-json v-if="pointData" :geojson="pointData" :options="geojsonOptions" />
-      <l-geo-json :geojson="lineStringData" :options="geojsonOptions" />
+      <l-geo-json v-if="pointData" :geojson="pointData" :options="infrastructureGeoJsonOptions" />
+      <l-geo-json :geojson="lineStringData" :options="infrastructureGeoJsonOptions" />
+      <l-geo-json :geojson="mortalityData" :options="deathCasesGeoJsonOptions" />
+      <l-geo-json v-if="mortalityItem" :geojson="mortalityItem" :options="deathCasesGeoJsonOptions" />
     </template>
     <utils-map-actions-menu v-if="!editMode" />
   </l-map>
@@ -14,18 +16,22 @@
 
 <script setup lang="ts">
 import "leaflet";
-import { circleMarker, geoJSON } from "leaflet";
+import { circleMarker, geoJSON, divIcon, marker} from "leaflet";
 import { LMap, LTileLayer, LGeoJson, LControlLayers } from "@vue-leaflet/vue-leaflet";
 // import { useMapLayersStore } from "store/mapLayersStore";
 import { GeoJSON, Feature } from "geojson"
 // import { useCablesStore } from "~/store/cablesStore"
 import { StoreGeneric } from "pinia"
 import type {Map, PointTuple, GeoJSONOptions, Layer} from "leaflet";
-import { useCoordinatesStore } from "../store/coordinatesStore";
+// import { useCoordinatesStore } from "../store/coordinatesStore";
 
 await import("@geoman-io/leaflet-geoman-free");
 
-const {editMode, mode} = defineProps({ editMode: Boolean, mode: { type: String, default: null } })
+const {editMode, mode, mortalityItem} = defineProps({
+  editMode: Boolean,
+  mode: { type: String, default: null },
+  mortalityItem: {} as Feature
+})
 
 const map = ref()
 
@@ -33,6 +39,7 @@ const mapObject : Ref<null | Map> = ref(null)
 const createLayer: Ref<Layer |null> = ref(null)
 const mapReady : Ref<Boolean> = ref(false)
 const cableStore : StoreGeneric  = useCablesStore()
+const mortalityStore: StoreGeneric = useMortalityStore()
 const mapLayersStore : StoreGeneric = useMapLayersStore()
 const coordinatesStore : StoreGeneric = useCoordinatesStore()
 
@@ -43,26 +50,50 @@ const center : ComputedRef<PointTuple> = computed<PointTuple>(() => coordinatesS
 
 const pointData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getPointDataFeatures);
 const lineStringData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => cableStore.getLineDataFeatures);
-
+const mortalityData: ComputedRef<GeoJSON> = computed<GeoJSON>(() => mortalityStore.getMortalityFeatures);
+// const mortalityItem:
 const baseLayers = computed(() => mapLayersStore.baseLayers)
 
 const newPointCoord = computed(() => coordinatesStore.newPointCoord)
 const newLineCoord = computed(() => coordinatesStore.newLineCoord)
 const selectedFeature = computed(() => coordinatesStore.selectedFeature)
 
-const onEachFeature = (feature : Feature, layer : any) => {
+const infrastructureOnEachFeature = (feature : Feature, layer : any) => {
   // TODO To be adapted
   layer.bindPopup(
-    `ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties?.id}`
+    `<h2>${feature.geometry.type ? 'Support':'Ligne'}</h2>
+    ma <strong>bindPopup</strong> pour<br>${feature.geometry.type} avec  id =>${feature.properties?.id}`
   )
   // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
-  console.log('layer', layer)
+  // console.log('layer', layer)
   // delete layer.pm
   // layer.setStyle({ pmIgnore: false })
 }
 
-const geojsonOptions : GeoJSONOptions = reactive({
-  onEachFeature,
+const mortalityOnEachFeature = (feature : Feature, layer : any) => {
+  // TODO To be adapted
+  layer.bindPopup(
+    `<h2><span class="mdi mdi-coffin"></span><a to="/search#mortality">${feature.properties.species.vernacular_name}</a></h2>
+    <i>${feature.properties.species.scientific_name}</i>
+   <p>
+    <dl>
+      <dt><strong>Date</strong></dt><dd>${feature.properties.date}</dd>
+      <dt><strong>Cause</strong></dt><dd>${feature.properties.death_cause.label}</dd>
+    </dl>
+    </p>`
+  )
+  // remove pm from layer to prevent action from geoman (no more drag/edit/remove ...)
+  // console.log('layer', layer)
+  // delete layer.pm
+  // layer.setStyle({ pmIgnore: false })
+}
+
+const infrastructureGeoJsonOptions : GeoJSONOptions = reactive({
+  onEachFeature : infrastructureOnEachFeature,
+})
+
+const deathCasesGeoJsonOptions : GeoJSONOptions = reactive({
+  onEachFeature:mortalityOnEachFeature ,
 })
 
 
@@ -159,19 +190,39 @@ const hookUpDraw = async () => {
   }
 };
 
+const deathCaseIcon =
 
 onBeforeMount(async () => {
   // const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-  geojsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
-  return circleMarker(latlng, {
-    radius: 5,
-    fillColor: '#ff7800',
-    color: '#000',
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8,
-    // draggable: true,
-  })}
+  infrastructureGeoJsonOptions.pointToLayer = (_feature: Feature, latlng : any ) => {
+    return circleMarker(latlng, {
+      radius: 5,
+      fillColor: '#ff7800',
+      color: '#000',
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8,
+      // draggable: true,
+    })
+  }
+
+  deathCasesGeoJsonOptions.pointToLayer = (feature: Feature, latlng : any ) => {
+    const iconDict = {
+      COD_EL: 'lightning-bolt',
+      COD_IM : 'star'
+    }
+    console.log('pointToLayer', feature.properties?.death_cause?.code, iconDict[feature.properties?.death_cause?.code])
+    const icon = iconDict[feature.properties?.death_cause?.code] || 'help';
+    let deathCaseIcon = divIcon({
+      html: `<span class="mdi mdi-${icon}"></span>`,
+      iconSize: [20, 20],
+      className: 'mapMarkerIcon'}
+      );
+    return marker(latlng, {icon: deathCaseIcon});
+
+
+      // draggable: true,
+    }
 })
 
 
@@ -181,5 +232,16 @@ onBeforeMount(async () => {
 <style>
 #map {
   width: 100%;
+}
+
+.mapMarkerIcon {
+  text-align: center;
+  /* Horizontally center the text (icon) */
+  line-height: 20px;
+  /* Vertically center the text (icon) */
+  color: white;
+  font-size: 20px;
+  background-color: red;
+  border-radius: 50%;
 }
 </style>

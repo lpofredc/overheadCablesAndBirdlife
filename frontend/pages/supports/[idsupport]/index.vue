@@ -16,13 +16,12 @@ const coordinateStore = useCoordinatesStore()
 const { data: info } = await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`)
 
 const zoomTo = () => {
-  const layer = geoJSON(info.value)
-  console.log('LATLNG', layer.getLatLnt)
-  coordinateStore.setCenter = layer.getLatLng()
-  coordinateStore.setZoom=13
+  // const layer = geoJSON(info.value)
+  coordinateStore.setCenter([...info.value.geometry.coordinates].reverse())
+  coordinateStore.setZoom(14)
 }
 
-watch(info, _value => zoomTo())
+onMounted(() => {zoomTo()})
 
 // await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`).then(resp => {
 //   console.log('INFO DATA', resp.data)

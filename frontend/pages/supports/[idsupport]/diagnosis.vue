@@ -30,7 +30,9 @@ const getData = async () =>{
   }
   if (route.params.idsupport) {
     console.log('route.params.idsupport',route.params.idsupport)
-    await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`).then(res=> support.value=res.data)
+    await useHttp(`/api/v1/cables/infrastructures/${route.params.idsupport}`).then(res=> {
+      support.value=res.data
+    })
   }
 }
 

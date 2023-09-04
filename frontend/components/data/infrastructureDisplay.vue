@@ -31,7 +31,7 @@
 <script setup>
 // import { mapState } from 'pinia'
 import { VDataTable } from 'vuetify/labs/VDataTable'
-import { useCablesStore } from '~/store/cablesStore'
+// import { useCablesStore } from '~/store/cablesStore'
 const router = useRouter()
 const { t } = useI18n()
 
@@ -60,6 +60,7 @@ const tableHeaders = reactive([
 ])
 
 const cableStore = useCablesStore()
+const mortalityStore = useMortalityStore()
 const dataSource = computed(() => {
   return {
     both: cableStore.getInfstrDatafeatures,
@@ -71,6 +72,7 @@ const dataSource = computed(() => {
 onMounted(() => {
   // setInfrstrData({})
   cableStore.getInfrstrData({})
+  mortalityStore.getMortalityData()
 })
 
 // const source = (choice) => {

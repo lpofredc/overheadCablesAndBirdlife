@@ -97,6 +97,7 @@
   },
   "mortality": {
     "new_mortality": "New mortality case",
-    "observer": "Observer"
+    "observer": "Observer",
+    "mortality_case": "Mortality case"
   }
 }

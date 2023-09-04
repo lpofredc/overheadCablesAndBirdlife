@@ -3,10 +3,13 @@
  */
 
 import { defineStore } from "pinia";
-import { GeoJSON, FeatureCollection } from "geojson";
+import { GeoJSON, FeatureCollection, Feature } from "geojson";
 
 export const useMortalityStore = defineStore("mortality", {
-  state: () => ({ mortalityData: {} as FeatureCollection }),
+  state: () => ({
+    mortalityData: {} as FeatureCollection,
+    mortalityItem: {} as Feature,
+  }),
   getters: {
     // // get FeatureCollection data
     // infstrData(state) {
@@ -16,16 +19,21 @@ export const useMortalityStore = defineStore("mortality", {
     getMortalityFeatures(state) {
       return state.mortalityData.features;
     },
+    getMortalityItem(state) {
+      return state.mortalityItem;
+    },
   },
   actions: {
-    async getMortalityData() {
-      await $fetch("/api/v1/mortality/")
-        .then((data) => {
-          this.mortalityData = data;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    async getMortalityData(filter) {
+      try {
+        const data = await $http.$get("/api/v1/mortality/");
+        this.mortalityData = data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    setMortalityItem(data) {
+      this.mortalityItem = data;
     },
   },
 });

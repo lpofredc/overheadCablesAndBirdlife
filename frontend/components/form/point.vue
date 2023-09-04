@@ -257,7 +257,7 @@ const initData = async() => {
 
 const submit = async () => {
   console.debug('formValid', formValid.value)
-  console.debug('hasSupport', support ? 'Oui': 'Nom')
+  console.debug('hasSupport', support ? 'Oui': 'Non')
   console.debug('hasDiag', diagnosis ? 'Oui': 'Non')
   console.debug('hasModifyDiag', modifyDiag ? 'Oui': 'Non')
   console.debug('hasModifyDiag.value', modifyDiag.value ? 'Oui': 'Non')
