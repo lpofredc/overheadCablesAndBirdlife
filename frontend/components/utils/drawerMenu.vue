@@ -1,31 +1,42 @@
 <template>
-  <v-list dense nav>
-    <v-list-item to="/" :disabled="!$auth.loggedIn">
-      <v-list-item-icon>
-        <v-icon>mdi-home</v-icon>
-      </v-list-item-icon>
-
-      <v-list-item-content>
-        <v-list-item-title>{{ $t('login.home_page') }}</v-list-item-title>
-      </v-list-item-content>
+  <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" theme="dark">
+    <v-list-item :prepend-avatar="'https://randomuser.me/api/portraits/men/85.jpg'"
+      :title="$auth.user?.username || 'Not connected'" nav to="/account/">
+      <template v-slot:append>
+        <v-btn v-if="!rail" variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
+      </template>
     </v-list-item>
-    <v-list-item to="/view" :disabled="!$auth.loggedIn">
-      <v-list-item-icon>
-        <v-icon>mdi-map-search</v-icon>
-      </v-list-item-icon>
 
-      <v-list-item-content>
-        <v-list-item-title>{{ $t('login.application') }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <v-list-item href="/admin" :disabled="!$auth.loggedIn">
-      <v-list-item-icon>
-        <v-icon>mdi-cogs</v-icon>
-      </v-list-item-icon>
+    <VDivider></VDivider>
 
-      <v-list-item-content>
-        <v-list-item-title>{{ $t('login.admin') }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </v-list>
+    <VList>
+      <VListItem v-if="$auth.loggedIn" v-for="[icon, text, url, loggedIn] in links" :key="icon" link :to="url">
+        <template v-slot:prepend>
+          <VIcon :icon="icon"></VIcon>
+        </template>
+        <VListItemTitle>{{ text }}</VListItemTitle>
+      </VListItem>
+      <VListItem v-if="!$auth.loggedIn" link to="/account/login">
+        <template v-slot:prepend>
+          <VIcon icon="mdi-login"></VIcon>
+        </template>
+        <VListItemTitle>login</VListItemTitle>
+      </VListItem>
+    </VList>
+  </v-navigation-drawer>
 </template>
+<script setup>
+
+const $auth = useAuth()
+const { t } = useI18n()
+const drawer=ref(true)
+const rail=ref(true)
+
+useRouter()
+const links = ref([
+  ['mdi-home', t('nav.home_page'), '/', null],
+  ['mdi-map-search', t('nav.application'), '/search', true],
+  ['mdi-cogs', t('nav.admin'), '/admin', true],
+  ['mdi-information', t('nav.about'), '/about', true]
+]);
+</script>

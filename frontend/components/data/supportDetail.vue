@@ -1,106 +1,125 @@
 <template>
-  <v-card class="fill-height overflow-auto">
-    <v-app-bar flat dark color="blue-grey lighten-1">
-      <v-app-bar-nav-icon>
-        <v-btn icon @click="$router.back()">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-app-bar-nav-icon>
-      <v-toolbar-title class="text-h6 pl-2">
-        {{ $t('support.support') }}
+  <v-layout full-height>
+    <v-app-bar density="compact" color="blue-grey-lighten-5">
+      <v-app-bar-title>
+        #{{data.properties.id}} {{ $t('support.support') }}
         <strong>{{ data.properties.owner.label }}</strong>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-chip
-        class="mr-2"
-        dark
-        :class="[lastDiag.neutralized ? 'green' : 'red']"
-        >{{ lastDiag.neutralized ? 'Neutralisé' : 'A neutraliser' }}</v-chip
-      >
+      </v-app-bar-title>
+
+      <v-spacer />
+      <v-chip v-if="lastDiag" :prepend-icon="lastDiag.neutralized ? 'mdi-check-circle-outline': 'mdi-alert-outline'" small
+        class="mr-2" :color="lastDiag.neutralized ? 'success' : 'error'" variant="elevated">
+        {{ lastDiag.neutralized ? 'neutralisé' : 'à neutraliser' }}
+      </v-chip>
+      <v-app-bar-nav-icon>
+        <v-btn density="compact" icon="mdi-close" @click="$router.back()" />
+      </v-app-bar-nav-icon>
     </v-app-bar>
+    <v-main scrollable>
+      <v-container>
+        <v-card class="my-2">
+          <v-layout>
+            <v-app-bar density="compact" color="blue-grey-lighten-4">
+              <v-app-bar-title>Info Support </v-app-bar-title><v-spacer />
+              <v-btn density="compact" icon="mdi-pencil" color="orange" @click="$router.push('/search')" />
+            </v-app-bar>
+            <v-main>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" lg="6">
+                    <p class="text-strong" v-if="data.properties.geo_area.length > 0">
+                      Limites administratives
+                    </p>
 
-    <v-card-text class="overflow-y-auto fill-height">
-      <v-card class="my-2">
-        <v-card-title
-          >Info Support <v-spacer></v-spacer>
-          <v-btn icon @click="$router.push('/view')">
-            <v-icon color="orange">mdi-pencil</v-icon>
-          </v-btn></v-card-title
-        >
-        <v-card-text>
-          <p class="text-strong" v-if="data.properties.geo_area.length > 0">
-            Limites administratives
-          </p>
+                    <v-chip v-for="(ga, index) in data.properties.geo_area" :key="index">
+                      {{ ga.name }} ({{ ga.code }})
+                    </v-chip>
+                  </v-col>
+                  <v-col cols="12" lg="6">
+                    <p v-if="data.properties.sensitive_area.length > 0">
+                      Zones sensibles
+                    </p>
+                    <v-chip v-for="sa in data.properties.sensitive_area" :key="sa.id">
+                      {{ sa.name }} {{ sa.name }}
+                    </v-chip>
+                  </v-col>
+                  <v-col cols="12" v-if="lastDiag && lastDiag.pole_type.length">
+                    <p>Type de support</p>
+                    <!-- <pre>{{ lastDiag }}</pre> -->
+                    <v-chip v-for="pt in lastDiag?.pole_type" :key="pt.id">
+                      <pre>{{ pt.label }}</pre>
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-main>
+          </v-layout>
+        </v-card>
+        <data-diagnosis-card :diagnosis="lastDiag" />
+        <data-operation-card v-if="lastOp" :operation="lastOp" />
+        <v-card class="my-2" v-if="previousActions.length">
+          <v-layout>
+            <v-app-bar density="compact" color="blue-lighten-2" @click="expandHistory = !expandHistory">
+              <v-app-bar-title> {{ $t('support.history') }} </v-app-bar-title><v-spacer />
+              <v-btn density="compact" :icon="expandHistory ? 'mdi-chevron-up':'mdi-chevron-down'" />
+            </v-app-bar>
+            <v-main :class="expandHistory? 'ma-2':''">
+              <div v-if="expandHistory" v-for="action in previousActions" :key="action.id">
+                <data-diagnosis-card v-if="action.resourcetype === 'Diagnosis'" :diagnosis="action" />
+                <data-operation-card v-if="action.resourcetype === 'Operation'" :operation="action" />
+              </div>
+            </v-main>
+          </v-layout>
+        </v-card>
 
-          <v-chip v-for="(ga, index) in data.properties.geo_area" :key="index">
-            {{ ga.name }} ({{ ga.code }})
-          </v-chip>
-          <p v-if="data.properties.sensitive_area.length > 0">
-            Zones sensibles
-          </p>
-
-          <v-chip v-for="sa in data.properties.sensitive_area" :key="sa.id">
-            {{ sa.name }} {{ sa.name }}
-          </v-chip>
-        </v-card-text>
-      </v-card>
-      <data-diagnosis-card :diagnosis="lastDiag" />
-      <data-operation-card v-if="lastOp" :operation="lastOp" />
-      <v-card
-        ><v-card-title v-if="previousActions.length" class="font-weight-bold">
-          {{ $t('support.history') }}
-        </v-card-title>
-        <v-expansion-panels>
-          <v-expansion-panel v-for="action in previousActions" :key="action.id">
-            <v-expansion-panel-header>
-              {{ action.resourcetype }} - {{ action.date }}
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <data-diagnosis-card
-                v-if="action.resourcetype === 'Diagnosis'"
-                :diagnosis="action"
-              /><data-operation-card
-                v-if="action.resourcetype === 'Operation'"
-                :operation="action"
-              />
-            </v-expansion-panel-content>
-          </v-expansion-panel> </v-expansion-panels
-      ></v-card> </v-card-text
-  ></v-card>
+        <!-- <v-card><v-card-title v-if="previousActions.length" class="font-weight-bold">
+            {{ $t('support.history') }}
+          </v-card-title>
+          <v-expansion-panels>
+            <v-expansion-panel v-for="action in previousActions" :key="action.id">
+              <v-expansion-panel-header>
+                {{ action.resourcetype }} - {{ action.date }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <data-diagnosis-card v-if="action.resourcetype === 'Diagnosis'" :diagnosis="action" />
+                <data-operation-card v-if="action.resourcetype === 'Operation'" :operation="action" />
+              </v-expansion-panel-content>
+            </v-expansion-panel> </v-expansion-panels></v-card> -->
+      </v-container>
+    </v-main>
+  </v-layout>
 </template>
 
-<script lang="ts">
-import Vue, { PropOptions } from 'vue'
-import { Feature } from 'geojson'
+<script setup lang="ts">
 
-export default Vue.extend({
-  name: 'SupportDetailComponent',
-  props: { data: { type: Object, default: null } as PropOptions<Feature> },
-  data() {
-    return {
-      lastDiag: null,
-      lastOp: null,
-      previousActions: [],
-      update: false,
-    }
-  },
-  created() {
-    if (this.data.properties) {
-      // Gather last Diagnosis (field last=True)
-      this.lastDiag = this.data.properties.actions_infrastructure.find(
+
+const {data} = defineProps(['data'])
+
+console.log('props.data' , data)
+
+const expandHistory=ref(false)
+
+const lastDiag = computed(() => {
+  return data?.properties.actions_infrastructure.find(
         (action: { resourcetype: string; last: boolean }) =>
           action.resourcetype === 'Diagnosis' && action.last
       )
-      // Gather last Operation (field last=True)
-      this.lastOp = this.data.properties.actions_infrastructure.find(
+})
+
+const lastOp = computed(() => {
+  return data?.properties.actions_infrastructure.find(
         (action: { resourcetype: string; last: boolean }) =>
           action.resourcetype === 'Operation' && action.last
       )
-      // Gather all older actions (Diagnosis and Operations) with field last=False
-      this.previousActions = this.data.properties.actions_infrastructure.filter(
+})
+const previousActions = computed(() => {
+  return data?.properties.actions_infrastructure.filter(
         (action: { last: boolean }) => !action.last
       )
-    }
-  },
 })
+
+onMounted(() =>{
+  console.log('lastDiag', lastDiag)
+})
+
 </script>

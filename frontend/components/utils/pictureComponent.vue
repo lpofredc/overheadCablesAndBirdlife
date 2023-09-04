@@ -1,15 +1,9 @@
 <template>
-  <v-container fluid>
-    <v-file-input
-      ref="pictInput"
-      v-model="newImg"
-      :rules="rules"
-      hide-input
-      accept="image/png, image/jpeg, image/bmp"
-      prepend-icon="mdi-camera"
-      :label="$t('picture.add_file')"
-      @change="displayImage"
-    ></v-file-input>
+  <v-sheet>
+    <v-file-input ref="pictInput" v-model="newImg" :rules="rules" hide-input accept="image/png, image/jpeg"
+      prepend-inner-icon="mdi-camera" chips multiple :label="$t('picture.add_file')" @change="displayImage" variant="solo"
+      density="compact"></v-file-input>
+    <pre>{{ newImg }}</pre>
     <v-list>
       <v-list-item v-for="(img, index) in imgFileContent" :key="index">
         <v-row>
@@ -24,65 +18,60 @@
         </v-row>
       </v-list-item>
     </v-list>
-  </v-container>
+  </v-sheet>
 </template>
 
-<script>
+<script setup lang="ts">
 import * as errorCodes from '~/static/errorConfig.json'
+import { ErrorInfo } from 'store/errorStore';
 
-export default {
-  name: 'PictureComponent',
+const errorStore = useErrorsStore()
 
-  props: {
-    diagId: { type: Number, default: null },
+const {diagId} = defineProps(['diagId'])
+const {t} = useI18n()
+
+const pictInput = ref()
+const newImg = ref()
+const pictDate = ref(new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .substr(0, 10))
+const imgFileContent = ref([])
+const imgFileObject = ref([])
+const showError = ref(false)
+// TODO test validate and display message in snackbar if issue
+const rules = reactive([
+  (value: File[]) => {
+    return !value || !value.length || value[0].size < 5000000 || t('Image size should be less than 5 MB!')
   },
-  data: () => ({
-    newImg: null,
-    pictDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
-    imgFileContent: [],
-    imgFileObject: [],
-    showError: false,
-    // TODO test validate and display message in snackbar if issue
-    rules: [
-      (value) =>
-        !value ||
-        value.type.startsWith('image/') ||
-        $nuxt.$t('picture.add_file'),
-    ],
-  }),
-  methods: {
-    /**
-     * displayImage(): Method to load and display picture before uploading through the API
-     *
-     * This method is triggered on file selection through v-file-input:
-     * - Image file content is push to imgFileContent array
-     * - Image file object is push to imgFileObject array
-     *
-     * In case of error, error message display through errorSnackBar component
-     */
-    displayImage() {
-      try {
-        if (this.newImg && this.$refs.pictInput.validate()) {
-          const reader = new FileReader()
-          reader.readAsDataURL(this.newImg)
-          // event listener on successful loading,
-          reader.addEventListener('load', () => {
-            this.imgFileContent.push(reader.result) // file content push to array
-            this.imgFileObject.push(this.newImg) // File object push to array
-            this.$refs.pictInput.reset() // reset v-file-input
-          })
-        }
-      } catch (_err) {
-        const error = {}
-        error.code = errorCodes.img_loading.code
-        error.msg = $nuxt.$t(`error.${errorCodes.img_loading.msg}`)
-        // set error message to errorStore and triggers message display through "err" watcher in
-        // error-snackbar component
-        this.$store.commit('errorStore/setError', error)
-      }
-    },
-  },
+],)
+
+const displayImage = () => {
+  try {
+    if (newImg ) {
+      const reader = new FileReader()
+      reader.readAsDataURL(newImg.value)
+      // event listener on successful loading,
+      reader.addEventListener('load', () => {
+        imgFileContent.push(reader.result) // file content push to array
+        imgFileObject.push(newImg.value) // File object push to array
+        pictInput.reset() // reset v-file-input
+      })
+    }
+  } catch (_err) {
+    console.error(_err)
+    const error : ErrorInfo = {
+      code: errorCodes.img_loading.code,
+      msg: t(`error.${errorCodes.img_loading.msg}`)
+    }
+    errorStore.setError(error)
+    // set error message to errorStore and triggers message display through "err" watcher in
+    // error-snackbar component
+    // this.$store.commit('errorStore/setError', error)
+  }
+}
+
+interface Error {
+  code: string,
+  msg: string
 }
 </script>

@@ -1,51 +1,37 @@
 <template>
-  <v-card class="mx-auto">
-    <v-card-title>News</v-card-title>
-    <v-list v-if="posts.length > 0">
-      <v-list-item-group>
-        <v-list-item v-for="post in posts" :key="post.id" :to="`/posts/${post.id}`">
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ post.title }}
-            </v-list-item-title>
-            <v-list-item-subtitle>
+  <v-sheet class="fill-height" dark align-self="start">
+
+    <v-timeline side="end" align="start">
+      <v-timeline-item :dot-color="post.private ? 'pink':'green'" size="small" v-for="post in posts" :key="post.id"
+        :to="`/posts/${post.id}`">
+        <template v-slot:icon>
+          <v-icon size="x-small">{{post.private ? 'mdi-lock' : ''}}</v-icon>
+        </template>
+        <div class="d-flex">
+
+          <div @click="router.push(`/posts/${post.id}`)" class="pointer">
+            <strong><small>{{new Date(post.timestamp_create).toISOString().substr(0,10)}}</small> {{ post.title
+              }}</strong>
+            <div class="text-caption">
               {{ post.intro }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-  </v-card>
+            </div>
+          </div>
+        </div>
+      </v-timeline-item>
+
+    </v-timeline>
+  </v-sheet>
 </template>
 
-<script>
-export default {
-  name: 'PostsList',
-  auth: false,
-  data: () => ({
-    posts: [
-      {
-        icon: 'mdi-wifi',
-        text: 'Wifi',
-      },
-      {
-        icon: 'mdi-bluetooth',
-        text: 'Bluetooth',
-      },
-      {
-        icon: 'mdi-chart-donut',
-        text: 'Data Usage',
-      },
-    ],
-    model: 1,
-  }),
-  mounted() {
-    this.getPosts()
-  },
-  methods: {
-    async getPosts() {
-      this.posts = await this.$axios.$get('/custom-content/news/')
-    },
-  },
-}
+<script setup lang="ts">
+const  router = useRouter()
+
+const { data: posts } = await useHttp('/api/v1/custom-content/news/')
 </script>
+
+
+<style>
+.pointer {
+  cursor: pointer;
+}
+</style>

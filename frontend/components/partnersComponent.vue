@@ -1,35 +1,23 @@
 <template>
-  <v-row dense class="justify-center">
-    <v-col v-for="i in partners" :key="i.id" loading cols="12" xs="6" sm="4" md="3" lg="2">
-      <v-tooltip bottom>
-        <template #activator="{ on, attrs }">
-          <a :href="i.url" target="_blank" v-bind="attrs" v-on="on">
-            <v-img height="50" contain :src="i.logo" :alt="i.name"></v-img>
-          </a>
-        </template>
-        <span>{{ i.name }}</span>
-      </v-tooltip>
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row id="partners" dense class="justify-center">
+      <v-col v-for="i in partners" :key="i.id" loading cols="12" xs="6" sm="4" md="3" lg="2">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ props }">
+            <a :href="i.url" target="_blank" v-bind="props">
+              <!-- TODO: Retirer le string.replace  -->
+              <v-img height="100" contain :src="i.logo.replace(':3000',':8000')" :alt="i.name" :title="i.name" />
+            </a>
+          </template>
+          <span>{{ i.name }}</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-<script>
-export default {
-  name: 'PartnersComponent',
-  auth: false,
-  data() {
-    return {
-      partners: [],
-    }
-  },
-  mounted() {
-    this.getPartners()
-  },
-  methods: {
-    async getPartners() {
-      const partners = await this.$axios.$get('custom-content/partners/')
-      this.partners = partners
-    },
-  },
-}
+<script setup lang="ts">
+const {data: partners} = await useHttp('/api/v1/custom-content/partners/')
 </script>
+
+<style scoped></style>

@@ -238,3 +238,6 @@ sw.*
 
 # Docker override config
 docker-compose.override.y*ml
+
+# Old Frontend dir
+frontend.old

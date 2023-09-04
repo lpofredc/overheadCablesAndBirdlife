@@ -1,27 +1,20 @@
-
 <template>
   <div>
     <v-radio-group v-model="display" row dense @change="source">
       <v-row justify="space-around">
         <v-radio :label="$t('display.all')" value="both"></v-radio>
         <v-radio :label="$t('support.supports-eqmt')" value="poles"></v-radio>
-        <v-radio
-          :label="$t('display.lines-eqmt')"
-          value="segments"
-        ></v-radio></v-row
-    ></v-radio-group>
-    <v-data-table
-      :headers="headers"
-      :items="selectedData"
-      :items-per-page="5"
-      class="elevation-1"
-    ></v-data-table>
+        <v-radio :label="$t('display.lines-eqmt')" value="segments"></v-radio></v-row></v-radio-group>
+    <v-data-table :headers="headers" :items="selectedData" :items-per-page="5" class="elevation-1"></v-data-table>
   </div>
 </template>
 
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { VDataTable } from 'vuetify/labs/VDataTable'
+import { useCablesStore } from '~/store/cablesStore'
+
 export default {
   name: 'EquipmentDisplay',
 
@@ -46,7 +39,7 @@ export default {
     const lineOpData = await this.$axios.$get(
       'cables/operations/?type_model=line'
     )
-    const opData = await this.$axios.$get('cables/operations')
+    const opData = await useHttp('/api/v1/cables/operations')
     this.$store.commit('cablesStore/addOperation', {
       all: opData,
       point: pointOpData,
@@ -55,11 +48,9 @@ export default {
     // needed to load data at start
     this.selectedData = this.opData
   },
-  computed: mapGetters({
-    opData: 'cablesStore/opData',
-    pointOpData: 'cablesStore/pointOpData',
-    lineOpData: 'cablesStore/lineOpData',
-  }),
+  computed: {
+    ...mapState(useCablesStore, ['opData', 'pointOpData', 'lineOpData'])
+  },
   methods: {
     source(choice) {
       switch (choice) {

@@ -1,9 +1,18 @@
-## Build
-FROM node:lts-alpine as builder
+FROM node:lts
+
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm install
-COPY . ./
-RUN npm run build
+
+RUN apt update && apt upgrade -y
+RUN apt install -y git
+
+COPY ./package*.json /app/
+
+RUN npm install && npm cache clean --force
+
+COPY . .
+
+ENV PATH ./node_modules/.bin/:$PATH
 
 EXPOSE 3000
+
+CMD [ "npm" ,'run','dev']

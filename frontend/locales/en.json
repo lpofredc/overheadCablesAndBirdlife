@@ -3,12 +3,21 @@
     "app-name": "Birdlife and overhead cables",
     "cancel": "Cancel",
     "data": "Data",
-    "disconnected": "Logged out",
+    "signin": "Sign in",
     "id": "Id",
     "map": "Map",
     "remark": "Remarks",
     "type": "Type",
     "valid": "Valid"
+  },
+  "nav":{
+    "application": "Application",
+    "admin": "Administration",
+    "home_page": "Home",
+    "about": "About"
+  },
+  "about":{
+    "title":"About"
   },
   "display": {
     "all": "All",
@@ -57,9 +66,6 @@
     "vegetIntegRisk": "Vegetation Integration Risk"
   },
   "login": {
-    "application": "Application",
-    "admin": "Administration",
-    "home_page": "Home Page",
     "password": "Password",
     "required_pwd_msg": "Username is required",
     "required_username_msg": "Username is required",
@@ -91,6 +97,7 @@
   },
   "mortality": {
     "new_mortality": "New mortality case",
-    "observer": "Observer"
+    "observer": "Observer",
+    "mortality_case": "Mortality case"
   }
 }

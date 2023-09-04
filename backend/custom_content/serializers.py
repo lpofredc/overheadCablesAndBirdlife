@@ -17,6 +17,7 @@ class NewsSimpleSerializer(ModelSerializer):
             "id",
             "title",
             "intro",
+            "private",
             "timestamp_create",
             "created_by",
             "timestamp_update",

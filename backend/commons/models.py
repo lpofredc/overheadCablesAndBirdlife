@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import logging
 
 from django.conf import settings
 from django.db import models
+
+logger = logging.getLogger(__name__)
 
 
 class BaseModel(
@@ -36,3 +39,10 @@ class BaseModel(
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        print(f"SAVE----- {dir(self)}")
+        # if not self.created_by:
+        #     self.created_by = self.request.user
+        # self.updated_by = self.request.user
+        super().save(*args, **kwargs)

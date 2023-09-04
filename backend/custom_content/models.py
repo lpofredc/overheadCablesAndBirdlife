@@ -9,6 +9,10 @@ class News(BaseModel):
     title = models.CharField(_("Titre"), max_length=150)
     intro = models.CharField(_("Introduction"), max_length=500)
     body = models.TextField(_("Corps du texte"))
+    private = models.BooleanField(_("Contenu privé"), default=True)
+
+    class Meta:
+        verbose_name_plural = _("News")
 
 
 class Partners(BaseModel):
@@ -22,3 +26,6 @@ class Partners(BaseModel):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        verbose_name_plural = _("Partners")
