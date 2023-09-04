@@ -9,20 +9,18 @@
     </v-radio-group>
 
     <v-data-table :headers="tableHeaders" :items="dataSource[display]" :items-per-page="10" class="elevation-1"
-      density="compact" @click:row="showDetail" fixed-header>
-      <template #item.value.properties.actions_infrastructure.0.neutralized="{ item }">
-        {{ item.value }}
-        <v-icon :color="[item.value?.properties.actions_infrastructure[0].neutralized] == 'true'
-            ? 'green'
-            : 'red'
-          " dark>
-          {{
-          item.value?.properties.actions_infrastructure[0].neutralized
-          ? 'mdi-check-circle'
-          : 'mdi-checkbox-blank-circle'
-          }}
+      density="compact" @click:row="rowClickEvent" fixed-header>
+      <template v-slot:item.properties.id="{ item }">
+        <v-chip link :to="routerPushUrl(item.raw)">
+          {{item.raw.properties.id}}
+        </v-chip>
+      </template>
+      <template v-slot:item.properties.actions_infrastructure.0.neutralized="{ item }">
+        <v-icon :color="item.raw.properties.actions_infrastructure[0]?.neutralized ? 'green': 'red'" dark>
+          {{item.raw.properties.actions_infrastructure[0]?.neutralized ? 'mdi-check-circle': 'mdi-checkbox-blank-circle'}}
         </v-icon>
       </template>
+
     </v-data-table>
     {{ selectedData }}
   </div>
@@ -31,6 +29,7 @@
 <script setup>
 // import { mapState } from 'pinia'
 import { VDataTable } from 'vuetify/labs/VDataTable'
+import {useCoordinatesStore} from '../../store/coordinatesStore';
 // import { useCablesStore } from '~/store/cablesStore'
 const router = useRouter()
 const { t } = useI18n()
@@ -48,7 +47,7 @@ const tableHeaders = reactive([
   },
   { title: t('app.type'), key: 'resourcetype' },
   { title: t('support.owner'), key: 'properties.owner.label' },
-  { title: 'Notation', key: 'score' },
+  // { title: 'Notation', key: 'properties' },
   {
     title: 'Neutralisé',
     key: 'properties.actions_infrastructure.0.neutralized'
@@ -61,6 +60,7 @@ const tableHeaders = reactive([
 
 const cableStore = useCablesStore()
 const mortalityStore = useMortalityStore()
+const coordinateStore = useCoordinatesStore()
 const dataSource = computed(() => {
   return {
     both: cableStore.getInfstrDatafeatures,
@@ -90,14 +90,31 @@ onMounted(() => {
 //     // TODO raise an exception and handle it or display message to user
 //   }
 // }
-const showDetail = (_, {item}) => {
-  const rowData = item.columns
-  console.log('_, item', _, item)
-  console.log('showDetail rowItem id', rowData['properties.id'])
-  if (rowData.resourcetype === 'Point') {
-    router.push(`/supports/${rowData['properties.id']}`)
-  } else if (rowData.resourcetype === 'Line') {
-    router.push(`/lines/${rowData['properties.id']}`)
+
+const zoomTo = (item) => {
+  console.log('coordinateStore',coordinateStore)
+  // const layer = geoJSON(info.value)
+  coordinateStore.setCenter([...item.geometry.coordinates].reverse())
+  coordinateStore.setZoom(14)
+}
+
+
+const rowClickEvent = (_, {item}) => {
+  zoomTo(item.raw)
+  // console.log('rowClickEvent', item.raw.resourcetype)
+  // if (item.raw.resourcetype === 'Point') {
+  //   router.push(`/supports/${item.raw.properties.id}`)
+  // } else if (item.raw.resourcetype === 'Line') {
+  //   router.push(`/lines/${item.raw.properties.id}`)
+  // }
+}
+
+const routerPushUrl =  (item) => {
+  console.log('routerPushUrl', item.resourcetype)
+    if (item.resourcetype === 'Point') {
+    return `/supports/${item.properties.id}`
+  } else if (item.resourcetype === 'Line') {
+    return `/lines/${item.properties.id}`
   }
 }
 
