@@ -36,19 +36,6 @@ class VectorLayerConfigAdmin(admin.ModelAdmin):
     list_filter = ("category",)
 
 
-class VectorLayerThemingAdmin(admin.ModelAdmin):
-    list_display = (
-        "label",
-        "min",
-        "max",
-        "numeric_value",
-        "string_value",
-        "style",
-        "condition_path",
-    )
-    list_filter = ("config",)
-
-
 class BaseLayerAdmin(admin.ModelAdmin):
     list_display = ("name", "url", "attribution", "default")
 

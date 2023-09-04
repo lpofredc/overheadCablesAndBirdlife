@@ -136,7 +136,7 @@ dmypy.json
 .dccache
 
 # image upload folder
-uploads
+uploads*
 
 # .rest files
 *.rest
@@ -235,3 +235,9 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Docker override config
+docker-compose.override.y*ml
+
+# Old Frontend dir
+frontend.old

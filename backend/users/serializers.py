@@ -11,4 +11,5 @@ class UserSimpleSerializer(ModelSerializer):
         fields = [
             "username",
             "full_name",
+            "avatar",
         ]

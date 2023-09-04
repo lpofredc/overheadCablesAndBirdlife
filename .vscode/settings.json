@@ -1,17 +1,43 @@
 {
-  "editor.formatOnSave": true,
-  "python.pythonPath": "backend/.venv/bin/python",
-  "python.formatting.provider": "black",
+  // "editor.formatOnSave": true,
+  "python.formatting.provider": "none",
   "python.formatting.blackArgs": ["--line-length=99"],
   "python.sortImports.args": ["--profile", "black"],
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
-    }
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
-  "vetur.format.defaultFormatter.html": "prettier",
   "[vue]": {
-    "editor.defaultFormatter": "octref.vetur"
+    "editor.defaultFormatter": "Vue.volar"
   },
-  "esbonio.sphinx.confDir": ""
+  "esbonio.sphinx.confDir": "",
+  "cSpell.words": ["Nuxt"],
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "javascript.format.enable": false,
+  "javascript.format.insertSpaceAfterCommaDelimiter": false,
+  "javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+  "javascript.format.insertSpaceAfterKeywordsInControlFlowStatements": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "javascript.format.insertSpaceAfterSemicolonInForStatements": false,
+  "javascript.format.insertSpaceBeforeAndAfterBinaryOperators": false,
+  "typescript.format.enable": false,
+  "typescript.format.insertSpaceAfterCommaDelimiter": false,
+  "typescript.format.indentSwitchCase": false,
+  "vue.codeActions.enabled": false,
+  "nuxt.isNuxtApp": false,
+  "vue.autoInsert.dotValue": true,
+  "vue.complete.casing.tags": "autoKebab",
+  "vue.inlayHints.missingProps": true,
+  "vue.inlayHints.optionsWrapper": true,
+  "vue.server.petiteVue.supportHtmlFile": true,
+  "vue.updateImportsOnFileMove.enabled": true
+  // "eslint.format.enable": false,
+  // "tslint.autoFixOnSave": false,
+  // // "tslint.enable": true
 }

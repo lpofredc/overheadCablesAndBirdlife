@@ -1,14 +1,12 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="SADataFeatures"
-    :items-per-page="5"
-    class="elevation-1"
-  ></v-data-table>
+  <v-data-table :headers="headers" :items="SADataFeatures" :items-per-page="5" class="elevation-1" />
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { VDataTable } from 'vuetify/labs/VDataTable'
+import { useSensitiveAreasStore } from '~/store/sensitiveAreasStore'
+
 export default {
   name: 'SensAreaDisplay',
   data() {
@@ -18,19 +16,19 @@ export default {
           text: 'ID Zone Sensible',
           align: 'start',
           sortable: true,
-          value: 'id',
+          value: 'id'
         },
         { text: 'Name', value: 'properties.name' },
-        { text: 'Code', value: 'properties.code' },
-      ],
+        { text: 'Code', value: 'properties.code' }
+      ]
     }
   },
   /** Fetch Sensitive Area from backend and record it to Nuxt Store */
   async fetch() {
-    const data = await this.$axios.$get('sensitive-areas/') // get FeatureCollection
+    const data = await useHttp('/api/v1/sensitive-areas/') // get FeatureCollection
     this.$store.commit('saStore/add', data)
   },
   /** Gather Sensitive Area data from Nuxt Store */
-  computed: mapGetters({ SADataFeatures: 'saStore/SADataFeatures' }),
+  computed: { ...mapState(useSensitiveAreasStore, ['SaDataFeature']) }
 }
 </script>

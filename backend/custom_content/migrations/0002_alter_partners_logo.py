@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('custom_content', '0001_initial'),
+        ("custom_content", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='partners',
-            name='logo',
-            field=models.ImageField(blank=True, null=True, upload_to='partners/', verbose_name='Logo'),
+            model_name="partners",
+            name="logo",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to="partners/",
+                verbose_name="Logo",
+            ),
         ),
     ]

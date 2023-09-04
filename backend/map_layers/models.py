@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
@@ -8,8 +7,12 @@ class VectorLayerTheming(models.Model):
     label = models.TextField(verbose_name=_("Label"))
     min = models.FloatField(blank=True, null=True, verbose_name=_("Min"))
     max = models.FloatField(blank=True, null=True, verbose_name=_("Max"))
-    numeric_value = models.FloatField(blank=True, null=True, verbose_name=_("Numeric value"))
-    string_value = models.TextField(blank=True, null=True, verbose_name=_("String value"))
+    numeric_value = models.FloatField(
+        blank=True, null=True, verbose_name=_("Numeric value")
+    )
+    string_value = models.TextField(
+        blank=True, null=True, verbose_name=_("String value")
+    )
     style = models.JSONField(verbose_name="Style as JSON")
     condition_path = ArrayField(models.TextField(max_length=100))
 
@@ -52,8 +55,12 @@ class VectorLayerData(models.Model):
 class BaseLayers(models.Model):
     name = models.TextField(max_length=100, verbose_name=_("Name"))
     url = models.TextField(max_length=256, verbose_name=_("Url"))
-    attribution = models.TextField(max_length=256, verbose_name=_("Attribution"))
-    default = models.BooleanField(default=False, verbose_name=_("Default base layer"))
+    attribution = models.TextField(
+        max_length=256, verbose_name=_("Attribution")
+    )
+    default = models.BooleanField(
+        default=False, verbose_name=_("Default base layer")
+    )
 
     class Meta:
         verbose_name = "Base layers list"

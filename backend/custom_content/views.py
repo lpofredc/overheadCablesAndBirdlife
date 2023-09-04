@@ -16,6 +16,12 @@ class NewsSimpleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = News.objects.all()
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if not self.request.auth:
+            return queryset.filter(private=False)
+        return queryset
+
 
 class NewsFullViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the News items with body"""
@@ -24,10 +30,16 @@ class NewsFullViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = News.objects.all()
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if not self.request.auth:
+            return queryset.filter(private=False)
+        return queryset
+
 
 class PartnersViewSet(viewsets.ModelViewSet):
     """A simple viewset to retrieve all the partners"""
 
     serializer_class = PartnersSerializer
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Partners.objects.all()

@@ -32,5 +32,6 @@ urlpatterns = [
     path("api/v1/custom-content/", include("custom_content.urls")),
     path("api/v1/nomenclature/", include("sinp_nomenclatures.urls")),
     path("api/v1/map-layers/", include("map_layers.urls")),
-    path("admin/", admin.site.urls),
+    path("api/admin/doc/", include("django.contrib.admindocs.urls")),
+    path("api/admin/", admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
