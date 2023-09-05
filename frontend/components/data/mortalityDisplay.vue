@@ -10,8 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCoordinatesStore } from '../../store/coordinatesStore'
-
 // import { FeatureCollection } from 'geojson'
 const router =useRouter()
 const itemsPerPage=ref(5)
